@@ -1,0 +1,19 @@
+services:
+  database:
+    container_name: "sisgevvom-dev"
+    image: "mysql"
+    env_file:
+      - ../.env.development
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    command:
+      - --default-time-zone=-04:00
+    environment:
+      - TZ=America/Manaus
+
+
+volumes:
+  db-data:
+    driver: local

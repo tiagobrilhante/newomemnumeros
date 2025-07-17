@@ -1,0 +1,158 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../node_modules/.prisma/client"
+  binaryTargets = ["native", "darwin-arm64"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String  @id @default(uuid())
+  name        String  @db.VarChar(255)
+  serviceName String  @db.VarChar(100)
+  email       String  @unique @db.VarChar(255)
+  cpf         String  @unique @db.VarChar(11)
+  password    String  @db.VarChar(255)
+  rankId      String
+  roleId      String?
+
+  // Relacionamentos
+  rank Rank  @relation(fields: [rankId], references: [id])
+  role Role? @relation(fields: [roleId], references: [id])
+
+  // Auditoria
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
+  @@index([rankId])
+  @@index([roleId])
+  @@index([deleted])
+  @@map("users")
+}
+
+model Rank {
+  id        String @id @default(uuid())
+  name      String @unique @db.VarChar(100)
+  acronym   String @unique @db.VarChar(50)
+  hierarchy Int    @unique
+
+  // Relacionamentos
+  users User[]
+
+  // Auditoria
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
+  @@index([hierarchy])
+  @@index([deleted])
+  @@map("ranks")
+}
+
+model MilitaryOrganization {
+  id                     String  @id @default(uuid())
+  name                   String  @unique @db.VarChar(255)
+  acronym                String  @unique @db.VarChar(50)
+  color                  String  @default("#000000") @db.VarChar(7)
+  logo                   String  @default("/logos/default/default.png") @db.VarChar(500)
+  militaryOrganizationId String?
+
+  // Relacionamentos
+  parentOrganization MilitaryOrganization?  @relation("MilitaryOrganizationHierarchy", fields: [militaryOrganizationId], references: [id])
+  subOrganizations   MilitaryOrganization[] @relation("MilitaryOrganizationHierarchy")
+  sections           Section[]
+
+  // Auditoria
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
+  @@index([militaryOrganizationId])
+  @@index([deleted])
+  @@map("military_organizations")
+}
+
+model Section {
+  id                     String @id @default(uuid())
+  name                   String @db.VarChar(255)
+  acronym                String @db.VarChar(50)
+  militaryOrganizationId String
+
+  // Relacionamentos
+  militaryOrganization MilitaryOrganization @relation(fields: [militaryOrganizationId], references: [id], onDelete: Cascade)
+  roles                Role[]
+
+  // Auditoria
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
+  @@unique([acronym, militaryOrganizationId])
+  @@index([militaryOrganizationId])
+  @@index([deleted])
+  @@map("sections")
+}
+
+model Role {
+  id        String  @id @default(uuid())
+  name      String  @db.VarChar(255)
+  acronym   String  @db.VarChar(50)
+  sectionId String?
+
+  // Relacionamentos
+  section     Section?         @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  users       User[]
+  permissions RolePermission[]
+
+  // Auditoria
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
+  @@unique([acronym, sectionId])
+  @@index([sectionId])
+  @@index([deleted])
+  @@map("roles")
+}
+
+model Permission {
+  id          String  @id @default(uuid())
+  slug        String  @unique @db.VarChar(255)
+  description String? @db.VarChar(255)
+  category    String? @db.VarChar(100)
+
+  // Relacionamentos
+  roles RolePermission[]
+
+  // Auditoria
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
+  @@index([deleted])
+  @@map("permissions")
+}
+
+model RolePermission {
+  id           String @id @default(uuid())
+  permissionId String
+  roleId       String
+
+  // Relacionamentos
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  // Auditoria
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
+  @@unique([permissionId, roleId])
+  @@index([permissionId])
+  @@index([roleId])
+  @@map("role_permissions")
+}

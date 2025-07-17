@@ -1,0 +1,63 @@
+{
+  "private": true,
+  "type": "module",
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "generate": "nuxt generate",
+    "format": "prettier --write \"**/*.{js,ts,vue,css,scss,json}\"",
+    "format:check": "prettier --check \"**/*.{js,ts,vue,css,scss,json}\"",
+    "clean": "nuxt cleanup && rm -rf node_modules .nuxt",
+    "postinstall": "prisma generate",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "db:migrate": "prisma migrate dev",
+    "db:reset": "prisma migrate reset",
+    "db:seed": "prisma db seed",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@devindex/vue-mask": "^2.0.3",
+    "@prisma/client": "^6.12.0",
+    "@vueuse/core": "^13.5.0",
+    "@vueuse/integrations": "^13.5.0",
+    "bcrypt": "^6.0.0",
+    "cpf-cnpj-validator": "^1.0.3",
+    "cropperjs": "^2.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.14.2",
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.4.1",
+    "sharp": "^0.34.3",
+    "universal-cookie": "^8.0.1",
+    "vue": "^3.5.17",
+    "vue3-toastify": "^0.2.8",
+    "vuetify": "^3.9.0"
+  },
+  "devDependencies": {
+    "@mdi/font": "^7.4.47",
+    "@nuxt/eslint": "1.5.2",
+    "@nuxt/image": "1.10.0",
+    "@pinia/nuxt": "^0.11.1",
+    "@prisma/nuxt": "^0.3.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/lodash": "^4.17.20",
+    "@types/node": "^24.0.14",
+    "@types/qrcode": "^1.5.5",
+    "@vueuse/nuxt": "^13.5.0",
+    "eslint": "^9.17.0",
+    "nuxt": "^3.17.7",
+    "prettier": "^3.6.2",
+    "prisma": "6.12.0",
+    "sass": "^1.89.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.3",
+    "vuetify-nuxt-module": "^0.18.7"
+  },
+  "packageManager": "pnpm@10.7.1"
+}
