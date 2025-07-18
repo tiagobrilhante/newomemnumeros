@@ -11,36 +11,28 @@
   const { initializeAuth } = useAuth()
   const loading = ref(true)
 
-  // Verificação imediata de cookies antes da renderização
-  const authTokenCookie = useCookie('auth-token')
-  const authCookie = useCookie('auth')
-
-  // Se tem ambos os cookies, redirecionar imediatamente
-  if (authTokenCookie.value && authCookie.value) {
-    navigateTo('/home', { replace: true })
-  } 
-  // Se está autenticado na store, redirecionar
-  else if (authStore.isAuthenticated) {
-    navigateTo('/home', { replace: true })
-  }
-  // Caso contrário, tentar inicializar auth de forma assíncrona
-  else {
-    // Usar onMounted em vez de nextTick para garantir contexto correto
-    onMounted(async () => {
-      try {
-        const isInitialized = await initializeAuth()
-        
-        if (isInitialized) {
-          await navigateTo('/home', { replace: true })
-          return
-        }
-      } catch (error) {
-        console.error('Error initializing auth:', error)
-      } finally {
-        loading.value = false
+  // Apenas verificar auth se não estiver autenticado na store
+  onMounted(async () => {
+    try {
+      // Se já está autenticado na store, redirecionar
+      if (authStore.isAuthenticated) {
+        await navigateTo('/home', { replace: true })
+        return
       }
-    })
-  }
+
+      // Tentar inicializar autenticação
+      const isInitialized = await initializeAuth()
+      
+      if (isInitialized) {
+        await navigateTo('/home', { replace: true })
+        return
+      }
+    } catch (error) {
+      console.error('Error initializing auth:', error)
+    } finally {
+      loading.value = false
+    }
+  })
 </script>
 <template>
   <v-container fluid>
