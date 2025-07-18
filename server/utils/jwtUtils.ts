@@ -20,12 +20,3 @@ export function generateJwtToken(userId: string): string {
   return jwt.sign(payload, JWT_SECRET as Secret, { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions)
 }
 
-/*
-export function verifyJwtToken(token: string): CustomPayload | null {
-  try {
-    return jwt.verify(token, JWT_SECRET as Secret) as CustomPayload
-  } catch {
-    return null
-  }
-}
- */

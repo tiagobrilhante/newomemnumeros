@@ -13,8 +13,14 @@ export const useAuth = () => {
 
     try {
       const response = await authService.login(credentials)
-      
+
       if (response?.user) {
+
+        console.log('temos um user')
+
+        console.log(response.user)
+
+
         authStore.setUser(response.user)
         return { success: true }
       } else {
@@ -34,8 +40,7 @@ export const useAuth = () => {
     error.value = null
 
     try {
-      const response = await authService.register(data)
-      return response
+      return await authService.register(data)
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Erro inesperado no registro'
       return { success: false, error: error.value }
@@ -45,18 +50,11 @@ export const useAuth = () => {
   }
 
   const clearClientStorage = () => {
-    // Limpar cookies apenas no cliente
     if (import.meta.client) {
       try {
-        // Limpar cookie auth
         document.cookie = 'auth=; Max-Age=0; path=/; SameSite=strict'
-
-        // Limpar cookie auth-token
         document.cookie = 'auth-token=; Max-Age=0; path=/; SameSite=strict'
-
-        // Limpar localStorage e sessionStorage
         localStorage.removeItem('auth')
-        sessionStorage.removeItem('auth')
       } catch (e) {
         console.error('Erro ao limpar cookies/storage:', e)
       }
@@ -65,7 +63,7 @@ export const useAuth = () => {
 
   const logout = async () => {
     loading.value = true
-    
+
     try {
       await authService.logout()
     } catch (err) {
@@ -115,11 +113,6 @@ export const useAuth = () => {
   }
 
   const initializeAuth = async () => {
-    if (authStore.isAuthenticated) {
-      return true
-    }
-
-    // Verificar se há token via document.cookie em vez de useCookie
     if (import.meta.client) {
       const cookies = document.cookie.split(';')
       const authTokenCookie = cookies.find(cookie => cookie.trim().startsWith('auth-token='))

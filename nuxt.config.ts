@@ -29,7 +29,6 @@ export default defineNuxtConfig({
       localeMessages: ['pt'],
     },
   },
-
   runtimeConfig: {
     public: {
       APP_NAME: process.env.NUXT_APP_NAME || '',

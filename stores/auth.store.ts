@@ -1,13 +1,11 @@
 import { defineStore } from 'pinia'
 import type { user, userWithoutPassword } from '~/types/core/user'
-import type { PersistenceOptions } from 'pinia-plugin-persistedstate'
 
 // noinspection JSUnusedGlobalSymbols
 export const useAuthUserStore = defineStore(
   'auth',
   () => {
     const user = ref<user | null>(null)
-    const isAuthenticated = ref(false)
 
     const currentUser = computed(() => user.value as userWithoutPassword)
     const militaryOrganization = computed(() => user.value?.role?.section?.militaryOrganization)
@@ -29,13 +27,16 @@ export const useAuthUserStore = defineStore(
     }
 
     function setUser(userData: user) {
+      console.log('dentro do store eu tenho')
+      console.log(userData)
       user.value = userData
-      isAuthenticated.value = true
+      console.log('user.value')
+      console.log(user.value)
+      console.log('user.value')
     }
 
     function clearUser() {
       user.value = null
-      isAuthenticated.value = false
     }
 
     function updateUser(userData: Partial<userWithoutPassword>) {
@@ -46,7 +47,6 @@ export const useAuthUserStore = defineStore(
 
     return {
       user,
-      isAuthenticated,
       currentUser,
       rank,
       role,
@@ -62,35 +62,6 @@ export const useAuthUserStore = defineStore(
     }
   },
   {
-    persist: {
-      key: 'auth',
-      paths: ['user', 'isAuthenticated'],
-      storage: {
-        getItem: (key: string) => {
-          if (import.meta.client) {
-            const cookie = useCookie(key)
-            return cookie.value ? cookie.value : null
-          }
-          return null
-        },
-        setItem: (key: string, value: string) => {
-          if (import.meta.client) {
-            const cookie = useCookie(key, {
-              sameSite: 'strict',
-              maxAge: 60 * 60 * 24 * 7, // 7 dias
-              secure: process.env.NODE_ENV === 'production',
-              path: '/',
-            })
-            cookie.value = value
-          }
-        },
-        removeItem: (key: string) => {
-          if (import.meta.client) {
-            const cookie = useCookie(key)
-            cookie.value = null
-          }
-        },
-      },
-    } as PersistenceOptions,
+    persist: true,
   },
 )

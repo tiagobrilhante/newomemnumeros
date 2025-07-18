@@ -8,14 +8,11 @@ import { setAuthCookie } from '~/server/utils/cookieAuth'
 export default defineEventHandler(async (event) => {
   try {
     const { email, password } = await readBody(event)
-
     const user = await authenticateUser(email, password)
     const token = generateJwtToken(user.id)
-
-    // Define cookie httpOnly seguro
     setAuthCookie(event, token)
+    console.log('post login')
 
-    // Retorna apenas os dados do usuário, não o token
     return {
       user,
     }
