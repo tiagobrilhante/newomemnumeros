@@ -9,7 +9,7 @@
 
   // Removido emit - componente agora é responsável pela navegação
 
-  const authUserStore = useAuthUserStore()
+  const { login, register } = useAuth()
   const loading = ref(false)
   const email = ref('')
   const name = ref('')
@@ -100,7 +100,7 @@
         }
 
         // Cadastro
-        const registerResult = await authUserStore.register({
+        const registerResult = await register({
           email: email.value.trim(),
           password: password.value.trim(),
           name: name.value.trim(),
@@ -118,7 +118,7 @@
           })
 
           // Login após cadastro bem-sucedido
-          const loginResult = await authUserStore.login(email.value.trim(), password.value.trim())
+          const loginResult = await login({ email: email.value.trim(), password: password.value.trim() })
 
           if (loginResult && loginResult.success) {
             // Separar o redirecionamento do bloco try/catch
@@ -143,7 +143,7 @@
           loading.value = false
           return
         }
-        const loginResult = await authUserStore.login(email.value.trim(), password.value.trim())
+        const loginResult = await login({ email: email.value.trim(), password: password.value.trim() })
 
         if (loginResult && loginResult.success) {
           error.active = false

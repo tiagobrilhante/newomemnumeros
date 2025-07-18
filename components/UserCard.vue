@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  const useAuthStore = useAuthUserStore()
+  const { logout } = useAuth()
 
   const { currentUser } = useUserData()
 
@@ -10,7 +10,7 @@
   })
   const handleLogout = useDebounceFn(async () => {
     try {
-      await useAuthStore.logout()
+      await logout()
       await navigateTo('/')
     } catch (error) {
       console.error('Erro ao fazer logout:', error)

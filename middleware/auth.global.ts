@@ -3,13 +3,13 @@ import { useAuthUserStore } from '~/stores/auth.store'
 // noinspection JSUnusedGlobalSymbols
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const authStore = useAuthUserStore()
+  const { initializeAuth, clearSession } = useAuth()
   const publicPatterns = ['/', /^\/course\/.+/, '/about']
 
   // Flag para evitar processamento durante redirecionamentos
   if (to.path === from?.path) {
     return
   }
-
 
   const isPublicRoute = (path: string) => {
     return publicPatterns.some((pattern) => {
@@ -29,7 +29,6 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const authCookie = useCookie('auth')
     const hasAuthTokenCookie = !!authTokenCookie.value
     const hasAuthCookie = !!authCookie.value
-
 
     // Se não tem NENHUM cookie (nem auth nem auth-token) e está tentando acessar rota protegida
     if (!hasAuthCookie && !hasAuthTokenCookie && !isGoingToPublicRoute) {
@@ -72,7 +71,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         if (!authTokenCookie.value) {
           // Se não há token no servidor, não tentar inicializar
         } else {
-          const isValid = await authStore.initializeAuth()
+          const isValid = await initializeAuth()
 
           if (isValid) {
             if (isGoingToPublicRoute) {
@@ -83,12 +82,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             return
           }
         }
-      } catch (error) {
+      } catch (_error) {
         // Se falhar a inicialização, limpar tudo
       }
 
       // Token inválido ou erro na inicialização, limpar sessão
-      authStore.clearSession()
+      clearSession()
 
       // Remover cookie manualmente (isso é crucial)
       authCookie.value = null
@@ -108,7 +107,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     console.error('Auth middleware error:', error)
 
     // Em caso de erro, garantir limpeza completa
-    authStore.clearSession()
+    clearSession()
     const authCookie = useCookie('auth')
     authCookie.value = null
 

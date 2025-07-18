@@ -8,6 +8,7 @@
   })
 
   const authStore = useAuthUserStore()
+  const { initializeAuth } = useAuth()
   const loading = ref(true)
 
   // Verificação imediata de cookies antes da renderização
@@ -24,9 +25,10 @@
   }
   // Caso contrário, tentar inicializar auth de forma assíncrona
   else {
-    nextTick(async () => {
+    // Usar onMounted em vez de nextTick para garantir contexto correto
+    onMounted(async () => {
       try {
-        const isInitialized = await authStore.initializeAuth()
+        const isInitialized = await initializeAuth()
         
         if (isInitialized) {
           await navigateTo('/home', { replace: true })
