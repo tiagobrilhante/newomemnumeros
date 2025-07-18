@@ -46,10 +46,12 @@ export const useAuth = () => {
 
   const logout = async () => {
     try {
-      authStore.$reset()
       await authService.logout()
+      authStore.$reset()
     } catch (err) {
       console.error('Erro ao fazer logout:', err)
+      // Mesmo com erro no servidor, limpar o estado local
+      authStore.$reset()
     } finally {
       await navigateTo('/', { external: true })
     }

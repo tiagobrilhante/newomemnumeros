@@ -7,10 +7,11 @@ export default defineNuxtRouteMiddleware((to) => {
     return;
   }
 
-  const authCookie = useCookie<{ user: object | null }>('auth');
-  const isAuthenticated = !!authCookie.value?.user;
+  // Usa a store diretamente, que é persistida automaticamente pelo Pinia
+  const authStore = useAuthUserStore();
+  const isAuthenticated = authStore.isAuthenticated;
 
-  const isAuthObject = (meta: any): meta is AuthRouteMeta => {
+  const isAuthObject = (meta: unknown): meta is AuthRouteMeta => {
     return typeof meta === 'object' && meta !== null;
   };
 

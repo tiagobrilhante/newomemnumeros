@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-  definePageMeta({
-    auth: true // Simplesmente indica que a rota é protegida
-  })
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
   import WelcomeMessage from '~/layouts/partials/WelcomeMessage.vue'
   //import { retrieveMilitaryOrganizationLogo } from '~/utils/retrieve-military-organization-logo'
   import { useAuthUserStore } from '~/stores/auth.store'
+
+  definePageMeta({
+    auth: true // Simplesmente indica que a rota é protegida
+  })
 
   const authUserStore = useAuthUserStore();
 

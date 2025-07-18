@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import { useAuthUserStore } from '~/stores/auth.store';
   definePageMeta({
     layout: 'login-page',
     auth: {
@@ -9,10 +8,6 @@
   });
 
   const isLogin = ref(true);
-
-  const authUserStore = useAuthUserStore();
-
-  if (authUserStore.user) navigateTo('/home')
 
 </script>
 <template>
@@ -30,8 +25,8 @@
                 <v-btn variant="plain" @click="isLogin = !isLogin">
                   {{
                     isLogin
-                      ? 'Já tem uma conta? Faça login'
-                      : 'Não tem uma conta? Cadastre-se'
+                      ? 'Não tem uma conta? Cadastre-se'
+                      : 'Já tem uma conta? Faça login'
                   }}
                 </v-btn>
               </v-col>

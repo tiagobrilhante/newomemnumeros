@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  import { nextTick } from 'vue';
   import 'vue3-toastify/dist/index.css'
   const { login } = useAuth()
 
@@ -32,14 +31,8 @@
       }
       const loginResult = await login({ email: email.value.trim(), password: password.value.trim() })
 
-      console.log('loginResult')
-      console.log(loginResult)
-      console.log('loginResult')
-
       if (loginResult.success) {
         error.active = false;
-        loading.value = false;
-        await nextTick(); // Garante que a atualização da store seja processada
         await navigateTo('/home', { replace: true });
       } else {
         error.active = true
