@@ -1,9 +1,18 @@
 <script lang="ts" setup>
+  import { useAuthUserStore } from '~/stores/auth.store';
   definePageMeta({
     layout: 'login-page',
-  })
+    auth: {
+      unauthenticatedOnly: true, // Redireciona se o usuário JÁ estiver logado
+      navigateAuthenticatedTo: '/home', // Para onde redirecionar
+    }
+  });
 
-  const isLogin = ref(true)
+  const isLogin = ref(true);
+
+  const authUserStore = useAuthUserStore();
+
+  if (authUserStore.user) navigateTo('/home')
 
 </script>
 <template>

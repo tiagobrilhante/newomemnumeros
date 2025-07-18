@@ -43,29 +43,15 @@ export const useAuth = () => {
     }
   }
 
-  const clearClientStorage = () => {
-    if (import.meta.client) {
-      try {
-        document.cookie = 'auth=; Max-Age=0; path=/; SameSite=strict'
-        document.cookie = 'auth-token=; Max-Age=0; path=/; SameSite=strict'
-        localStorage.removeItem('auth')
-      } catch (e) {
-        console.error('Erro ao limpar cookies/storage:', e)
-      }
-    }
-  }
 
   const logout = async () => {
-    loading.value = true
-
     try {
+      authStore.$reset()
       await authService.logout()
     } catch (err) {
       console.error('Erro ao fazer logout:', err)
     } finally {
-      authStore.clearUser()
-      clearClientStorage()
-      loading.value = false
+      await navigateTo('/', { external: true })
     }
   }
 
@@ -82,8 +68,7 @@ export const useAuth = () => {
       return false
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Token inválido'
-      authStore.clearUser()
-      clearClientStorage()
+      authStore.$reset()
       return false
     } finally {
       loading.value = false
@@ -94,33 +79,25 @@ export const useAuth = () => {
     try {
       const response = await authService.checkAccess()
       if (!response.hasAccess) {
-        authStore.clearUser()
-        clearClientStorage()
+        authStore.$reset()
+
       }
       return response.hasAccess
     } catch (err) {
       error.value = err instanceof Error ? err.message : 'Erro ao verificar acesso'
-      authStore.clearUser()
-      clearClientStorage()
+      authStore.$reset()
       return false
     }
   }
 
   const initializeAuth = async () => {
-    if (import.meta.client) {
-      const cookies = document.cookie.split(';')
-      const authTokenCookie = cookies.find(cookie => cookie.trim().startsWith('auth-token='))
-      if (!authTokenCookie) {
-        return false
-      }
-    }
-
+    // Apenas chama o verifyToken. A API no servidor que vai validar o cookie httpOnly.
+    // O navegador envia o cookie automaticamente.
     return await verifyToken()
   }
 
   const clearSession = () => {
-    authStore.clearUser()
-    clearClientStorage()
+    authStore.$reset()
   }
 
   return {
@@ -132,6 +109,6 @@ export const useAuth = () => {
     verifyToken,
     checkAccess,
     initializeAuth,
-    clearSession
+    clearSession,
   }
 }

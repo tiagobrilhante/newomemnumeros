@@ -1,8 +1,8 @@
 <script lang="ts" setup>
   import { computed, ref } from 'vue'
+  import { useAuthUserStore } from '~/stores/auth.store'
 
   const authStore = useAuthUserStore()
-  const loadingLogout = ref(false)
   const loadingItem = ref<string | null>(null)
 
   interface MenuItem {
@@ -85,9 +85,6 @@
     },
   ]
 
-
-  const user = computed(() => authStore.currentUser)
-
   const nonGroupedItems = computed(() => menuItems.filter((item) => !item.group))
 
 
@@ -100,7 +97,7 @@
   const hasPermission = (menuItem: MenuItem) => {
     if (!menuItem) return false
 
-    const user = authStore.currentUser
+    const user = authStore.user
 
     const userPermissionKeys = (user?.permissionSetupUser || [])
       .flatMap((psu) => psu.permissionSetup?.permissions || [])
@@ -121,7 +118,7 @@
 </script>
 
 <template>
-  <v-container v-if="user" fluid>
+  <v-container fluid>
     <v-row class="pl-3" no-gutters>
       <v-col align-self="center" class="text-center">
         <v-list class="text-left" density="compact" nav rounded="xl" slim>

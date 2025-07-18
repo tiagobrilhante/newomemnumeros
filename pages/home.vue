@@ -1,14 +1,13 @@
 <script lang="ts" setup>
+  definePageMeta({
+    auth: true // Simplesmente indica que a rota é protegida
+  })
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
   import WelcomeMessage from '~/layouts/partials/WelcomeMessage.vue'
-  import { retrieveMilitaryOrganizationLogo } from '~/utils/retrieve-military-organization-logo'
+  //import { retrieveMilitaryOrganizationLogo } from '~/utils/retrieve-military-organization-logo'
+  import { useAuthUserStore } from '~/stores/auth.store'
 
-  // Força verificação de autenticação sempre que acessar esta página
-  definePageMeta({
-    middleware: 'auth-required'
-  })
-
-  const { currentUser } = useUserData()
+  const authUserStore = useAuthUserStore();
 
   const DASHBOARD_MENU_ITEM = {
     title: 'Página Inicial',
@@ -17,6 +16,8 @@
     components: [WelcomeMessage],
     componentPosition: ['right'] as ['right'],
   }
+
+
 </script>
 
 <template>
@@ -29,7 +30,7 @@
           <v-row>
             <v-col class="container">
 
-              {{currentUser}}
+              {{authUserStore.user}}
 <!--              <nuxt-img
               :src="`${retrieveMilitaryOrganizationLogo(
                   currentUser.militaryOrganization.id,

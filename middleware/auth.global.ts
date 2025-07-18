@@ -1,47 +1,27 @@
-// middleware/auth.global.ts
+import type { AuthRouteMeta } from '~/types/auth'
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
-  const { initializeAuth, clearSession } = useAuth()
+export default defineNuxtRouteMiddleware((to) => {
+  const routeAuthMeta = to.meta.auth;
 
-  const publicPatterns = ['/', /^\/course\/.+/, '/about']
-
-  const isPublicRoute = (path: string) => {
-    return publicPatterns.some((pattern) =>
-      pattern instanceof RegExp ? pattern.test(path) : pattern === path
-    )
+  if (!routeAuthMeta) {
+    return;
   }
 
-  const isGoingToPublicRoute = isPublicRoute(to.path)
+  const authCookie = useCookie<{ user: object | null }>('auth');
+  const isAuthenticated = !!authCookie.value?.user;
 
-  if (to.path === from?.path) return
+  const isAuthObject = (meta: any): meta is AuthRouteMeta => {
+    return typeof meta === 'object' && meta !== null;
+  };
 
-  try {
-    const authTokenCookie = useCookie('auth-token')
-
-    if (authTokenCookie.value) {
-      const isValid = await initializeAuth()
-
-      if (isValid) {
-        if (isGoingToPublicRoute) {
-          return navigateTo('/home')
-        }
-        return
-      }
-      clearSession()
+  if (isAuthObject(routeAuthMeta) && routeAuthMeta.unauthenticatedOnly) {
+    if (isAuthenticated) {
+      return navigateTo(routeAuthMeta.navigateAuthenticatedTo || '/home');
     }
-
-    if (isGoingToPublicRoute) {
-      return
-    }
-
-    clearSession()
-    return navigateTo('/')
-  } catch (error) {
-    console.error('Erro no middleware de auth:', error)
-    clearSession()
-
-    if (!isGoingToPublicRoute) {
-      return navigateTo('/')
-    }
+    return;
   }
-})
+
+  if (!isAuthenticated) {
+    return navigateTo('/');
+  }
+});

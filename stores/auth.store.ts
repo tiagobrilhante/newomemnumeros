@@ -6,7 +6,12 @@ export const useAuthUserStore = defineStore( 'auth',
   {
     state: () => ({
       user: null as user | null,
+      loading: false,
     }),
+
+    getters: {
+      isAuthenticated: (state) => !!state.user,
+    },
 
     actions: {
       setUser(userData: user) {
@@ -21,10 +26,12 @@ export const useAuthUserStore = defineStore( 'auth',
         if (this.user) {
           this.user = { ...this.user, ...userData } as user
         }
+      },
+
+      setLoading(value: boolean) {
+        this.loading = value
       }
     },
-    persist: {
-      storage: piniaPluginPersistedstate.localStorage(),
-    },
+    persist: true,
   })
 

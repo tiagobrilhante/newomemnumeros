@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  import { nextTick } from 'vue';
   import 'vue3-toastify/dist/index.css'
   const { login } = useAuth()
 
@@ -36,9 +37,10 @@
       console.log('loginResult')
 
       if (loginResult.success) {
-        error.active = false
-        loading.value = false
-        navigateTo('/home', { replace: true })
+        error.active = false;
+        loading.value = false;
+        await nextTick(); // Garante que a atualização da store seja processada
+        await navigateTo('/home', { replace: true });
       } else {
         error.active = true
         error.msgError.push('E-mail ou senha inválidos. Tente novamente.')
@@ -132,6 +134,12 @@
               </v-col>
             </v-row>
 
+            <!-- Mensagens de erro -->
+            <v-alert v-if="error.active" type="error" class="mb-4">
+              <div v-for="(msg, index) in error.msgError" :key="index">
+                {{ msg }}
+              </div>
+            </v-alert>
 
           </v-form>
         </v-card>

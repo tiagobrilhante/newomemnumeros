@@ -1,25 +1,25 @@
 <script lang="ts" setup>
   const { logout } = useAuth()
 
-  const { currentUser } = useUserData()
+  const useAuthStore = useAuthUserStore()
 
-  const shouldShowCard = computed(() => !!currentUser)
+
   const serviceName = computed(() => {
-    if (!currentUser.value) return null
-    return `${currentUser.value.rank?.acronym} ${currentUser.value.serviceName}`
+    if (!useAuthStore.user) return null
+    return `${useAuthStore.user.rank?.acronym} ${useAuthStore.user.serviceName}`
   })
-  const handleLogout = useDebounceFn(async () => {
+
+  const handleLogout = async () => {
     try {
       await logout()
-      await navigateTo('/')
     } catch (error) {
       console.error('Erro ao fazer logout:', error)
     }
-  }, 300)
+  }
 </script>
 
 <template>
-  <v-container v-if="shouldShowCard" class="text-right" fluid grid-list-md>
+  <v-container  class="text-right" fluid grid-list-md>
     <v-row>
       <v-col>
         <v-menu>
@@ -32,18 +32,19 @@
             <v-container>
               <v-row>
                 <v-col>
-                  <v-alert color="blue-grey-darken-4">
+                  <v-alert v-if="useAuthStore.user" color="blue-grey-darken-4">
                     <v-icon left>mdi-account</v-icon>
 
-                    {{ currentUser.rank.acronym }} {{ currentUser.serviceName }}<br >
-                    <b>Nome:</b> {{ currentUser.name }}<br >
-                    <b>Cpf: </b>{{ currentUser.cpf }}<br >
-                    <b>Email: </b>{{ currentUser.email }}<br >
+                    {{ useAuthStore.user.rank?.acronym }} {{ useAuthStore.user.serviceName }}<br >
+                    <b>Nome:</b> {{ useAuthStore.user.name }}<br >
+                    <b>Cpf: </b>{{ useAuthStore.user.cpf }}<br >
+                    <b>Email: </b>{{ useAuthStore.user.email }}<br >
                   </v-alert>
                 </v-col>
               </v-row>
             </v-container>
-            <v-list-item prepend-icon="mdi-account" title="Alterar Dados" @click="handleLogout" />
+            <!-- TODO: Corrigir o @click para a funcionalidade correta -->
+            <v-list-item prepend-icon="mdi-account" title="Alterar Dados" />
             <v-list-item prepend-icon="mdi-logout" title="Sair" @click="handleLogout" />
           </v-list>
         </v-menu>

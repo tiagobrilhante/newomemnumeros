@@ -20,7 +20,6 @@
     ],
   })
 
-  const { isLoading, isAuthenticated } = useUserData()
 </script>
 
 <template>
@@ -28,7 +27,7 @@
     <NavBar />
 
     <v-main class="my-space">
-      <v-container v-if="!isLoading && isAuthenticated" class="pa-0 fill-height flex-fill" fluid>
+      <v-container class="pa-0 fill-height flex-fill" fluid>
         <v-row class="fill-height">
           <transition mode="out-in" name="fade">
             <v-col class="text-center bg-grey-darken-3 pa-0" cols="2">
@@ -43,15 +42,6 @@
         </v-row>
       </v-container>
 
-      <v-container v-else-if="isLoading" fluid>
-        <v-container class="fill-height" fluid>
-          <v-row align="center" justify="center">
-            <v-col class="text-center">
-              <v-progress-circular color="primary" indeterminate />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-container>
     </v-main>
     <Footer />
   </v-app>
