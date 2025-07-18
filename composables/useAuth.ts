@@ -15,12 +15,6 @@ export const useAuth = () => {
       const response = await authService.login(credentials)
 
       if (response?.user) {
-
-        console.log('temos um user')
-
-        console.log(response.user)
-
-
         authStore.setUser(response.user)
         return { success: true }
       } else {

@@ -31,14 +31,14 @@
       }
       const loginResult = await login({ email: email.value.trim(), password: password.value.trim() })
 
+      console.log('loginResult')
+      console.log(loginResult)
+      console.log('loginResult')
+
       if (loginResult.success) {
         error.active = false
         loading.value = false
-
-        await nextTick()
-
-        await navigateTo('/home', { replace: true })
-        return
+        navigateTo('/home', { replace: true })
       } else {
         error.active = true
         error.msgError.push('E-mail ou senha inválidos. Tente novamente.')
@@ -47,10 +47,7 @@
     } catch (err) {
       console.error('[Login.vue] Erro ao processar autenticação:', err)
       error.active = true
-
-
       error.msgError.push('E-mail ou senha inválidos. Tente novamente.')
-
     } finally {
       loading.value = false
     }
