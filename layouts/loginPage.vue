@@ -23,7 +23,7 @@
   <v-app theme="dark">
     <BarWithoutLogin />
     <v-main class="my-space">
-      <v-container class="container ajustebg" fluid>
+      <v-container class="container login-background" fluid>
         <v-row no-gutters>
           <v-col>
             <v-container fluid>
@@ -51,7 +51,7 @@
     align-items: center; /* Centraliza o conteúdo verticalmente */
   }
 
-  .ajustebg {
+  .login-background {
     background-image: url('assets/bglogin.jpg');
     background-color: #222222;
     background-repeat: repeat;

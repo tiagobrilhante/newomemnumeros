@@ -11,6 +11,8 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@nuxt/eslint',
     '@nuxt/image',
+    '@nuxtjs/i18n',
+    '@nuxt/icon',
   ],
 
   vuetify: {
@@ -45,6 +47,14 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-07-15',
+
+  i18n: {
+    defaultLocale: 'pt-br',
+    locales: [
+      { code: 'pt-br', language: 'pt-BR', name: 'Português do Brasil', file: 'pt-BR.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en-US.json' }
+    ],
+  },
 
   nitro: {
     prerender: {

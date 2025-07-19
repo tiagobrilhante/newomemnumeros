@@ -2,6 +2,7 @@
   import UserCard from '~/components/UserCard.vue'
   import { useAuthUserStore } from '~/stores/auth.store'
 
+
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
 
@@ -18,6 +19,7 @@
     </template>
 
     <template #append>
+
       <UserCard v-if="currentUser" />
     </template>
   </v-app-bar>

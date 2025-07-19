@@ -1,0 +1,19 @@
+{
+  "loading": "Carregando",
+  "login": "Entrar",
+  "characters": "caracteres",
+  "emailField": "O campo e-mail",
+  "passwordField": "O campo senha",
+  "isRequired": "é obrigatório",
+  "mustBeValid": "precisa ser válido",
+  "mustContain": "deve conter",
+  "errorInvalidEmailOrPassword": "E-mail ou senha inválidos. Tente novamente.",
+  "errorUnexpected": "Ocorreu um erro inesperado. Por favor, tente mais tarde.",
+  "signIn": "Entre com sua conta",
+  "labelEmailInput": "E-mail",
+  "placeholderEmailInput": "Por favor digite o e-mail",
+  "labelPasswordInput": "Senha",
+  "placeholderPasswordInput": "Por favor digite a senha",
+  "noAccountSignUp": "Não tem uma conta? Cadastre-se",
+  "haveAccountSignIn": "Já tem uma conta? Faça login"
+}
