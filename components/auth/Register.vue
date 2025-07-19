@@ -1,6 +1,21 @@
 <script lang="ts" setup>
   import type { rank } from '~/types/core/user'
   import { rankService } from '~/services/rank.service'
+  import SwitchAuthRegister from '~/components/auth/SwitchAuthRegister.vue'
+
+
+
+  interface Props {
+    modelValue?: boolean
+  }
+
+  interface Emits {
+    (e: 'update:modelValue', value: boolean): void
+  }
+
+  const props = defineProps<Props>()
+  const emit = defineEmits<Emits>()
+
 
   const loading = ref(false)
   const ranks = ref<rank[]>([])
@@ -15,6 +30,11 @@
     email: ''
   })
 
+  // Computed para o isLogin local
+  const isLogin = computed({
+    get: () => props.modelValue ?? true,
+    set: (value) => emit('update:modelValue', value)
+  })
 
   const error = reactive({
     msgError: [] as string[],
@@ -191,6 +211,10 @@
 
             <!-- Botão de login/cadastro -->
             <v-row class="mb-4">
+
+              <v-col>
+                <AuthSwitchAuthRegister v-model="isLogin" />
+              </v-col>
               <v-col>
                 <v-btn
                   :disabled="loading"

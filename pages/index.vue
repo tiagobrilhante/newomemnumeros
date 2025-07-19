@@ -12,37 +12,11 @@
 </script>
 <template>
 
-  <auth-login v-if="isLogin" />
-  <auth-register v-else />
+  <v-slide-x-transition mode="out-in">
+    <auth-login v-if="isLogin" key="login" v-model="isLogin" />
+    <auth-register v-model="isLogin" v-else key="register" />
+  </v-slide-x-transition>
 
-  <v-container>
-    <v-row>
-      <v-col :cols="isLogin
-                        ? '4'
-                        : '8'" :offset="isLogin
-                        ? '4'
-                        : '2'">
-        <v-card
-          :class=" isLogin
-                        ? 'card-container-login'
-                        : 'card-container-register'"
-          elevation="12"
-          rounded="xl"
-          theme="light"
-        >
-          <v-card-text class="text-center">
-            <v-btn variant="text" @click="isLogin = !isLogin">
-              {{
-                isLogin
-                  ? $t('noAccountSignUp')
-                  : $t('haveAccountSignIn')
-              }}
-            </v-btn>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </v-container>
 
 
 </template>

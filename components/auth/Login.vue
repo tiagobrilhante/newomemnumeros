@@ -1,11 +1,22 @@
 <script lang="ts" setup>
-  const { login } = useAuth()
   import type { VForm } from 'vuetify/components'
+
+  interface Props {
+    modelValue?: boolean
+  }
+
+  interface Emits {
+    (e: 'update:modelValue', value: boolean): void
+  }
+
+  const props = defineProps<Props>()
+  const emit = defineEmits<Emits>()
+
+  const { login } = useAuth()
 
   const email = ref('')
   const password = ref('')
   const loading = ref(false)
-
   const form = ref<VForm | null>(null)
   const apiError = ref<string | null>(null)
 
@@ -18,6 +29,11 @@
     (v: string) => !!v || $t('passwordField') + ' ' + $t('isRequired'),
     (v: string) => (v && v.length >= 6) || $t('passwordField') + ' ' + $t('mustContain') + ' 6 ' + $t('characters'),
   ]
+
+  const isLogin = computed({
+    get: () => props.modelValue ?? true,
+    set: (value) => emit('update:modelValue', value),
+  })
 
   const processAuth = async () => {
     apiError.value = null
@@ -67,8 +83,8 @@
     <v-row>
       <v-col cols="4" offset="4">
         <v-card
-          class="card-container-login"
           :title="$t('signIn')"
+          class="card-container-login"
           elevation="12"
           prepend-icon="mdi-account"
           rounded="xl"
@@ -76,6 +92,7 @@
         >
           <v-card-text>
             <v-form ref="form" lazy-validation @submit.prevent="processAuth">
+
               <!-- e-mail and password fields -->
               <v-row dense>
 
@@ -90,8 +107,8 @@
                     density="compact"
                     prepend-icon="mdi-at"
                     required
-                    type="email"
                     rounded="xl"
+                    type="email"
                     variant="solo-inverted"
                   />
                 </v-col>
@@ -105,9 +122,9 @@
                     :placeholder="$t('placeholderPasswordInput')"
                     :rules="passwordRules"
                     density="compact"
-                    rounded="xl"
                     prepend-icon="mdi-form-textbox-password"
                     required
+                    rounded="xl"
                     type="password"
                     variant="solo-inverted"
                   />
@@ -120,9 +137,15 @@
                 {{ apiError }}
               </v-alert>
 
-              <!-- Botão de login -->
+              <!-- Switch login / register and login button -->
               <v-row dense>
-                <v-col cols="4" offset="8">
+
+                <!--switch login/register-->
+                <v-col cols="8">
+                  <AuthSwitchAuthRegister v-model="isLogin" />
+                </v-col>
+                <!--login button-->
+                <v-col cols="4">
                   <v-btn
                     :disabled="loading"
                     :loading="loading"
@@ -137,6 +160,7 @@
                     variant="elevated"
                   />
                 </v-col>
+
               </v-row>
             </v-form>
           </v-card-text>
