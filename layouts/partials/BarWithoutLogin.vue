@@ -7,7 +7,7 @@
 </script>
 
 <template>
-  <v-app-bar :elevation="10">
+  <v-app-bar app :elevation="10">
     <template #prepend>
       <v-app-bar-nav-icon>
         <v-icon icon="$vuetify" />

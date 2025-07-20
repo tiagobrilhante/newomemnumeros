@@ -1,17 +1,6 @@
 <script lang="ts" setup>
   import type { VForm } from 'vuetify/components'
 
-  interface Props {
-    modelValue?: boolean
-  }
-
-  interface Emits {
-    (e: 'update:modelValue', value: boolean): void
-  }
-
-  const props = defineProps<Props>()
-  const emit = defineEmits<Emits>()
-
   const { login } = useAuth()
 
   const email = ref('')
@@ -29,11 +18,6 @@
     (v: string) => !!v || $t('passwordField') + ' ' + $t('isRequired'),
     (v: string) => (v && v.length >= 6) || $t('passwordField') + ' ' + $t('mustContain') + ' 6 ' + $t('characters'),
   ]
-
-  const isLogin = computed({
-    get: () => props.modelValue ?? true,
-    set: (value) => emit('update:modelValue', value),
-  })
 
   const processAuth = async () => {
     apiError.value = null
@@ -101,8 +85,8 @@
                   <v-text-field
                     id="email"
                     v-model="email"
-                    :label="$t('labelEmailInput')"
-                    :placeholder="$t('placeholderEmailInput')"
+                    :label="$t('emailLabel')"
+                    :placeholder="$t('emailPlaceholder')"
                     :rules="emailRules"
                     density="compact"
                     prepend-icon="mdi-at"
@@ -118,8 +102,8 @@
                   <v-text-field
                     id="password"
                     v-model="password"
-                    :label="$t('labelPasswordInput')"
-                    :placeholder="$t('placeholderPasswordInput')"
+                    :label="$t('passwordLabel')"
+                    :placeholder="$t('passwordPlaceholder')"
                     :rules="passwordRules"
                     density="compact"
                     prepend-icon="mdi-form-textbox-password"
@@ -142,7 +126,7 @@
 
                 <!--switch login/register-->
                 <v-col cols="8">
-                  <AuthSwitchAuthRegister v-model="isLogin" />
+                  <v-btn size="small" variant="text" to="/register" :text="$t('noAccountSignUp')" />
                 </v-col>
                 <!--login button-->
                 <v-col cols="4">
@@ -169,3 +153,19 @@
     </v-row>
   </v-container>
 </template>
+
+<style scoped>
+  .card-container-login {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #222222;
+    border: 10px double #222222;
+    outline: 3px solid #222222;
+  }
+
+  .borda-branca {
+    border: 10px double #ffffff;
+    outline: 3px solid #ffffff;
+    padding: 10px;
+  }
+</style>

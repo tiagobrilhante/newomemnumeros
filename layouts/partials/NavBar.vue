@@ -1,12 +1,11 @@
 <script lang="ts" setup>
-  import UserCard from '~/components/UserCard.vue'
-  import { useAuthUserStore } from '~/stores/auth.store'
-
+  import { storeToRefs } from 'pinia'
 
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
 
-  const currentUser = useAuthUserStore()
+  const authStore = useAuthUserStore()
+  const { user: currentUser } = storeToRefs(authStore)
 </script>
 
 <template>
@@ -19,7 +18,6 @@
     </template>
 
     <template #append>
-
       <UserCard v-if="currentUser" />
     </template>
   </v-app-bar>

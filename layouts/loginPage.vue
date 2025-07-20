@@ -22,19 +22,10 @@
 <template>
   <v-app theme="dark">
     <BarWithoutLogin />
-    <v-main class="my-space">
-      <v-container class="container login-background" fluid>
-        <v-row no-gutters>
-          <v-col>
-            <v-container fluid>
-              <v-row>
-                <v-col>
-                  <slot />
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-col>
-        </v-row>
+
+    <v-main class="login-background my-space">
+      <v-container class="my-container" fluid>
+        <slot />
       </v-container>
     </v-main>
     <Footer />
@@ -42,8 +33,7 @@
 </template>
 
 <style scoped>
-  .container {
-    /* Configura a imagem como background */
+  :deep(.my-container) {
     min-height: 92vh; /* Ocupa toda a altura da tela */
     max-height: 10vh; /* Ocupa toda a altura da tela */
     display: flex;
@@ -51,14 +41,12 @@
     align-items: center; /* Centraliza o conteúdo verticalmente */
   }
 
+
   .login-background {
     background-image: url('assets/bglogin.jpg');
     background-color: #222222;
     background-repeat: repeat;
     background-size: 1000px 1000px;
-
-
-
   }
 
   .my-space {
