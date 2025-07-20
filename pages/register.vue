@@ -9,7 +9,7 @@
       unauthenticatedOnly: true,
       navigateAuthenticatedTo: '/home',
     },
-    transition: {
+    pageTransition: {
       name: 'slide-left',
       mode: 'out-in',
     },

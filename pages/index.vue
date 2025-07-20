@@ -5,7 +5,7 @@
       unauthenticatedOnly: true,
       navigateAuthenticatedTo: '/home',
     },
-    transition: {
+    pageTransition: {
       name: 'slide-right',
       mode: 'out-in',
     },
