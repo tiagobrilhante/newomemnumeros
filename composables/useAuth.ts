@@ -1,4 +1,5 @@
 import { authService } from '~/services/auth.service'
+
 import { useAuthUserStore } from '~/stores/auth.store'
 import type { loginCredentials, registerData } from '~/types/auth'
 
@@ -28,21 +29,6 @@ export const useAuth = () => {
       loading.value = false
     }
   }
-
-  const register = async (data: registerData) => {
-    loading.value = true
-    error.value = null
-
-    try {
-      return await authService.register(data)
-    } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Erro inesperado no registro'
-      return { success: false, error: error.value }
-    } finally {
-      loading.value = false
-    }
-  }
-
 
   const logout = async () => {
     try {
@@ -91,8 +77,6 @@ export const useAuth = () => {
   }
 
   const initializeAuth = async () => {
-    // Apenas chama o verifyToken. A API no servidor que vai validar o cookie httpOnly.
-    // O navegador envia o cookie automaticamente.
     return await verifyToken()
   }
 
@@ -104,7 +88,6 @@ export const useAuth = () => {
     loading: readonly(loading),
     error: readonly(error),
     login,
-    register,
     logout,
     verifyToken,
     checkAccess,

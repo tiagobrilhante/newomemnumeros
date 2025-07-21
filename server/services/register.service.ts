@@ -1,20 +1,29 @@
 import prisma from '~/server/prisma'
 import bcrypt from 'bcrypt'
+import { cpf } from 'cpf-cnpj-validator'
 
-export async function registerUser(data: {
-  name: string
-  serviceName: string
-  cpf: string
-  email: string
-  password: string
-  rankId: string
-}) {
-  const { name, serviceName, cpf, email, password, rankId } = data
+function sanitizeCPF(value: string): string {
+  if (!value) return ''
+  return value.replace(/\D/g, '')
+}
 
-  if (!name || !serviceName || !email || !password || !rankId) {
+export async function registerUser(
+  data: {
+    name: string
+    serviceName: string
+    cpf: string
+    email: string
+    password: string
+    rankId: string
+  },
+  locale: string,
+) {
+  const { name, serviceName, cpf: rawCpf, email, password, rankId } = data
+
+  if (!name || !serviceName || !email || !password || !rankId || !rawCpf) {
     throw createError({
       statusCode: 400,
-      message: 'Todos os campos são obrigatórios',
+      message: await serverTByLocale(locale, 'errors.allFieldsRequired'),
     })
   }
 
@@ -24,8 +33,28 @@ export async function registerUser(data: {
 
   if (existingUser) {
     throw createError({
+      statusCode: 409,
+      message: await serverTByLocale(locale, 'errors.emailAlreadyExists'),
+    })
+  }
+
+  const sanitizedCPF = sanitizeCPF(rawCpf)
+
+  if (!cpf.isValid(sanitizedCPF)) {
+    throw createError({
       statusCode: 400,
-      message: 'Email já cadastrado',
+      message: await serverTByLocale(locale, 'errors.cpfInvalid'),
+    })
+  }
+
+  const existingCpf = await prisma.user.findUnique({
+    where: { cpf: sanitizedCPF },
+  })
+
+  if (existingCpf) {
+    throw createError({
+      statusCode: 409,
+      message: await serverTByLocale(locale, 'errors.cpfAlreadyExists'),
     })
   }
 
@@ -35,12 +64,16 @@ export async function registerUser(data: {
     data: {
       name,
       serviceName,
-      cpf,
+      cpf: sanitizedCPF,
       email,
       password: hashedPassword,
       rankId,
     },
   })
 
-  return { success: true }
+  return {
+    success: true,
+    statusCode: 201,
+    message: await serverTByLocale(locale, 'success.userRegistered')
+  }
 }

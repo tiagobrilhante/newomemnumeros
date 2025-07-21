@@ -9,6 +9,7 @@ try {
   throw error
 }
 
+/*
 const prisma = basePrisma.$extends({
   query: {
     user: {
@@ -140,66 +141,9 @@ const prisma = basePrisma.$extends({
         })
       },
     },
-
-    militaryVehicle: {
-      delete: async ({ args }) => {
-        if (!args.where) throw new Error('args.where is undefined')
-        await basePrisma.militaryVehicleStatus.updateMany({
-          where: { militaryVehicleId: args.where.id },
-          data: { deleted: true },
-        })
-
-        await basePrisma.militaryVehicleOdometerValue.updateMany({
-          where: { militaryVehicleId: args.where.id },
-          data: { deleted: true },
-        })
-
-        await basePrisma.qRCode.updateMany({
-          where: { militaryVehicleId: args.where.id },
-          data: { deleted: true },
-        })
-
-        return basePrisma.militaryVehicle.update({
-          where: args.where,
-          data: { deleted: true },
-        })
-      },
-      deleteMany: async ({ args }) => {
-        if (!args.where) throw new Error('args.where is undefined')
-        let ids: number[] = []
-
-        const idFilter = args.where?.id
-
-        if (typeof idFilter === 'number') {
-          ids = [idFilter]
-        } else if (typeof idFilter === 'object' && idFilter !== null && 'in' in idFilter) {
-          ids = idFilter.in ?? []
-        }
-
-        if (ids.length > 0) {
-          await basePrisma.militaryVehicleStatus.updateMany({
-            where: { militaryVehicleId: { in: ids } },
-            data: { deleted: true },
-          })
-
-          await basePrisma.militaryVehicleOdometerValue.updateMany({
-            where: { militaryVehicleId: { in: ids } },
-            data: { deleted: true },
-          })
-
-          await basePrisma.qRCode.updateMany({
-            where: { militaryVehicleId: { in: ids } },
-            data: { deleted: true },
-          })
-        }
-
-        return basePrisma.militaryVehicle.updateMany({
-          where: args.where,
-          data: { deleted: true },
-        })
-      },
-    },
   },
 })
+*/
+const prisma = basePrisma
 
 export default prisma

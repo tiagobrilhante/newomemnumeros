@@ -21,14 +21,14 @@
         rounded
         variant="text"
         :icon="brazilFlag"
-        @click="setLocale('pt-br')"
+        @click="setLocale('pt-BR')"
       />
 
       <v-btn
         rounded
         variant="text"
         :icon="usFlag"
-        @click="setLocale('en')"
+        @click="setLocale('en-US')"
       />
 
     </template>

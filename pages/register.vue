@@ -1,7 +1,9 @@
 <script lang="ts" setup>
-  import type { rank } from '~/types/core/user'
   import { rankService } from '~/services/rank.service'
-
+  import { cpf } from 'cpf-cnpj-validator'
+  import type { rank } from '~/types/core/user'
+  import type { VForm } from 'vuetify/components'
+  import type { H3Error } from 'h3'
 
   definePageMeta({
     layout: 'login-page',
@@ -15,33 +17,78 @@
     },
   })
 
+  interface apiResponse {
+    success: boolean,
+    message: string,
+    statusCode?: number
+  }
+
+  const { register } = useRegister()
+  const localePath = useLocalePath()
+  const form = ref<VForm | null>(null)
   const loading = ref(false)
-  const ranks = ref<rank[]>([])
+  const apiResponse = ref<apiResponse | null>(null)
 
   const newUserData = reactive({
     name: '',
     serviceName: '',
-    selectedRank: '',
-    cpfValue: '',
+    rankId: '',
+    cpf: '',
     password: '',
     passwordConfirm: '',
     email: '',
   })
 
-  const error = reactive({
-    msgError: [] as string[],
-    active: false,
-  })
+  const { data: ranks, pending: ranksLoading, error: ranksError } = useAsyncData(
+    'ranks', () => rankService.findAll(),
+    {
+      default: () => [] as rank[],
+    },
+  )
 
-  const resetError = () => {
-    error.msgError = []
-    error.active = false
-  }
+  const requiredRule = [(v: string) => !!v || 'Este campo é obrigatório']
 
-  ranks.value = (await rankService.findAll())
+  const emailRules = [
+    (v: string) => !!v || 'O campo E-mail é obrigatório.',
+    (v: string) => /.+@.+\..+/.test(v) || 'O E-mail precisa ser válido.',
+  ]
 
-  const processRegister = () => {
-    console.log('teste')
+  const cpfRules = [
+    (v: string) => !!v || 'O campo CPF é obrigatório.',
+    (v: string) => cpf.isValid(v) || 'O CPF informado é inválido.',
+  ]
+
+  const passwordRules = [
+    (v: string) => !!v || 'O campo Senha é obrigatório.',
+    (v: string) => (v && v.length >= 6) || 'A senha deve ter no mínimo 6 caracteres.',
+  ]
+
+  const passwordConfirmRules = [
+    (v: string) => !!v || 'A confirmação da senha é obrigatória.',
+    (v: string) =>
+      v === newUserData.password || 'As senhas não coincidem. Tente novamente.',
+  ]
+
+  const processRegister = async () => {
+    const { valid } = (await form.value?.validate()) || { valid: false }
+    if (!valid) return
+
+    loading.value = true
+    try {
+      const result: apiResponse = await register(newUserData)
+
+      if (result.success) {
+        console.log('Usuário registrado com sucesso!')
+        await navigateTo('/')
+      } else {
+        apiResponse.value = result
+      }
+
+    } catch (err: H3Error) {
+      console.error('Erro inesperado:', err)
+    } finally {
+      loading.value = false
+    }
   }
 
 </script>
@@ -70,23 +117,17 @@
 
           <v-card-text>
 
-            <v-form @submit.prevent="processRegister">
+            <v-form ref="form" lazy-validation @submit.prevent="processRegister">
 
-              <!-- TODO Show api errors if exist - need refactor-->
               <v-alert
-                v-if="error.active"
+                v-if="apiResponse && !apiResponse.success"
                 class="mb-5"
                 closable
-                theme="dark"
+                density="compact"
                 type="error"
-                @click:close="resetError"
+                @click:close="apiResponse = null"
               >
-                Alguns Erros foram encontrados:
-                <ul>
-                  <li v-for="errorDescription in error.msgError" :key="errorDescription">
-                    {{ errorDescription }}
-                  </li>
-                </ul>
+                {{ apiResponse.message }}
               </v-alert>
 
               <!-- rank and serviceName-->
@@ -95,10 +136,11 @@
                 <!-- rank -->
                 <v-col>
                   <v-select
-                    v-model="newUserData.selectedRank"
+                    v-model="newUserData.rankId"
                     :items="ranks"
                     :label="$t('rankLabel')"
                     :placeholder="$t('rankPlaceholder')"
+                    :rules="requiredRule"
                     density="compact"
                     item-title="name"
                     item-value="id"
@@ -116,6 +158,7 @@
                     v-model="newUserData.serviceName"
                     :label="$t('serviceNameLabel')"
                     :placeholder="$t('serviceNamePlaceholder')"
+                    :rules="requiredRule"
                     density="compact"
                     prepend-icon="mdi-text-account"
                     required
@@ -133,6 +176,7 @@
                     v-model="newUserData.name"
                     :label="$t('fullNameLabel')"
                     :placeholder="$t('fullNamePlaceholder')"
+                    :rules="requiredRule"
                     density="compact"
                     prepend-icon="mdi-text-account"
                     required
@@ -150,10 +194,11 @@
                   <!--suppress VueUnrecognizedDirective -->
                   <v-text-field
                     id="cpf"
-                    v-model="newUserData.cpfValue"
+                    v-model="newUserData.cpf"
                     v-mask-cpf
                     :label="$t('cpfLabel')"
                     :placeholder="$t('cpfPlaceholder')"
+                    :rules="cpfRules"
                     density="compact"
                     prepend-icon="mdi-text-account"
                     required
@@ -169,6 +214,7 @@
                     v-model="newUserData.email"
                     :label="$t('emailLabel')"
                     :placeholder="$t('emailPlaceholder')"
+                    :rules="emailRules"
                     density="compact"
                     prepend-icon="mdi-at"
                     required
@@ -189,6 +235,7 @@
                     v-model="newUserData.password"
                     :label="$t('passwordLabel')"
                     :placeholder="$t('passwordPlaceholder')"
+                    :rules="passwordRules"
                     density="compact"
                     prepend-icon="mdi-form-textbox-password"
                     required
@@ -205,6 +252,7 @@
                     v-model="newUserData.passwordConfirm"
                     :label="$t('passwordConfirmLabel')"
                     :placeholder="$t('passwordConfirmPlaceholder')"
+                    :rules="passwordConfirmRules"
                     density="compact"
                     prepend-icon="mdi-form-textbox-password"
                     required
@@ -221,7 +269,7 @@
 
                 <!--switch register/login-->
                 <v-col>
-                  <v-btn size="small" variant="text" to="/" :text="$t('haveAccountSignIn')" />
+                  <v-btn :text="$t('haveAccountSignIn')" :to="localePath('/')" size="small" variant="text" />
                 </v-col>
 
                 <!--register button-->
@@ -233,6 +281,7 @@
                     block
                     color="primary"
                     elevation="12"
+                    prepend-icon="mdi-account-plus"
                     rounded="xl"
                     type="submit"
                     variant="elevated"
@@ -267,5 +316,9 @@
     border: 10px double #ffffff;
     outline: 3px solid #ffffff;
     padding: 10px;
+  }
+
+  :deep(.v-input--error .v-messages__message) {
+    color: #FFC107; /* O mesmo tom de amarelo */
   }
 </style>

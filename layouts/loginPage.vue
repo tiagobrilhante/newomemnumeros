@@ -6,9 +6,6 @@
   const appName = config.public.APP_NAME
 
   useHead({
-    htmlAttrs: {
-      lang: 'pt-br',
-    },
     title: appName || 'Default Title',
     link: [
       {
@@ -22,7 +19,6 @@
 <template>
   <v-app theme="dark">
     <BarWithoutLogin />
-
     <v-main class="login-background my-space">
       <v-container class="my-container" fluid>
         <slot />
@@ -33,7 +29,7 @@
 </template>
 
 <style scoped>
-  :deep(.my-container) {
+  .my-container {
     min-height: 92vh; /* Ocupa toda a altura da tela */
     max-height: 10vh; /* Ocupa toda a altura da tela */
     display: flex;

@@ -25,10 +25,9 @@ export default defineNuxtConfig({
         defaultTheme: 'dark',
       },
       locale: {
-        locale: 'pt',
-        fallback: 'pt',
+        locale: 'pt-BR',
+        fallback: 'en-US',
       },
-      localeMessages: ['pt'],
     },
   },
   runtimeConfig: {
@@ -49,11 +48,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
 
   i18n: {
-    defaultLocale: 'pt-br',
+    defaultLocale: 'pt-BR',
     locales: [
-      { code: 'pt-br', language: 'pt-BR', name: 'Português do Brasil', file: 'pt-BR.json' },
-      { code: 'en', language: 'en', name: 'English', file: 'en.json' }
+      { code: 'pt-BR', language: 'pt-BR', name: 'Português do Brasil', file: 'pt-BR.json' },
+      { code: 'en-US', language: 'en-US', name: 'English', file: 'en-US.json' }
     ],
+    vueI18n: './i18n/i18n.config.ts',
   },
 
   nitro: {

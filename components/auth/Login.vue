@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import type { VForm } from 'vuetify/components'
 
+
   const { login } = useAuth()
 
   const email = ref('')
@@ -18,6 +19,7 @@
     (v: string) => !!v || $t('passwordField') + ' ' + $t('isRequired'),
     (v: string) => (v && v.length >= 6) || $t('passwordField') + ' ' + $t('mustContain') + ' 6 ' + $t('characters'),
   ]
+  const localePath = useLocalePath()
 
   const processAuth = async () => {
     apiError.value = null
@@ -53,7 +55,7 @@
 </script>
 
 <template>
-  <v-container>
+  <v-container fluid>
 
     <!-- head card-->
     <v-row>
@@ -114,22 +116,16 @@
                   />
                 </v-col>
 
-              </v-row>
 
-              <!-- errors messages from API -->
-              <v-alert v-if="apiError" class="mb-4" density="compact" type="error">
-                {{ apiError }}
-              </v-alert>
-
-              <!-- Switch login / register and login button -->
-              <v-row dense>
-
-                <!--switch login/register-->
-                <v-col cols="8">
-                  <v-btn size="small" variant="text" to="/register" :text="$t('noAccountSignUp')" />
+                <!-- errors messages from API -->
+                <v-col v-if="apiError" cols="12">
+                  <v-alert class="mb-4" density="compact" type="error">
+                    {{ apiError }}
+                  </v-alert>
                 </v-col>
+
                 <!--login button-->
-                <v-col cols="4">
+                <v-col cols="6" offset="6">
                   <v-btn
                     :disabled="loading"
                     :loading="loading"
@@ -145,7 +141,14 @@
                   />
                 </v-col>
 
+                <v-col cols="12" class="text-center">
+                  <v-btn :text="$t('noAccountSignUp')" size="small" :to="localePath('/register')" variant="text" />
+                </v-col>
+
+
               </v-row>
+
+
             </v-form>
           </v-card-text>
         </v-card>

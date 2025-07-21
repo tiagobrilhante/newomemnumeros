@@ -28,5 +28,36 @@
   "cpfLabel": "CPF",
   "cpfPlaceholder": "CPF",
   "passwordConfirmLabel": "Confirm password",
-  "passwordConfirmPlaceholder": "Confirm your password"
+  "passwordConfirmPlaceholder": "Confirm your password",
+
+  "errors": {
+    "allFieldsRequired": "All fields are required",
+    "emailAlreadyExists": "This email is already registered",
+    "cpfInvalid": "The provided CPF is invalid",
+    "cpfAlreadyExists": "This CPF is already registered"
+  },
+  "success": {
+    "userRegistered": "User registered successfully!"
+  },
+
+  "$vuetify": {
+    "open": "Open",
+    "close": "Close",
+    "dataIterator": {
+      "rowsPerPageText": "Items per page:",
+      "pageText": "{0}-{1} of {2}"
+    },
+    "dataTable": {
+      "itemsPerPageText": "Rows per page:"
+    },
+    "dataFooter": {
+      "itemsPerPageText": "Items per page:",
+      "itemsPerPageAll": "All",
+      "nextPage": "Next page",
+      "prevPage": "Previous page",
+      "firstPage": "First page",
+      "lastPage": "Last page",
+      "pageText": "{0}-{1} of {2}"
+    }
+  }
 }

@@ -7,9 +7,6 @@
   const appName = config.public.APP_NAME
 
   useHead({
-    htmlAttrs: {
-      lang: 'pt-br',
-    },
     title: appName || 'Default Title',
     link: [
       {

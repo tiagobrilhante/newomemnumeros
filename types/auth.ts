@@ -16,8 +16,8 @@ export type  loginCredentials = {
 
 export type registerData = {
   name: string,
+  serviceName: string,
+  cpf: string,
   email: string,
   password: string,
-  confirmPassword: string,
-  cpf: string,
 }
