@@ -73,21 +73,27 @@
     const { valid } = (await form.value?.validate()) || { valid: false }
     if (!valid) return
 
-    loading.value = true
+    // Reset de erros anteriores
+    apiResponse.value = null
+    
     try {
       const result: apiResponse = await register(newUserData)
 
       if (result.success) {
+        // Toast de sucesso (opcional)
         console.log('Usuário registrado com sucesso!')
         await navigateTo('/')
       } else {
         apiResponse.value = result
       }
 
-    } catch (err: H3Error) {
+    } catch (err: any) {
       console.error('Erro inesperado:', err)
-    } finally {
-      loading.value = false
+      apiResponse.value = {
+        success: false,
+        message: 'Erro de comunicação com o servidor',
+        statusCode: 500
+      }
     }
   }
 

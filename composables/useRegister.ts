@@ -6,19 +6,23 @@ export const useRegister = () => {
   const error = ref<string | null>(null)
 
   const register = async (data: registerData) => {
-    const loading = ref(false)
-    const error = ref<string | null>(null)
+    loading.value = true
+    error.value = null
 
     try {
       const response = await registerService.register(data)
-      return { success: true, message: response }
+      return { 
+        success: true, 
+        message: response.message,
+        statusCode: response.statusCode 
+      }
     } catch (err: any) {
-      const errorMessage = err?.data?.message || err?.message || 'Erro inesperado no registro'
+      const errorMessage = err?.message || 'Erro inesperado no registro'
       error.value = errorMessage
       return {
         success: false,
         message: errorMessage,
-        statusCode: err?.statusCode || err?.data?.statusCode || 500,
+        statusCode: err?.statusCode || 500,
       }
     } finally {
       loading.value = false
