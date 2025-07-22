@@ -10,7 +10,7 @@
   "cpfField": "O campo CPF",
   "mustBeValid": "precisa ser válido",
   "thisField": "Este campo",
-  "isRequired": "é obrigatório",
+  "isRequired": "é obrigatório(a)",
   "mustContain": "deve conter",
   "errorInvalidEmailOrPassword": "E-mail ou senha inválidos. Tente novamente.",
   "errorUnexpected": "Ocorreu um erro inesperado. Por favor, tente mais tarde.",
@@ -31,7 +31,7 @@
   "cpfPlaceholder": "CPF",
   "passwordConfirmLabel": "Confirme a senha",
   "passwordConfirmPlaceholder": "Confirme sua senha",
-  "passwordConfirmationRequired": "A confirmação da senha é obrigatória.",
+  "passwordConfirmationRequired": "A confirmação da senha",
   "passwordDoesNotMatch": "As senhas não coincidem. Tente novamente.",
 
   "errors": {

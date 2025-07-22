@@ -31,7 +31,7 @@
   "cpfPlaceholder": "CPF",
   "passwordConfirmLabel": "Confirm password",
   "passwordConfirmPlaceholder": "Confirm your password",
-  "passwordConfirmationRequired": "Password confirmation is required.",
+  "passwordConfirmationRequired": "Password confirmation",
   "passwordDoesNotMatch": "Passwords do not match. Please try again.",
 
   "errors": {

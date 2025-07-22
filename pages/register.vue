@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { rankService } from '~/services/rank.service'
   import { cpf } from 'cpf-cnpj-validator'
-  import type { rank } from '~/types/user'
+  import type { rank } from '~/types/rank'
   import type { VForm } from 'vuetify/components'
   import type { RegisterResponse } from '~/services/register.service'
 
@@ -39,27 +39,30 @@
     },
   )
 
-  const requiredRule = [(v: string) => !!v || $t('thisField') + ' ' + $t('isRequired') ]
+  const createRequiredRule = (fieldKey: string) => {
+    return (v: string) => !!v || `${$t(fieldKey)} ${$t('isRequired')}`
+  }
+
+  const requiredRule = [ (v: string) => !!v || `${$t('thisField')} ${$t('isRequired')}` ]
 
   const emailRules = [
-    (v: string) => !!v || $t('emailField') + ' ' + $t('isRequired') ,
-    (v: string) => /.+@.+\..+/.test(v) || $t('emailField') + ' ' + $t('mustBeValid'),
+    createRequiredRule('emailField'),
+    (v: string) => /.+@.+\..+/.test(v) || `${$t('emailField')} ${$t('mustBeValid')}`,
   ]
 
   const cpfRules = [
-    (v: string) => !!v || $t('cpfField') + ' ' + $t('isRequired') ,
-    (v: string) => cpf.isValid(v) ||  $t('cpfField') + ' ' + $t('mustBeValid'),
+    createRequiredRule('cpfField'),
+    (v: string) => cpf.isValid(v) ||  `${$t('cpfField')} ${$t('mustBeValid')}`,
   ]
 
   const passwordRules = [
-    (v: string) => !!v || $t('passwordField') + ' ' + $t('isRequired'),
-    (v: string) => (v && v.length >= 6) || $t('passwordField') + ' ' + $t('mustContain') + ' 6 ' + $t('characters'),
+    createRequiredRule('passwordField'),
+    (v: string) => (v && v.length >= 6) || `${$t('passwordField')} ${$t('mustContain')} 6 ${$t('characters')}`,
   ]
 
   const passwordConfirmRules = [
-    (v: string) => !!v || $t('passwordConfirmationRequired'),
-    (v: string) =>
-      v === newUserData.password || $t('passwordDoesNotMatch'),
+    createRequiredRule('passwordConfirmationRequired'),
+    (v: string) => v === newUserData.password || $t('passwordDoesNotMatch'),
   ]
 
   const processRegister = async () => {
@@ -68,7 +71,16 @@
 
     apiResponse.value = null
 
-    const result = await register(newUserData)
+    const payload = {
+      name: newUserData.name,
+      serviceName: newUserData.serviceName,
+      rankId: newUserData.rankId,
+      cpf: newUserData.cpf,
+      email: newUserData.email,
+      password: newUserData.password,
+    }
+
+    const result = await register(payload)
 
     if (result.success) {
      /* console.log('Usuário registrado com sucesso!')*/
