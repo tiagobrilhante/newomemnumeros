@@ -1,15 +1,17 @@
 import prisma from '~/server/prisma'
+import { handleError } from '~/server/utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
+  const locale = getLocale(event)
+
   try {
     const body = await readBody(event)
 
-    // Validação básica
     if (!body.name || !body.acronym || body.hierarchy === undefined) {
       return createError({
         statusCode: 400,
-        message: 'Dados inválidos. Nome, sigla e hierarquia são obrigatórios.',
+        message: await serverTByLocale(locale, 'errors.allFieldsRequired'),
       })
     }
 
@@ -21,10 +23,6 @@ export default defineEventHandler(async (event) => {
       },
     })
   } catch (error) {
-    console.error('Erro ao criar rank:', error)
-    throw createError({
-      statusCode: 500,
-      message: 'Erro ao criar rank',
-    })
+    throw await handleError(error, locale)
   }
 })

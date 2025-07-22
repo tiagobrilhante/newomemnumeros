@@ -47,10 +47,18 @@
     "recordNotFound": "Registro não encontrado",
     "foreignKeyConstraint": "Referência inválida",
     "databaseError": "Erro no banco de dados",
-    "unknownError": "Erro desconhecido"
+    "unknownError": "Erro desconhecido",
+    "invalidId": "ID inválido",
+    "rankNotFound": "Posto/Grad não encontrado",
+    "invalidHierarchy": "Hierarquia inválida"
   },
   "success": {
-    "userRegistered": "Usuário registrado com sucesso!"
+    "userRegistered": "Usuário registrado com sucesso!",
+    "rankRetrieved": "Posto/Grad encontrado",
+    "rankCreated": "Posto/Grad criado com sucesso!",
+    "rankUpdated": "Posto/Grad alterado com sucesso!",
+    "rankDeleted": "Posto/Grad excluído com sucesso!",
+    "ranksByHierarchyRetrieved": "Postos/Grads encontrados por hierarquia"
   },
 
   "$vuetify": {

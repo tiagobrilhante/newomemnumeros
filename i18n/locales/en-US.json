@@ -47,10 +47,18 @@
     "recordNotFound": "Record not found",
     "foreignKeyConstraint": "Invalid reference",
     "databaseError": "Database error",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "invalidId": "Invalid ID",
+    "rankNotFound": "Rank not found",
+    "invalidHierarchy": "Invalid hierarchy"
   },
   "success": {
-    "userRegistered": "User registered successfully!"
+    "userRegistered": "User registered successfully!",
+    "rankRetrieved": "Rank found",
+    "rankCreated": "Rank created successfully!",
+    "rankUpdated": "Rank updated successfully!",
+    "rankDeleted": "Rank deleted successfully!",
+    "ranksByHierarchyRetrieved": "Ranks found by hierarchy"
   },
 
   "$vuetify": {

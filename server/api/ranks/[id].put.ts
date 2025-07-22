@@ -1,30 +1,15 @@
-import prisma from '~/server/prisma'
+import { updateRank } from '~/server/services/rank.service'
+import { handleError } from '~/server/utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
+  const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
-
-  if (!id || isNaN(Number(id))) {
-    throw createError({
-      statusCode: 400,
-      message: 'ID inválido',
-    })
-  }
 
   try {
     const body = await readBody(event)
-
-    return await prisma.rank.update({
-      where: {
-        id: Number(id),
-      },
-      data: body,
-    })
+    return await updateRank(id as string, body, locale)
   } catch (error) {
-    console.error(`Erro ao atualizar rank ${id}:`, error)
-    throw createError({
-      statusCode: 500,
-      message: 'Erro ao atualizar rank',
-    })
+    throw await handleError(error, locale)
   }
 })

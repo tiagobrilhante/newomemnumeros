@@ -1,30 +1,14 @@
+import { deleteRank } from '~/server/services/rank.service'
+import { handleError } from '~/server/utils/errorHandler'
+
 // noinspection JSUnusedGlobalSymbols
-
-import prisma from '~/server/prisma'
-
 export default defineEventHandler(async (event) => {
+  const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 
-  if (!id || isNaN(Number(id))) {
-    throw createError({
-      statusCode: 400,
-      message: 'ID inválido',
-    })
-  }
-
   try {
-    await prisma.rank.delete({
-      where: {
-        id: Number(id),
-      },
-    })
-
-    return { message: 'Rank deletado com sucesso' }
+    return await deleteRank(id as string, locale)
   } catch (error) {
-    console.error(`Erro ao deletar rank ${id}:`, error)
-    throw createError({
-      statusCode: 500,
-      message: 'Erro ao deletar rank',
-    })
+    throw await handleError(error, locale)
   }
 })

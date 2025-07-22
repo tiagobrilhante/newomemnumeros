@@ -1,31 +1,14 @@
+import { getRanksByHierarchy } from '~/server/services/rank.service'
+import { handleError } from '~/server/utils/errorHandler'
+
 // noinspection JSUnusedGlobalSymbols
-
-import prisma from '~/server/prisma'
-
 export default defineEventHandler(async (event) => {
-  const hierarchy = getRouterParam(event, 'hierarchy')
-
-  if (!hierarchy || isNaN(Number(hierarchy))) {
-    throw createError({
-      statusCode: 400,
-      message: 'Hierarquia inválida',
-    })
-  }
+  const locale = getLocale(event)
+  const hierarchyParam = getRouterParam(event, 'hierarchy')
 
   try {
-    return await prisma.rank.findMany({
-      where: {
-        hierarchy: Number(hierarchy),
-      },
-      orderBy: {
-        hierarchy: 'asc',
-      },
-    })
+    return await getRanksByHierarchy(Number(hierarchyParam), locale)
   } catch (error) {
-    console.error(`Erro ao buscar ranks por hierarquia ${hierarchy}:`, error)
-    throw createError({
-      statusCode: 500,
-      message: 'Erro ao buscar ranks por hierarquia',
-    })
+    throw await handleError(error, locale)
   }
 })

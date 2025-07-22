@@ -1,36 +1,34 @@
 import prisma from '~/server/prisma'
+import { handleError } from '~/server/utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
+  const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 
-  if (!id || isNaN(Number(id))) {
-    return createError({
+  if (!id) {
+    throw createError({
       statusCode: 400,
-      message: 'ID inválido',
+      message: await serverTByLocale(locale, 'errors.invalidId'),
     })
   }
 
   try {
     const rank = await prisma.rank.findUnique({
       where: {
-        id: Number(id),
+        id,
       },
     })
 
     if (!rank) {
       return createError({
         statusCode: 404,
-        message: 'Rank não encontrado',
+        message: await serverTByLocale(locale, 'errors.rankNotFound'),
       })
     }
 
     return rank
   } catch (error) {
-    console.error(`Erro ao buscar rank ${id}:`, error)
-    return createError({
-      statusCode: 500,
-      message: 'Erro ao buscar rank',
-    })
+    throw await handleError(error, locale)
   }
 })
