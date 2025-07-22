@@ -4,7 +4,7 @@
   import { useAdminUserStore } from '~/stores/user.store'
   import { usePermissionSetupStore } from '~/stores/admin/permissionSetupStore'
   import { useMilitaryOrganizationStore } from '~/stores/military-organization.store'
-  import type { userWithoutPassword } from '~/types/core/user'
+  import type { userWithoutPassword } from '~/types/user'
   import type { permissionSetup } from '~/types/permissions/permission-setup'
   import { toast } from 'vue3-toastify'
   import ShowUserPermissionSetup from '~/components/permissions/ShowUserPermissionSetup.vue'

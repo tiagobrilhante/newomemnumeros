@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { user, userWithoutPassword } from '~/types/core/user'
+import type { user, userWithoutPassword } from '~/types/user'
 
 // noinspection JSUnusedGlobalSymbols
 export const useAuthUserStore = defineStore( 'auth',

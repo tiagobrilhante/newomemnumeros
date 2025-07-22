@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { rankService } from '~/services/rank.service'
   import { cpf } from 'cpf-cnpj-validator'
-  import type { rank } from '~/types/core/user'
+  import type { rank } from '~/types/user'
   import type { VForm } from 'vuetify/components'
   import type { RegisterResponse } from '~/services/register.service'
 
@@ -43,16 +43,16 @@
 
   const emailRules = [
     (v: string) => !!v || $t('emailField') + ' ' + $t('isRequired') ,
-    (v: string) => /.+@.+\..+/.test(v) || $t('emailField') + ' ' + $t('mustBeValid') ,
+    (v: string) => /.+@.+\..+/.test(v) || $t('emailField') + ' ' + $t('mustBeValid'),
   ]
 
   const cpfRules = [
     (v: string) => !!v || $t('cpfField') + ' ' + $t('isRequired') ,
-    (v: string) => cpf.isValid(v) ||  $t('cpfField') + ' ' + $t('mustBeValid') ,
+    (v: string) => cpf.isValid(v) ||  $t('cpfField') + ' ' + $t('mustBeValid'),
   ]
 
   const passwordRules = [
-    (v: string) => !!v || $t('passwordField') + ' ' + $t('isRequired') ,,
+    (v: string) => !!v || $t('passwordField') + ' ' + $t('isRequired'),
     (v: string) => (v && v.length >= 6) || $t('passwordField') + ' ' + $t('mustContain') + ' 6 ' + $t('characters'),
   ]
 
@@ -305,7 +305,8 @@
     padding: 10px;
   }
 
+  /* noinspection CssUnusedSymbol */
   :deep(.v-input--error .v-messages__message) {
-    color: #FFC107; /* O mesmo tom de amarelo */
+    color: #FFC107;
   }
 </style>

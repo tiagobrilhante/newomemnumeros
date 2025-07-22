@@ -1,4 +1,4 @@
-import type { userWithoutPassword } from '~/types/core/user'
+import type { userWithoutPassword } from '~/types/user'
 
 class UserService {
   private baseURL = '/api/users'

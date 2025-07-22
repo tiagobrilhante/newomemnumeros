@@ -1,5 +1,5 @@
 import prisma from '~/server/prisma'
-import type { userWithoutPassword } from '~/types/core/user'
+import type { userWithoutPassword } from '~/types/user'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (_event): Promise<userWithoutPassword[]> => {

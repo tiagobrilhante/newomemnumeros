@@ -1,5 +1,5 @@
 import type { loginCredentials } from '~/types/auth'
-import type { user } from '~/types/core/user'
+import type { user } from '~/types/user'
 import { sanitizeData } from '~/utils/sanitize-data'
 
 
