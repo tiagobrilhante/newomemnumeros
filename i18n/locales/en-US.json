@@ -42,7 +42,12 @@
     "internalRegistrationError": "Internal registration server error",
     "serverCommunication": "Server communication error",
     "internalServerError": "Internal server error. Please try again later.",
-    "invalidDataProvided": "Invalid data provided"
+    "invalidDataProvided": "Invalid data provided",
+    "duplicateEntry": "Data already exists",
+    "recordNotFound": "Record not found",
+    "foreignKeyConstraint": "Invalid reference",
+    "databaseError": "Database error",
+    "unknownError": "Unknown error"
   },
   "success": {
     "userRegistered": "User registered successfully!"

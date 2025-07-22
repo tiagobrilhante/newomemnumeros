@@ -33,19 +33,8 @@ class RegisterService {
 
   private handleError(error: any): RegisterResponse {
     const statusCode = error?.statusCode || error?.status || 500
-    let message = $t('errors.internalRegistrationError')
 
-    if (error?.data?.message) {
-      message = error.data.message
-    } else if (error?.message) {
-      message = error.message
-    } else {
-      if (statusCode >= 500) {
-        message = $t('errors.internalServerError')
-      } else if (statusCode === 400) {
-        message = $t('errors.invalidDataProvided')
-      }
-    }
+    const message = error?.data?.message || error?.message || $t('errors.serverCommunicationError')
 
     return {
       success: false,

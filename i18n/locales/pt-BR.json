@@ -42,7 +42,12 @@
     "internalRegistrationError": "Erro interno no servidor de registro",
     "serverCommunication": "Erro de comunicação com o servidor",
     "internalServerError": "Erro interno do servidor. Tente novamente mais tarde.",
-    "invalidDataProvided": "Dados inválidos fornecidos"
+    "invalidDataProvided": "Dados inválidos fornecidos",
+    "duplicateEntry": "Dados já existem",
+    "recordNotFound": "Registro não encontrado",
+    "foreignKeyConstraint": "Referência inválida",
+    "databaseError": "Erro no banco de dados",
+    "unknownError": "Erro desconhecido"
   },
   "success": {
     "userRegistered": "Usuário registrado com sucesso!"
