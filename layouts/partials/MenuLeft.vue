@@ -22,7 +22,6 @@
   }
 
 
-
   const menuItems: MenuItem[] = [
     {
       title: 'Home',
@@ -118,47 +117,42 @@
 </script>
 
 <template>
-  <v-container fluid>
-    <v-row class="pl-3" no-gutters>
-      <v-col align-self="center" class="text-center">
-        <v-list class="text-left" density="compact" nav rounded="xl" slim>
-          <v-list-subheader>Menu</v-list-subheader>
 
-          <!-- Itens sem grupo -->
-          <template v-for="item in nonGroupedItems" :key="item.title">
-            <v-tooltip location="right">
-              <template #activator="{ props }">
-                <v-list-item
-                  v-if="hasPermission(item)"
-                  :prepend-icon="item.icon"
-                  :title="item.title"
-                  class="pl-3"
-                  density="compact"
-                  v-bind="props"
-                  @click="handleNavigation(item.path, item.title)"
-                >
-                  <template #prepend>
-                    <v-icon v-if="loadingItem !== item.title" :color="item.color">
-                      {{ item.icon }}
-                    </v-icon>
-                    <v-progress-circular
-                      v-else
-                      class="mr-2"
-                      color="primary"
-                      indeterminate
-                      size="small"
-                    />
-                  </template>
-                </v-list-item>
-              </template>
-              <span>{{ item.title }}</span>
-              <!-- ou qualquer outra descrição -->
-            </v-tooltip>
-          </template>
-        </v-list>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-list class="text-left ml-3" density="compact" nav slim>
+
+    <v-list-item title="Menu"/>
+
+    <template v-for="item in nonGroupedItems" :key="item.title">
+      <v-tooltip location="right">
+        <template #activator="{ props }">
+          <v-list-item
+            v-if="hasPermission(item)"
+            :prepend-icon="item.icon"
+            :title="item.title"
+            class="pl-3"
+            density="compact"
+            v-bind="props"
+            @click="handleNavigation(item.path, item.title)"
+          >
+            <template #prepend>
+              <v-icon v-if="loadingItem !== item.title" :color="item.color">
+                {{ item.icon }}
+              </v-icon>
+              <v-progress-circular
+                v-else
+                class="mr-2"
+                color="primary"
+                indeterminate
+                size="small"
+              />
+            </template>
+          </v-list-item>
+        </template>
+        <span>{{ item.title }}</span>
+      </v-tooltip>
+    </template>
+  </v-list>
+
 </template>
 
 <style scoped>
