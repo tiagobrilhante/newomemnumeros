@@ -23,29 +23,20 @@
   <v-app theme="dark">
     <NavBar />
 
-    <v-main class="my-space">
-      <v-container class="pa-0 fill-height flex-fill" fluid>
-        <v-row class="fill-height">
-          <transition mode="out-in" name="fade">
-            <v-col class="text-center bg-grey-darken-4 pa-0" cols="2">
-              <MenuLeft />
-            </v-col>
-          </transition>
-          <transition mode="out-in" name="fade">
-            <v-col cols="10">
-              <slot />
-            </v-col>
-          </transition>
-        </v-row>
-      </v-container>
-
+    <MenuLeft />
+    
+    <v-main class="main-content">
+      <slot />
     </v-main>
     <Footer />
   </v-app>
 </template>
 
 <style scoped>
-  .my-space {
+  .main-content {
     padding-top: 64px;
+    padding-bottom: 48px;
+    min-height: calc(100vh - 112px);
+    transition: margin-left 0.2s ease-in-out;
   }
 </style>

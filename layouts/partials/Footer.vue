@@ -13,8 +13,10 @@
 </template>
 <style scoped>
   .footer-layout {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 1010 !important;
   }
 </style>

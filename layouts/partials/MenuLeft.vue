@@ -1,26 +1,28 @@
 <script lang="ts" setup>
   import { computed, ref } from 'vue'
   import { useAuthUserStore } from '~/stores/auth.store'
+  import { useDisplay } from 'vuetify'
 
   const authStore = useAuthUserStore()
   const loadingItem = ref<string | null>(null)
+  const { mobile } = useDisplay()
+  
+  // Estado para controlar se o menu está colapsado
+  const isCollapsed = ref(false)
+  
+  // Função para alternar entre colapsado/expandido
+  const toggleCollapse = () => {
+    isCollapsed.value = !isCollapsed.value
+  }
 
   interface MenuItem {
     title: string
     path: string
     icon: string
-    group?: string
     color: string
     accessLevel?: string[]
-    adminOnly?: boolean
+    requiresAuth?: boolean
   }
-
-  interface groupModuleName {
-    base: string
-    name: string
-    iconBase: string
-  }
-
 
   const menuItems: MenuItem[] = [
     {
@@ -28,64 +30,48 @@
       path: '/home',
       icon: 'mdi-home',
       color: 'secondary',
+      requiresAuth: true,
     },
     {
       title: 'Organizações Militares',
       path: '/admin/military-organizations',
       icon: 'mdi-domain',
       color: 'blue',
-      adminOnly: false,
-      accessLevel: [],
+      accessLevel: ['militaryOrganizations.read'],
     },
     {
       title: 'Seções',
       path: '/admin/sections',
       icon: 'mdi-lan',
       color: 'blue',
-      adminOnly: true,
-      accessLevel: ['super_admin', 'super_admin_mo'],
+      accessLevel: ['sections.read', 'sections.create', 'sections.update', 'sections.delete'],
     },
     {
       title: 'Usuários Cadastrados',
       path: '/admin/users',
-      group: 'users',
       icon: 'mdi-account-group',
       color: 'blue',
-      accessLevel: [
-        'super_admin',
-        'super_admin_mo',
-        'link_user',
-        'unlink_user',
-        'delete_user',
-        'view_users',
-      ],
+      accessLevel: ['users.create', 'users.read', 'users.update', 'users.delete'],
     },
     {
       title: 'Vínculos de Usuários',
       path: '/admin/vinculo-sections-users',
       icon: 'mdi-arrow-collapse',
-      group: 'users',
       color: 'blue',
-      accessLevel: [
-        'super_admin',
-        'super_admin_mo',
-        'create_user_link',
-        'transfer_user_link',
-        'delete_user_link',
-      ],
+      accessLevel: ['users.create', 'users.read', 'users.update', 'users.delete'],
     },
     {
       title: 'Permissões',
       path: '/admin/permissions',
       icon: 'mdi-shield-account',
       color: 'blue',
-      adminOnly: true,
-      accessLevel: ['super_admin', 'super_admin_mo'],
+      accessLevel: ['roles.read', 'roles.create', 'roles.update', 'roles.delete'],
     },
   ]
 
-  const nonGroupedItems = computed(() => menuItems.filter((item) => !item.group))
-
+  const filteredMenuItems = computed(() => {
+    return menuItems.filter(item => hasPermission(item))
+  })
 
   const handleNavigation = async (path: string, title: string) => {
     loadingItem.value = title
@@ -93,79 +79,95 @@
     loadingItem.value = null
   }
 
-  const hasPermission = (menuItem: MenuItem) => {
+  const hasPermission = (menuItem: MenuItem): boolean => {
     if (!menuItem) return false
 
     const user = authStore.user
-
-    const userPermissionKeys = (user?.permissionSetupUser || [])
-      .flatMap((psu) => psu.permissionSetup?.permissions || [])
-      .map((p) => p.permission)
-
-    if (userPermissionKeys.includes('super_admin')) {
+    if (!user) return false
+    if (menuItem.requiresAuth && !menuItem.accessLevel) {
       return true
     }
-
-    if (!Array.isArray(menuItem.accessLevel) || menuItem.accessLevel.length === 0) {
+    if (!menuItem.accessLevel || menuItem.accessLevel.length === 0) {
       return true
     }
+    const userPermissions = user.role?.permissions || []
 
-    return menuItem.accessLevel.every((perm) => userPermissionKeys.includes(perm))
+    if (userPermissions.includes('system.admin')) {
+      return true
+    }
+    return menuItem.accessLevel.some(permission =>
+      userPermissions.includes(permission)
+    )
   }
-
 
 </script>
 
 <template>
+  <v-navigation-drawer
+    :permanent="!mobile"
+    :temporary="mobile"
+    :rail="isCollapsed && !mobile"
+    :rail-width="72"
+    class="menu-left"
+    width="280"
+    elevation="2"
+  >
+    <!-- Header do menu -->
+    <v-list-item
+      class="pa-4 cursor-pointer"
+      :prepend-icon="isCollapsed ? 'mdi-menu' : 'mdi-menu-open'"
+      :title="isCollapsed ? '' : 'Menu Principal'"
+      @click="toggleCollapse"
+    />
 
-  <v-list class="text-left ml-3" density="compact" nav slim>
+    <v-divider />
 
-    <v-list-item title="Menu"/>
-
-    <template v-for="item in nonGroupedItems" :key="item.title">
-      <v-tooltip location="right">
-        <template #activator="{ props }">
-          <v-list-item
-            v-if="hasPermission(item)"
-            :prepend-icon="item.icon"
-            :title="item.title"
-            class="pl-3"
-            density="compact"
-            v-bind="props"
-            @click="handleNavigation(item.path, item.title)"
-          >
-            <template #prepend>
-              <v-icon v-if="loadingItem !== item.title" :color="item.color">
-                {{ item.icon }}
-              </v-icon>
-              <v-progress-circular
-                v-else
-                class="mr-2"
-                color="primary"
-                indeterminate
-                size="small"
-              />
-            </template>
-          </v-list-item>
-        </template>
-        <span>{{ item.title }}</span>
-      </v-tooltip>
-    </template>
-  </v-list>
-
+    <!-- Lista de itens do menu -->
+    <v-list density="compact" nav>
+      <template v-for="item in filteredMenuItems" :key="item.title">
+        <v-tooltip :text="item.title" location="end" :disabled="!isCollapsed">
+          <template #activator="{ props }">
+            <v-list-item
+              :prepend-icon="item.icon"
+              :title="isCollapsed ? '' : item.title"
+              class="mx-2 mb-1"
+              density="compact"
+              rounded="xl"
+              v-bind="props"
+              @click="handleNavigation(item.path, item.title)"
+            >
+              <template #prepend>
+                <v-icon v-if="loadingItem !== item.title" :color="item.color">
+                  {{ item.icon }}
+                </v-icon>
+                <v-progress-circular
+                  v-else
+                  class="mr-2"
+                  color="primary"
+                  indeterminate
+                  size="20"
+                />
+              </template>
+            </v-list-item>
+          </template>
+        </v-tooltip>
+      </template>
+    </v-list>
+  </v-navigation-drawer>
 </template>
 
 <style scoped>
-  :deep(.v-list-item__spacer) {
-    padding: 0 !important;
-    width: 0 !important; /* Caso ainda haja espaço */
-  }
+.menu-left {
+  border-right: thin solid rgba(255, 255, 255, 0.12);
+  z-index: 1005 !important;
+}
 
-  :deep(.v-list-item__prepend) {
-    margin-right: 8px !important; /* Ajuste conforme necessário */
-  }
+.cursor-pointer {
+  cursor: pointer;
+}
 
-  :deep(.v-list-item__content) {
-    padding-left: 0 !important;
-  }
+.cursor-pointer:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
 </style>
+
