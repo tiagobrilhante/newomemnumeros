@@ -28,7 +28,8 @@ class RankService {
 
 
   async findAll(): Promise<Rank[]> {
-    return await $fetch<Rank[]>(this.baseURL)
+    const response = await $fetch<{success: boolean, data: Rank[], message: string, statusCode: number}>(this.baseURL)
+    return response.data
   }
 
   async findById(id: number): Promise<Rank | null> {
