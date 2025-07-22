@@ -5,7 +5,7 @@
   import { useAuthUserStore } from '~/stores/auth.store'
 
   definePageMeta({
-    auth: true // Simplesmente indica que a rota é protegida
+    auth: true
   })
 
   const authUserStore = useAuthUserStore();

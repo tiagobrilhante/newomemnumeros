@@ -1,10 +1,4 @@
-// Types baseados na estrutura que vem da API (dados transformados)
-
-export type rank = {
-  name: string
-  acronym: string
-  hierarchy: number
-}
+import type { rank } from '~/types/rank'
 
 export type militaryOrganization = {
   id: string
@@ -52,6 +46,3 @@ export type userState = {
   loading: boolean
   error: string | null
 }
-
-// Para compatibilidade com operações que precisam dos types do Prisma
-export type { User as PrismaUser, Rank as PrismaRank } from '@prisma/client'

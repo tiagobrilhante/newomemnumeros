@@ -1,78 +1,55 @@
-// Base interfaces
-interface BaseEntity {
-  id: number
-  createdAt: Date
-  updatedAt: Date
-}
-
-interface BaseDTO {
-  id: number
-}
-
-interface RankAttributes {
-  name: string
-  acronym: string
-  hierarchy: number
-}
-
-interface Rank extends BaseEntity, RankAttributes {
-}
-
-type CreateRankDTO = RankAttributes
-
-interface UpdateRankDTO extends Partial<RankAttributes>, BaseDTO {
-}
+import type { rank } from '~/types/rank'
 
 class RankService {
   private baseURL = '/api/ranks'
 
 
-  async findAll(): Promise<Rank[]> {
-    const response = await $fetch<{success: boolean, data: Rank[], message: string, statusCode: number}>(this.baseURL)
+  async findAll(): Promise<rank[]> {
+    const response = await $fetch<{ success: boolean, data: rank[], message: string, statusCode: number }>(this.baseURL)
     return response.data
   }
 
-  async findById(id: number): Promise<Rank | null> {
-    return await $fetch<Rank>(`${this.baseURL}/${id}`)
+  async findById(id: string): Promise<rank | null> {
+    return await $fetch<rank>(`${this.baseURL}/${id}`)
   }
 
-  async findByHierarchy(hierarchy: number): Promise<Rank[]> {
-    return await $fetch<Rank[]>(`${this.baseURL}/hierarchy/${hierarchy}`)
+  async findByHierarchy(hierarchy: number): Promise<rank[]> {
+    return await $fetch<rank[]>(`${this.baseURL}/hierarchy/${hierarchy}`)
   }
 
-  async create(data: CreateRankDTO): Promise<Rank> {
-    return await $fetch<Rank>(this.baseURL, {
+  async create(data: rank): Promise<rank> {
+    return await $fetch<rank>(this.baseURL, {
       method: 'POST',
       body: data,
     })
   }
 
-  async update(data: UpdateRankDTO): Promise<Rank> {
-    return await $fetch<Rank>(`${this.baseURL}/${data.id}`, {
+  async update(data: rank): Promise<rank> {
+    return await $fetch<rank>(`${this.baseURL}/${data.id}`, {
       method: 'PUT',
       body: data,
     })
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await $fetch(`${this.baseURL}/${id}`, {
       method: 'DELETE',
     })
   }
 
-  async findAllOrdered(): Promise<Rank[]> {
+  async findAllOrdered(): Promise<rank[]> {
     const ranks = await this.findAll()
     return ranks.sort((a, b) => a.hierarchy - b.hierarchy)
   }
 
-  async findSuperior(hierarchy: number): Promise<Rank[]> {
+  async findSuperior(hierarchy: number): Promise<rank[]> {
     const ranks = await this.findAll()
     return ranks
       .filter((rank) => rank.hierarchy < hierarchy)
       .sort((a, b) => a.hierarchy - b.hierarchy)
   }
 
-  async findSubordinate(hierarchy: number): Promise<Rank[]> {
+  async findSubordinate(hierarchy: number): Promise<rank[]> {
     const ranks = await this.findAll()
     return ranks
       .filter((rank) => rank.hierarchy > hierarchy)

@@ -1,5 +1,6 @@
 import type { AuthRouteMeta } from '~/types/auth'
 
+// noinspection JSUnusedGlobalSymbols
 export default defineNuxtRouteMiddleware((to) => {
   const routeAuthMeta = to.meta.auth;
 
@@ -7,7 +8,6 @@ export default defineNuxtRouteMiddleware((to) => {
     return;
   }
 
-  // Usa a store diretamente, que é persistida automaticamente pelo Pinia
   const authStore = useAuthUserStore();
   const isAuthenticated = authStore.isAuthenticated;
 

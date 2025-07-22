@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function seed() {
-  // Criar a Organização Militar e capturar os IDs
+
   const cma = await prisma.militaryOrganization.create({
     data: {
       name: 'Comando Militar da Amazônia',
@@ -14,7 +14,7 @@ async function seed() {
     },
   })
 
-  const cml = await prisma.militaryOrganization.create({
+  await prisma.militaryOrganization.create({
     data: {
       name: 'Comando Militar do Leste',
       acronym: 'CML',
@@ -31,7 +31,7 @@ async function seed() {
     },
   })
 
-  const bdaInfSl2 = await prisma.militaryOrganization.create({
+  await prisma.militaryOrganization.create({
     data: {
       name: '2ª Brigada de Infantaria de Selva',
       acronym: '2ª Bda Inf Sl',
@@ -42,7 +42,6 @@ async function seed() {
 
   console.log('Organizações Militares criadas')
 
-  // Criar seções usando os UUIDs corretos
   const e1Cma = await prisma.section.create({
     data: {
       name: 'Seção de Pessoal',
@@ -150,7 +149,6 @@ async function seed() {
     ],
   })
 
-  // Criar roles globais (sem sectionId)
   const adminRole = await prisma.role.create({
     data: {
       name: 'Administrador do Sistema',
@@ -169,10 +167,8 @@ async function seed() {
 
   console.log('Roles criados')
 
-  // Criar permissões
   await prisma.permission.createMany({
     data: [
-      // Permissões de usuários
       {
         slug: 'users.create',
         description: 'Criar usuários',
@@ -235,7 +231,6 @@ async function seed() {
         description: 'Deletar roles',
         category: 'roles',
       },
-      // Permissões de relatórios
       {
         slug: 'reports.generate',
         description: 'Gerar relatórios',
@@ -246,7 +241,6 @@ async function seed() {
         description: 'Exportar relatórios',
         category: 'reports',
       },
-      // Permissões administrativas
       {
         slug: 'system.admin',
         description: 'Administrador do sistema',
@@ -262,10 +256,8 @@ async function seed() {
 
   console.log('Permissões criadas')
 
-  // Buscar permissões criadas
   const allPermissions = await prisma.permission.findMany()
 
-  // Atribuir todas as permissões ao role Admin
   await prisma.rolePermission.createMany({
     data: allPermissions.map(permission => ({
       permissionId: permission.id,
@@ -273,7 +265,6 @@ async function seed() {
     }))
   })
 
-  // Atribuir permissões básicas ao role User
   const basicPermissions = allPermissions.filter(p =>
     p.slug.includes('.read') || p.slug === 'reports.generate'
   )
@@ -285,7 +276,6 @@ async function seed() {
     }))
   })
 
-  // Atribuir permissões específicas ao Chefe STI
   const stiPermissions = allPermissions.filter(p =>
     p.category === 'users' || p.category === 'system' || p.slug.includes('.read')
   )
@@ -299,16 +289,13 @@ async function seed() {
 
   console.log('Permissões atribuídas aos roles')
 
-  // Buscar todos os roles criados
   const allRoles = await prisma.role.findMany()
 
-  // Função para obter um role aleatório
   const getRandomRole = () => {
     const randomIndex = Math.floor(Math.random() * allRoles.length)
     return allRoles[randomIndex].id
   }
 
-  // Criar ranks
   await prisma.rank.createMany({
     data: [
       {
@@ -401,14 +388,12 @@ async function seed() {
 
   console.log('Postos e graduações criados com sucesso')
 
-  // Buscar os ranks criados para usar os UUIDs
   const ranks = await prisma.rank.findMany({
     orderBy: { hierarchy: 'asc' },
   })
 
   const hashedPassword = await bcrypt.hash('123456', 10)
 
-  // Criar usuários usando os UUIDs corretos
   await prisma.user.createMany({
     data: [
       {
@@ -417,7 +402,7 @@ async function seed() {
         email: 'teste@teste.com',
         cpf: '31484707028',
         password: hashedPassword,
-        rankId: ranks[4].id, // Ten Cel
+        rankId: ranks[4].id,
         roleId: stiChCma.id,
       },
       {
@@ -426,7 +411,7 @@ async function seed() {
         email: 'admin@admin.com',
         cpf: '12345678901',
         password: hashedPassword,
-        rankId: ranks[0].id, // Gen Ex
+        rankId: ranks[0].id,
         roleId: adminRole.id,
       },
       {
@@ -435,7 +420,7 @@ async function seed() {
         email: 'juca@bala.com',
         password: hashedPassword,
         cpf: '18606623075',
-        rankId: ranks[5].id, // Maj
+        rankId: ranks[5].id,
         roleId: getRandomRole(),
       },
       {
@@ -444,7 +429,7 @@ async function seed() {
         email: 'carlos.santos@email.com',
         password: hashedPassword,
         cpf: '73105846005',
-        rankId: ranks[2].id, // Gen Bda
+        rankId: ranks[2].id,
         roleId: getRandomRole(),
       },
       {
@@ -453,7 +438,7 @@ async function seed() {
         email: 'fernanda.lima@email.com',
         password: hashedPassword,
         cpf: '63548472005',
-        rankId: ranks[3].id, // Cel
+        rankId: ranks[3].id,
         roleId: getRandomRole(),
       },
       {
@@ -462,7 +447,7 @@ async function seed() {
         email: 'roberto.pereira@email.com',
         password: hashedPassword,
         cpf: '04215639070',
-        rankId: ranks[1].id, // Gen Div
+        rankId: ranks[1].id,
         roleId: getRandomRole(),
       },
       {
@@ -471,7 +456,7 @@ async function seed() {
         email: 'ana.costa@email.com',
         password: hashedPassword,
         cpf: '35817496023',
-        rankId: ranks[4].id, // Ten Cel
+        rankId: ranks[4].id,
         roleId: getRandomRole(),
       },
       {
@@ -480,7 +465,7 @@ async function seed() {
         email: 'paulo.souza@email.com',
         password: hashedPassword,
         cpf: '94725863091',
-        rankId: ranks[0].id, // Gen Ex
+        rankId: ranks[0].id,
         roleId: getRandomRole(),
       },
       {
@@ -489,7 +474,7 @@ async function seed() {
         email: 'mariana.torres@email.com',
         password: hashedPassword,
         cpf: '15634987044',
-        rankId: ranks[2].id, // Gen Bda
+        rankId: ranks[2].id,
         roleId: getRandomRole(),
       },
       {
@@ -498,7 +483,7 @@ async function seed() {
         email: 'ricardo.mendes@email.com',
         password: hashedPassword,
         cpf: '58496713088',
-        rankId: ranks[3].id, // Cel
+        rankId: ranks[3].id,
         roleId: getRandomRole(),
       },
       {
@@ -507,7 +492,7 @@ async function seed() {
         email: 'juliana.castro@email.com',
         password: hashedPassword,
         cpf: '26974581037',
-        rankId: ranks[4].id, // Ten Cel
+        rankId: ranks[4].id,
         roleId: getRandomRole(),
       },
       {
@@ -516,7 +501,7 @@ async function seed() {
         email: 'andre.carvalho@email.com',
         password: hashedPassword,
         cpf: '82746351090',
-        rankId: ranks[1].id, // Gen Div
+        rankId: ranks[1].id,
         roleId: getRandomRole(),
       },
       {
@@ -525,7 +510,7 @@ async function seed() {
         email: 'luciana.martins@email.com',
         password: hashedPassword,
         cpf: '49318276056',
-        rankId: ranks[0].id, // Gen Ex
+        rankId: ranks[0].id,
         roleId: userRole.id,
       },
     ],

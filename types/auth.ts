@@ -9,11 +9,3 @@ export type  loginCredentials = {
   email: string
   password: string
 }
-
-export type registerData = {
-  name: string,
-  serviceName: string,
-  cpf: string,
-  email: string,
-  password: string,
-}
