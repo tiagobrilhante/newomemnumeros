@@ -1,7 +1,8 @@
 import prisma from '~/server/prisma'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (_event) => {
+export default defineEventHandler(async (event) => {
+  const locale = getLocale(event)
   try {
     return await prisma.rank.findMany({
       select: {
@@ -15,10 +16,9 @@ export default defineEventHandler(async (_event) => {
       },
     })
   } catch (error) {
-    console.error('Erro ao buscar ranks:', error)
     throw createError({
       statusCode: 500,
-      message: 'Erro ao buscar ranks',
+      message: await serverTByLocale(locale, 'errors.serverCommunication'),
     })
   }
 })

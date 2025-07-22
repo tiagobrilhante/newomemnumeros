@@ -5,10 +5,12 @@
   "registerAction": "Sign up",
   "signUp": "Sign up",
   "characters": "characters",
-  "emailField": "Email field",
   "passwordField": "Password field",
-  "isRequired": "is required",
+  "emailField": "Email field",
+  "cpfField": "CPF field",
   "mustBeValid": "must be valid",
+  "thisField": "This field",
+  "isRequired": "is required",
   "mustContain": "must contain",
   "errorInvalidEmailOrPassword": "Invalid email or password. Please try again.",
   "errorUnexpected":"An unexpected error occurred. Please try again later.",
@@ -29,12 +31,18 @@
   "cpfPlaceholder": "CPF",
   "passwordConfirmLabel": "Confirm password",
   "passwordConfirmPlaceholder": "Confirm your password",
+  "passwordConfirmationRequired": "Password confirmation is required.",
+  "passwordDoesNotMatch": "Passwords do not match. Please try again.",
 
   "errors": {
     "allFieldsRequired": "All fields are required",
     "emailAlreadyExists": "This email is already registered",
     "cpfInvalid": "The provided CPF is invalid",
-    "cpfAlreadyExists": "This CPF is already registered"
+    "cpfAlreadyExists": "This CPF is already registered",
+    "internalRegistrationError": "Internal registration server error",
+    "serverCommunication": "Server communication error",
+    "internalServerError": "Internal server error. Please try again later.",
+    "invalidDataProvided": "Invalid data provided"
   },
   "success": {
     "userRegistered": "User registered successfully!"
@@ -58,6 +66,7 @@
       "firstPage": "First page",
       "lastPage": "Last page",
       "pageText": "{0}-{1} of {2}"
-    }
+    },
+    "noDataText": "No data to display"
   }
 }

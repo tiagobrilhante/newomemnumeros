@@ -3,7 +3,7 @@
   import { cpf } from 'cpf-cnpj-validator'
   import type { rank } from '~/types/core/user'
   import type { VForm } from 'vuetify/components'
-  import type { H3Error } from 'h3'
+  import type { RegisterResponse } from '~/services/register.service'
 
   definePageMeta({
     layout: 'login-page',
@@ -17,17 +17,10 @@
     },
   })
 
-  interface apiResponse {
-    success: boolean,
-    message: string,
-    statusCode?: number
-  }
-
-  const { register } = useRegister()
+  const { register, loading } = useRegister()
   const localePath = useLocalePath()
   const form = ref<VForm | null>(null)
-  const loading = ref(false)
-  const apiResponse = ref<apiResponse | null>(null)
+  const apiResponse = ref<RegisterResponse | null>(null)
 
   const newUserData = reactive({
     name: '',
@@ -39,61 +32,49 @@
     email: '',
   })
 
-  const { data: ranks, pending: ranksLoading, error: ranksError } = useAsyncData(
+  const { data: ranks } = useAsyncData(
     'ranks', () => rankService.findAll(),
     {
       default: () => [] as rank[],
     },
   )
 
-  const requiredRule = [(v: string) => !!v || 'Este campo é obrigatório']
+  const requiredRule = [(v: string) => !!v || $t('thisField') + ' ' + $t('isRequired') ]
 
   const emailRules = [
-    (v: string) => !!v || 'O campo E-mail é obrigatório.',
-    (v: string) => /.+@.+\..+/.test(v) || 'O E-mail precisa ser válido.',
+    (v: string) => !!v || $t('emailField') + ' ' + $t('isRequired') ,
+    (v: string) => /.+@.+\..+/.test(v) || $t('emailField') + ' ' + $t('mustBeValid') ,
   ]
 
   const cpfRules = [
-    (v: string) => !!v || 'O campo CPF é obrigatório.',
-    (v: string) => cpf.isValid(v) || 'O CPF informado é inválido.',
+    (v: string) => !!v || $t('cpfField') + ' ' + $t('isRequired') ,
+    (v: string) => cpf.isValid(v) ||  $t('cpfField') + ' ' + $t('mustBeValid') ,
   ]
 
   const passwordRules = [
-    (v: string) => !!v || 'O campo Senha é obrigatório.',
-    (v: string) => (v && v.length >= 6) || 'A senha deve ter no mínimo 6 caracteres.',
+    (v: string) => !!v || $t('passwordField') + ' ' + $t('isRequired') ,,
+    (v: string) => (v && v.length >= 6) || $t('passwordField') + ' ' + $t('mustContain') + ' 6 ' + $t('characters'),
   ]
 
   const passwordConfirmRules = [
-    (v: string) => !!v || 'A confirmação da senha é obrigatória.',
+    (v: string) => !!v || $t('passwordConfirmationRequired'),
     (v: string) =>
-      v === newUserData.password || 'As senhas não coincidem. Tente novamente.',
+      v === newUserData.password || $t('passwordDoesNotMatch'),
   ]
 
   const processRegister = async () => {
     const { valid } = (await form.value?.validate()) || { valid: false }
     if (!valid) return
 
-    // Reset de erros anteriores
     apiResponse.value = null
-    
-    try {
-      const result: apiResponse = await register(newUserData)
 
-      if (result.success) {
-        // Toast de sucesso (opcional)
-        console.log('Usuário registrado com sucesso!')
-        await navigateTo('/')
-      } else {
-        apiResponse.value = result
-      }
+    const result = await register(newUserData)
 
-    } catch (err: any) {
-      console.error('Erro inesperado:', err)
-      apiResponse.value = {
-        success: false,
-        message: 'Erro de comunicação com o servidor',
-        statusCode: 500
-      }
+    if (result.success) {
+     /* console.log('Usuário registrado com sucesso!')*/
+      await navigateTo('/')
+    } else {
+      apiResponse.value = result
     }
   }
 
@@ -107,7 +88,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <!-- todo tenho que implementar as regras de validação do vuetify-->
+
     <v-row>
 
       <v-col cols="8" offset="2">

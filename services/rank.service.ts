@@ -30,7 +30,6 @@ class RankService {
     try {
       return await $fetch<Rank[]>(this.baseURL)
     } catch (error) {
-      console.error('Erro ao buscar ranks:', error)
       throw error
     }
   }

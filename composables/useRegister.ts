@@ -1,3 +1,4 @@
+import type { RegisterResponse } from '~/services/register.service'
 import { registerService } from '~/services/register.service'
 import type { registerData } from '~/types/auth'
 
@@ -5,25 +6,26 @@ export const useRegister = () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  const register = async (data: registerData) => {
+  const register = async (data: registerData): Promise<RegisterResponse> => {
     loading.value = true
     error.value = null
 
     try {
       const response = await registerService.register(data)
-      return { 
-        success: true, 
-        message: response.message,
-        statusCode: response.statusCode 
+
+      if (!response.success) {
+        error.value = response.message
       }
-    } catch (err: any) {
-      const errorMessage = err?.message || 'Erro inesperado no registro'
-      error.value = errorMessage
-      return {
+
+      return response
+    } catch (_err) {
+      const fallbackResponse: RegisterResponse = {
         success: false,
-        message: errorMessage,
-        statusCode: err?.statusCode || 500,
+        message: $t('serverCommunication'),
+        statusCode: 500,
       }
+      error.value = fallbackResponse.message
+      return fallbackResponse
     } finally {
       loading.value = false
     }

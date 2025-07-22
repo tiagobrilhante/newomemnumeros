@@ -5,10 +5,12 @@
   "registerAction": "Cadastrar",
   "signUp": "Cadastre-se",
   "characters": "caracteres",
-  "emailField": "O campo e-mail",
   "passwordField": "O campo senha",
-  "isRequired": "é obrigatório",
+  "emailField": "O campo e-mail",
+  "cpfField": "O campo CPF",
   "mustBeValid": "precisa ser válido",
+  "thisField": "Este campo",
+  "isRequired": "é obrigatório",
   "mustContain": "deve conter",
   "errorInvalidEmailOrPassword": "E-mail ou senha inválidos. Tente novamente.",
   "errorUnexpected": "Ocorreu um erro inesperado. Por favor, tente mais tarde.",
@@ -29,12 +31,18 @@
   "cpfPlaceholder": "CPF",
   "passwordConfirmLabel": "Confirme a senha",
   "passwordConfirmPlaceholder": "Confirme sua senha",
+  "passwordConfirmationRequired": "A confirmação da senha é obrigatória.",
+  "passwordDoesNotMatch": "As senhas não coincidem. Tente novamente.",
 
   "errors": {
     "allFieldsRequired": "Todos os campos são obrigatórios",
     "emailAlreadyExists": "Este e-mail já está cadastrado.",
     "cpfInvalid": "O CPF informado é inválido.",
-    "cpfAlreadyExists": "Este CPF já está cadastrado."
+    "cpfAlreadyExists": "Este CPF já está cadastrado.",
+    "internalRegistrationError": "Erro interno no servidor de registro",
+    "serverCommunication": "Erro de comunicação com o servidor",
+    "internalServerError": "Erro interno do servidor. Tente novamente mais tarde.",
+    "invalidDataProvided": "Dados inválidos fornecidos"
   },
   "success": {
     "userRegistered": "Usuário registrado com sucesso!"
@@ -58,7 +66,7 @@
       "firstPage": "Primeira página",
       "lastPage": "Última página",
       "pageText": "{0}-{1} de {2}"
-    }
+    },
+    "noDataText": "Sem dados para exibir"
   }
-
 }
