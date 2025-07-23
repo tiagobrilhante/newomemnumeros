@@ -1,18 +1,34 @@
 <script lang="ts" setup>
-  import { computed, ref } from 'vue'
+  import { computed, ref, watch, onMounted, nextTick } from 'vue'
   import { useAuthUserStore } from '~/stores/auth.store'
+  import { useNavigationStore } from '~/stores/navigation.store'
   import { useDisplay } from 'vuetify'
 
   const authStore = useAuthUserStore()
+  const navigationStore = useNavigationStore()
   const loadingItem = ref<string | null>(null)
   const { mobile } = useDisplay()
 
-  // Estado para controlar se o menu está colapsado
-  const isCollapsed = ref(false)
+  // Estado para controlar quando o menu está pronto para ser renderizado
+  const isMenuReady = ref(false)
+  const storeHydrated = ref(false)
+
+  // Aguarda que tudo esteja carregado
+  onMounted(async () => {
+    await nextTick()
+    storeHydrated.value = true
+  })
+
+  // Watch que aguarda a store ser hidratada antes de mostrar o menu
+  watch(storeHydrated, (hydrated) => {
+    if (hydrated) {
+      isMenuReady.value = true
+    }
+  }, { immediate: true })
 
   // Função para alternar entre colapsado/expandido
   const toggleCollapse = () => {
-    isCollapsed.value = !isCollapsed.value
+    navigationStore.toggleCollapsedMenu()
   }
 
   interface MenuItem {
@@ -104,32 +120,32 @@
 
 <template>
   <v-navigation-drawer
-    :permanent="!mobile"
-    :temporary="mobile"
-    :rail="isCollapsed && !mobile"
+    v-if="isMenuReady"
+    :permanent="true"
+    :rail="navigationStore.isMenuCollapsed || mobile"
     :rail-width="72"
     class="menu-left"
     width="280"
     elevation="2"
   >
-    <!-- Header do menu -->
+    <!-- Menu Header -->
     <v-list-item
       class="mx-2 my-2 cursor-pointer"
-      :prepend-icon="isCollapsed ? 'mdi-menu' : 'mdi-menu-open'"
-      :title="isCollapsed ? '' : 'Menu Principal'"
+      :prepend-icon="(navigationStore.isMenuCollapsed || mobile) ? 'mdi-menu' : 'mdi-menu-open'"
+      :title="(navigationStore.isMenuCollapsed || mobile) ? '' : 'Menu Principal'"
       @click="toggleCollapse"
     />
 
     <v-divider />
 
-    <!-- Lista de itens do menu -->
+    <!-- menu items list -->
     <v-list density="compact" nav>
       <template v-for="item in filteredMenuItems" :key="item.title">
-        <v-tooltip :text="item.title" location="end" :disabled="!isCollapsed">
+        <v-tooltip :text="item.title" location="end" :disabled="!(navigationStore.isMenuCollapsed || mobile)">
           <template #activator="{ props }">
             <v-list-item
               :prepend-icon="item.icon"
-              :title="isCollapsed ? '' : item.title"
+              :title="(navigationStore.isMenuCollapsed || mobile) ? '' : item.title"
               class="mx-2 mb-1"
               density="compact"
               rounded="xl"
