@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-  import BarWithoutLogin from '~/layouts/partials/BarWithoutLogin.vue'
   import Footer from '~/layouts/partials/Footer.vue'
+  import NavBar from '~/layouts/partials/NavBar.vue'
 
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
@@ -18,7 +18,7 @@
 </script>
 <template>
   <v-app theme="dark">
-    <BarWithoutLogin />
+    <NavBar />
     <v-main class="login-background my-space">
       <v-container class="my-container" fluid>
         <slot />
