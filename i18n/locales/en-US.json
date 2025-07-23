@@ -38,6 +38,7 @@
   "passwordConfirmationRequired": "Password confirmation",
   "passwordDoesNotMatch": "Passwords do not match. Please try again.",
   "editData": "Edit Data",
+  "welcomeMessage": "welcome to",
 
   "leftMenu" : {
     "mainMenu": "Main Menu",

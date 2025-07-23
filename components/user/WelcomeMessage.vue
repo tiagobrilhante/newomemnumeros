@@ -5,7 +5,7 @@
 </script>
 <template>
   <h3 v-if="useAuthStore.user" class="text-right mr-5">
-    {{ useAuthStore.user.rank.acronym }} {{ useAuthStore.user.serviceName }}, seja bem-vindo ao
+    {{ useAuthStore.user.rank.acronym }} {{ useAuthStore.user.serviceName }}, {{$t('welcomeMessage')}}
     {{ appName }}
   </h3>
 </template>

@@ -38,6 +38,7 @@
   "passwordConfirmationRequired": "A confirmação da senha",
   "passwordDoesNotMatch": "As senhas não coincidem. Tente novamente.",
   "editData": "Alterar dados",
+  "welcomeMessage": "seja bem-vindo ao",
 
   "leftMenu" : {
     "mainMenu": "Menu Principal",

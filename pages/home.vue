@@ -11,7 +11,7 @@
   const authUserStore = useAuthUserStore();
 
   const DASHBOARD_MENU_ITEM = {
-    title: 'Página Inicial',
+    title: $t('leftMenu.home'),
     icon: 'mdi-home',
     haveSpaceForComponent: true,
     components: [WelcomeMessage],
