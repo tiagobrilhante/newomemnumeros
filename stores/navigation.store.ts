@@ -22,6 +22,10 @@ export const useNavigationStore = defineStore('navigation',
         this.menuCollapsed = !this.menuCollapsed
       },
 
+      setCurrentPath(path: string) {
+        this.atualPath = path
+      },
+
       setLoading(value: boolean) {
         this.loading = value
       },

@@ -9,24 +9,21 @@
   const loadingItem = ref<string | null>(null)
   const { mobile } = useDisplay()
 
-  // Estado para controlar quando o menu está pronto para ser renderizado
   const isMenuReady = ref(false)
   const storeHydrated = ref(false)
 
-  // Aguarda que tudo esteja carregado
   onMounted(async () => {
     await nextTick()
     storeHydrated.value = true
   })
 
-  // Watch que aguarda a store ser hidratada antes de mostrar o menu
+
   watch(storeHydrated, (hydrated) => {
     if (hydrated) {
       isMenuReady.value = true
     }
   }, { immediate: true })
 
-  // Função para alternar entre colapsado/expandido
   const toggleCollapse = () => {
     navigationStore.toggleCollapsedMenu()
   }
@@ -52,35 +49,35 @@
       title: 'Organizações Militares',
       path: '/admin/military-organizations',
       icon: 'mdi-domain',
-      color: 'blue',
+      color: '#515757',
       accessLevel: ['militaryOrganizations.read'],
     },
     {
       title: 'Seções',
       path: '/admin/sections',
       icon: 'mdi-lan',
-      color: 'blue',
+      color: '#515757',
       accessLevel: ['sections.read', 'sections.create', 'sections.update', 'sections.delete'],
     },
     {
       title: 'Usuários Cadastrados',
       path: '/admin/users',
       icon: 'mdi-account-group',
-      color: 'blue',
+      color: '#515757',
       accessLevel: ['users.create', 'users.read', 'users.update', 'users.delete'],
     },
     {
       title: 'Vínculos de Usuários',
       path: '/admin/vinculo-sections-users',
       icon: 'mdi-arrow-collapse',
-      color: 'blue',
+      color: '#515757',
       accessLevel: ['users.create', 'users.read', 'users.update', 'users.delete'],
     },
     {
       title: 'Permissões',
       path: '/admin/permissions',
       icon: 'mdi-shield-account',
-      color: 'blue',
+      color: 'red',
       accessLevel: ['roles.read', 'roles.create', 'roles.update', 'roles.delete'],
     },
   ]
@@ -149,11 +146,16 @@
               class="mx-2 mb-1"
               density="compact"
               rounded="xl"
+              :active="navigationStore.atualPath === item.path"
+              :color="navigationStore.atualPath === item.path ? 'primary' : undefined"
               v-bind="props"
               @click="handleNavigation(item.path, item.title)"
             >
               <template #prepend>
-                <v-icon v-if="loadingItem !== item.title" :color="item.color">
+                <v-icon
+                  v-if="loadingItem !== item.title"
+                  :color="navigationStore.atualPath === item.path ? 'primary' : item.color"
+                >
                   {{ item.icon }}
                 </v-icon>
                 <v-progress-circular
