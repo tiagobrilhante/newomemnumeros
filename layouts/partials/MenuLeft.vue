@@ -6,10 +6,10 @@
   const authStore = useAuthUserStore()
   const loadingItem = ref<string | null>(null)
   const { mobile } = useDisplay()
-  
+
   // Estado para controlar se o menu está colapsado
   const isCollapsed = ref(false)
-  
+
   // Função para alternar entre colapsado/expandido
   const toggleCollapse = () => {
     isCollapsed.value = !isCollapsed.value
@@ -114,7 +114,7 @@
   >
     <!-- Header do menu -->
     <v-list-item
-      class="pa-4 cursor-pointer"
+      class="mx-2 my-2 cursor-pointer"
       :prepend-icon="isCollapsed ? 'mdi-menu' : 'mdi-menu-open'"
       :title="isCollapsed ? '' : 'Menu Principal'"
       @click="toggleCollapse"
