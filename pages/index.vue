@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   definePageMeta({
-    layout: 'login-page',
+    layout: 'guest-layout',
     auth: {
       unauthenticatedOnly: true,
       navigateAuthenticatedTo: '/home',

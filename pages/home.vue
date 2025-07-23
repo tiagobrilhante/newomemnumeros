@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
-  import WelcomeMessage from '~/layouts/partials/WelcomeMessage.vue'
+  import WelcomeMessage from '~/components/user/WelcomeMessage.vue'
   //import { retrieveMilitaryOrganizationLogo } from '~/utils/retrieve-military-organization-logo'
   import { useAuthUserStore } from '~/stores/auth.store'
 
