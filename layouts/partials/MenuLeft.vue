@@ -1,11 +1,11 @@
 <script lang="ts" setup>
   import { computed, ref, watch, onMounted, nextTick } from 'vue'
-  import { useAuthUserStore } from '~/stores/auth.store'
   import { useNavigationStore } from '~/stores/navigation.store'
   import { useDisplay } from 'vuetify'
+  import { routesConfig } from '~/config/routes'
 
-  const authStore = useAuthUserStore()
   const navigationStore = useNavigationStore()
+  const { hasPermission } = usePermissions()
   const loadingItem = ref<string | null>(null)
   const { mobile } = useDisplay()
 
@@ -17,7 +17,6 @@
     storeHydrated.value = true
   })
 
-
   watch(storeHydrated, (hydrated) => {
     if (hydrated) {
       isMenuReady.value = true
@@ -28,89 +27,14 @@
     navigationStore.toggleCollapsedMenu()
   }
 
-  interface MenuItem {
-    title: string
-    path: string
-    icon: string
-    color: string
-    accessLevel?: string[]
-    requiresAuth?: boolean
-  }
-
-  const menuItems: MenuItem[] = [
-    {
-      title: 'Home',
-      path: '/home',
-      icon: 'mdi-home',
-      color: 'secondary',
-      requiresAuth: true,
-    },
-    {
-      title: 'Organizações Militares',
-      path: '/admin/military-organizations',
-      icon: 'mdi-domain',
-      color: '#515757',
-      accessLevel: ['militaryOrganizations.read'],
-    },
-    {
-      title: 'Seções',
-      path: '/admin/sections',
-      icon: 'mdi-lan',
-      color: '#515757',
-      accessLevel: ['sections.read', 'sections.create', 'sections.update', 'sections.delete'],
-    },
-    {
-      title: 'Usuários Cadastrados',
-      path: '/admin/users',
-      icon: 'mdi-account-group',
-      color: '#515757',
-      accessLevel: ['users.create', 'users.read', 'users.update', 'users.delete'],
-    },
-    {
-      title: 'Vínculos de Usuários',
-      path: '/admin/vinculo-sections-users',
-      icon: 'mdi-arrow-collapse',
-      color: '#515757',
-      accessLevel: ['users.create', 'users.read', 'users.update', 'users.delete'],
-    },
-    {
-      title: 'Permissões',
-      path: '/admin/permissions',
-      icon: 'mdi-shield-account',
-      color: 'red',
-      accessLevel: ['roles.read', 'roles.create', 'roles.update', 'roles.delete'],
-    },
-  ]
-
   const filteredMenuItems = computed(() => {
-    return menuItems.filter(item => hasPermission(item))
+    return routesConfig.filter(item => hasPermission(item))
   })
 
   const handleNavigation = async (path: string, title: string) => {
     loadingItem.value = title
     await navigateTo(path)
     loadingItem.value = null
-  }
-
-  const hasPermission = (menuItem: MenuItem): boolean => {
-    if (!menuItem) return false
-
-    const user = authStore.user
-    if (!user) return false
-    if (menuItem.requiresAuth && !menuItem.accessLevel) {
-      return true
-    }
-    if (!menuItem.accessLevel || menuItem.accessLevel.length === 0) {
-      return true
-    }
-    const userPermissions = user.role?.permissions || []
-
-    if (userPermissions.includes('system.admin')) {
-      return true
-    }
-    return menuItem.accessLevel.some(permission =>
-      userPermissions.includes(permission)
-    )
   }
 
 </script>

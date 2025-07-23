@@ -1,5 +1,7 @@
 {
   "loading": "Carregando",
+  "goToHome": "Voltar para Home",
+  "goBack": "Voltar",
   "login": "Entrar",
   "register": "Cadastro",
   "registerAction": "Cadastrar",

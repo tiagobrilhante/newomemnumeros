@@ -1,5 +1,7 @@
 {
   "loading": "Loading",
+  "goToHome": "Go to Home",
+  "goBack": "Go back",
   "login": "Login",
   "register": "Register",
   "registerAction": "Sign up",
