@@ -6,7 +6,7 @@
   import type { RegisterResponse } from '~/services/register.service'
 
   definePageMeta({
-    layout: 'login-page',
+    layout: 'guest-layout',
     auth: {
       unauthenticatedOnly: true,
       navigateAuthenticatedTo: '/home',

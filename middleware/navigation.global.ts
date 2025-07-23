@@ -1,5 +1,6 @@
 export default defineNuxtRouteMiddleware((to, from) => {
   const navigationStore = useNavigationStore()
+  const localePath = useLocalePath()
   
   // Só processa se o usuário está autenticado
   const authStore = useAuthUserStore()
@@ -16,7 +17,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   // Mas se está vindo de outra página (clique manual), permite ir para home
   const isComingFromAuth = !from || from.path === '/' || from.path === '/home'
   if (to.path === '/home' && isComingFromAuth && navigationStore.atualPath && navigationStore.atualPath !== '/home') {
-    return navigateTo(navigationStore.atualPath)
+    return navigateTo(localePath(navigationStore.atualPath))
   }
   
   // Atualiza o caminho atual na store sempre

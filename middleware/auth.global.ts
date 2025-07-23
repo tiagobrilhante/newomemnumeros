@@ -10,6 +10,7 @@ export default defineNuxtRouteMiddleware((to) => {
 
   const authStore = useAuthUserStore();
   const isAuthenticated = authStore.isAuthenticated;
+  const localePath = useLocalePath();
 
   const isAuthObject = (meta: unknown): meta is AuthRouteMeta => {
     return typeof meta === 'object' && meta !== null;
@@ -17,12 +18,12 @@ export default defineNuxtRouteMiddleware((to) => {
 
   if (isAuthObject(routeAuthMeta) && routeAuthMeta.unauthenticatedOnly) {
     if (isAuthenticated) {
-      return navigateTo(routeAuthMeta.navigateAuthenticatedTo || '/home');
+      return navigateTo(localePath(routeAuthMeta.navigateAuthenticatedTo || '/home'));
     }
     return;
   }
 
   if (!isAuthenticated) {
-    return navigateTo('/');
+    return navigateTo(localePath('/'));
   }
 });

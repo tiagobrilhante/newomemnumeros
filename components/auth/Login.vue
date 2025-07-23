@@ -1,8 +1,8 @@
 <script lang="ts" setup>
   import type { VForm } from 'vuetify/components'
 
-
   const { login } = useAuth()
+  const localePath = useLocalePath()
 
   const email = ref('')
   const password = ref('')
@@ -19,7 +19,6 @@
     (v: string) => !!v || $t('passwordField') + ' ' + $t('isRequired'),
     (v: string) => (v && v.length >= 6) || $t('passwordField') + ' ' + $t('mustContain') + ' 6 ' + $t('characters'),
   ]
-  const localePath = useLocalePath()
 
   const processAuth = async () => {
     apiError.value = null
@@ -39,14 +38,13 @@
       })
 
       if (loginResult.success) {
-        await navigateTo('/home', { replace: true })
+        await navigateTo(localePath('/home'), { replace: true })
       } else {
         apiError.value = $t('errorInvalidEmailOrPassword')
       }
 
     } catch (err) {
       // TODO - improve the error handlers
-      console.error('[Login.vue]: ' + $t('errorUnexpected'), err)
       apiError.value = $t('errorUnexpected')
     } finally {
       loading.value = false

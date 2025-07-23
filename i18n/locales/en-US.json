@@ -3,6 +3,7 @@
   "goToHome": "Go to Home",
   "goBack": "Go back",
   "login": "Login",
+  "logout": "Logout",
   "register": "Register",
   "registerAction": "Sign up",
   "signUp": "Sign up",
@@ -28,6 +29,7 @@
   "serviceNameLabel": "Service name",
   "serviceNamePlaceholder": "Enter your service name",
   "fullNameLabel": "Full name",
+  "nameLabel": "Name",
   "fullNamePlaceholder": "Enter your full name",
   "cpfLabel": "CPF",
   "cpfPlaceholder": "CPF",
@@ -35,6 +37,17 @@
   "passwordConfirmPlaceholder": "Confirm your password",
   "passwordConfirmationRequired": "Password confirmation",
   "passwordDoesNotMatch": "Passwords do not match. Please try again.",
+  "editData": "Edit Data",
+
+  "leftMenu" : {
+    "mainMenu": "Main Menu",
+    "home": "Home",
+    "militaryOrganizations": "Military Organizations",
+    "sections": "Sections",
+    "userManagement": "User Management",
+    "rolesAndPermissions": "Roles and Permissions",
+    "userLinks": "Vinculação de usuários"
+  },
 
   "errors": {
     "allFieldsRequired": "All fields are required",

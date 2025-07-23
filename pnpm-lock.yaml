@@ -57,6 +57,9 @@ importers:
         specifier: ^3.9.0
         version: 3.9.0(typescript@5.8.3)(vite-plugin-vuetify@2.1.1)(vue@3.5.17(typescript@5.8.3))
     devDependencies:
+      '@iconify-json/flag':
+        specifier: ^1.2.6
+        version: 1.2.6
       '@mdi/font':
         specifier: ^7.4.47
         version: 7.4.47
@@ -889,6 +892,9 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
+
+  '@iconify-json/flag@1.2.6':
+    resolution: {integrity: sha512-taDE+AbfSrm/fnQXTrq2pdq+YIsjZG0YX1aFocLrTc107Qhcd5j1A58UrfLQBcCCsbJuskRk7OOt23G0Pm0xPA==}
 
   '@iconify/collections@1.0.569':
     resolution: {integrity: sha512-PclOVcAlvv55Fv5kRJmxk/KMoFLNBMLh0q9LDMlonIPJMUu958VsNw7F7CVurfyEbCf/54i7eF+q6LHqJxeQvg==}
@@ -6055,6 +6061,10 @@ snapshots:
   '@humanwhocodes/retry@0.3.1': {}
 
   '@humanwhocodes/retry@0.4.3': {}
+
+  '@iconify-json/flag@1.2.6':
+    dependencies:
+      '@iconify/types': 2.0.0
 
   '@iconify/collections@1.0.569':
     dependencies:

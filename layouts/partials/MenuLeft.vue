@@ -6,8 +6,19 @@
 
   const navigationStore = useNavigationStore()
   const { hasPermission } = usePermissions()
+  const { t } = useI18n()
+  const localePath = useLocalePath()
+  const route = useRoute()
   const loadingItem = ref<string | null>(null)
   const { mobile } = useDisplay()
+
+  // Função para verificar se um item está ativo
+  const isItemActive = (itemPath: string) => {
+    // Comparar o path atual sem o prefixo do idioma
+    const currentPath = route.path
+    const localizedItemPath = localePath(itemPath)
+    return currentPath === localizedItemPath
+  }
 
   const isMenuReady = ref(false)
   const storeHydrated = ref(false)
@@ -31,9 +42,10 @@
     return routesConfig.filter(item => hasPermission(item))
   })
 
-  const handleNavigation = async (path: string, title: string) => {
-    loadingItem.value = title
-    await navigateTo(path)
+  const handleNavigation = async (path: string, titleKey: string) => {
+    loadingItem.value = titleKey
+    // Usar localePath para manter o prefixo do idioma na URL
+    await navigateTo(localePath(path))
     loadingItem.value = null
   }
 
@@ -53,7 +65,7 @@
     <v-list-item
       class="mx-2 my-2 cursor-pointer"
       :prepend-icon="(navigationStore.isMenuCollapsed || mobile) ? 'mdi-menu' : 'mdi-menu-open'"
-      :title="(navigationStore.isMenuCollapsed || mobile) ? '' : 'Menu Principal'"
+      :title="(navigationStore.isMenuCollapsed || mobile) ? '' : $t('leftMenu.mainMenu')"
       @click="toggleCollapse"
     />
 
@@ -61,24 +73,24 @@
 
     <!-- menu items list -->
     <v-list density="compact" nav>
-      <template v-for="item in filteredMenuItems" :key="item.title">
-        <v-tooltip :text="item.title" location="end" :disabled="!(navigationStore.isMenuCollapsed || mobile)">
+      <template v-for="item in filteredMenuItems" :key="item.titleKey">
+        <v-tooltip :text="$t(item.titleKey)" location="end" :disabled="!(navigationStore.isMenuCollapsed || mobile)">
           <template #activator="{ props }">
             <v-list-item
               :prepend-icon="item.icon"
-              :title="(navigationStore.isMenuCollapsed || mobile) ? '' : item.title"
+              :title="(navigationStore.isMenuCollapsed || mobile) ? '' : $t(item.titleKey)"
               class="mx-2 mb-1"
               density="compact"
               rounded="xl"
-              :active="navigationStore.atualPath === item.path"
-              :color="navigationStore.atualPath === item.path ? 'primary' : undefined"
+              :active="isItemActive(item.path)"
+              :color="isItemActive(item.path) ? 'primary' : undefined"
               v-bind="props"
-              @click="handleNavigation(item.path, item.title)"
+              @click="handleNavigation(item.path, item.titleKey)"
             >
               <template #prepend>
                 <v-icon
-                  v-if="loadingItem !== item.title"
-                  :color="navigationStore.atualPath === item.path ? 'primary' : item.color"
+                  v-if="loadingItem !== item.titleKey"
+                  :color="isItemActive(item.path) ? 'primary' : item.color"
                 >
                   {{ item.icon }}
                 </v-icon>

@@ -5,7 +5,8 @@ export const useNavigationStore = defineStore('navigation',
   {
     state: () => ({
       menuCollapsed: false,
-      atualPath: '/home',
+      atualPath: '/',
+      selectedLanguage: 'pt-BR', // Valor padrão, mas será sobrescrito pela persistência
       loading: false,
     }),
 
@@ -28,6 +29,10 @@ export const useNavigationStore = defineStore('navigation',
 
       setLoading(value: boolean) {
         this.loading = value
+      },
+
+      setSelectedLanguage(language: string) {
+        this.selectedLanguage = language
       },
     },
     persist: true,

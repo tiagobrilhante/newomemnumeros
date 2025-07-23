@@ -39,6 +39,7 @@
     "vuetify": "^3.9.0"
   },
   "devDependencies": {
+    "@iconify-json/flag": "^1.2.6",
     "@mdi/font": "^7.4.47",
     "@nuxt/eslint": "1.5.2",
     "@nuxt/icon": "1.15.0",

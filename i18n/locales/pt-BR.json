@@ -3,6 +3,7 @@
   "goToHome": "Voltar para Home",
   "goBack": "Voltar",
   "login": "Entrar",
+  "logout": "Sair",
   "register": "Cadastro",
   "registerAction": "Cadastrar",
   "signUp": "Cadastre-se",
@@ -28,6 +29,7 @@
   "serviceNameLabel": "Nome de Guerra",
   "serviceNamePlaceholder": "Insira o seu Nome de Guerra",
   "fullNameLabel": "Nome completo",
+  "nameLabel": "Nome",
   "fullNamePlaceholder": "Insira o seu nome completo",
   "cpfLabel": "CPF",
   "cpfPlaceholder": "CPF",
@@ -35,6 +37,17 @@
   "passwordConfirmPlaceholder": "Confirme sua senha",
   "passwordConfirmationRequired": "A confirmação da senha",
   "passwordDoesNotMatch": "As senhas não coincidem. Tente novamente.",
+  "editData": "Alterar dados",
+
+  "leftMenu" : {
+    "mainMenu": "Menu Principal",
+    "home": "Página Inicial",
+    "militaryOrganizations": "Organizações Militares",
+    "sections": "Seções",
+    "userManagement": "Gerenciamento de usuários",
+    "rolesAndPermissions": "Permissões",
+    "userLinks": "Vinculação de usuários"
+  },
 
   "errors": {
     "allFieldsRequired": "Todos os campos são obrigatórios",

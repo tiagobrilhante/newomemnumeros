@@ -13,6 +13,7 @@
     try {
       await logout()
     } catch (error) {
+      // TODO ajustar pra usar o handler de erros (com internacionalização)
       console.error('Erro ao fazer logout:', error)
     }
   }
@@ -36,16 +37,16 @@
                     <v-icon left>mdi-account</v-icon>
 
                     {{ useAuthStore.user.rank?.acronym }} {{ useAuthStore.user.serviceName }}<br >
-                    <b>Nome:</b> {{ useAuthStore.user.name }}<br >
-                    <b>Cpf: </b>{{ useAuthStore.user.cpf }}<br >
-                    <b>Email: </b>{{ useAuthStore.user.email }}<br >
+                    <b>{{ $t('nameLabel') }}:</b> {{ useAuthStore.user.name }}<br >
+                    <b>{{ $t('cpfLabel') }}: </b>{{ useAuthStore.user.cpf }}<br >
+                    <b>{{ $t('emailLabel') }}: </b>{{ useAuthStore.user.email }}<br >
                   </v-alert>
                 </v-col>
               </v-row>
             </v-container>
             <!-- TODO: Corrigir o @click para a funcionalidade correta -->
-            <v-list-item prepend-icon="mdi-account" title="Alterar Dados" />
-            <v-list-item prepend-icon="mdi-logout" title="Sair" @click="handleLogout" />
+            <v-list-item prepend-icon="mdi-account" :title="$t('editData')" />
+            <v-list-item prepend-icon="mdi-logout" :title="$t('logout')" @click="handleLogout" />
           </v-list>
         </v-menu>
         <br >
@@ -54,7 +55,7 @@
           flat
           prepend-icon="mdi-logout"
           size="small"
-          text="Sair"
+          :text="$t('logout')"
           variant="plain"
           @click="handleLogout"
         />
