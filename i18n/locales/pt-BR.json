@@ -80,8 +80,14 @@
     "open": "Abrir",
     "close": "Fechar",
     "dataIterator": {
+      "loadingText": "Carregando",
       "rowsPerPageText": "Itens por página:",
       "pageText": "{0}-{1} de {2}"
+    },
+    "pagination" : {
+      "ariaLabel" : {
+        "root": "Navegação de paginação"
+      }
     },
     "dataTable": {
       "itemsPerPageText": "Linhas por página:"
