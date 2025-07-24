@@ -18,13 +18,6 @@ export default defineNuxtRouteMiddleware((to) => {
   const hasAccess = hasRoutePermission(cleanPath, requiredPermissions)
 
   if (!hasAccess) {
-    const nuxtApp = useNuxtApp()
-    const message = nuxtApp.$i18n?.t('errors.accessDenied') || 'Acesso Negado'
-
-    throw createError({
-      statusCode: 403,
-      statusMessage: 'Forbidden',
-      message
-    })
+    throw createForbiddenError('errors.accessDenied')
   }
 })
