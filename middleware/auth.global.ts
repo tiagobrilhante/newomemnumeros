@@ -23,7 +23,7 @@ export default defineNuxtRouteMiddleware((to) => {
     return;
   }
 
-  if (!isAuthenticated) {
+  if (routeAuthMeta === true && !isAuthenticated) {
     return navigateTo(localePath('/'));
   }
 });

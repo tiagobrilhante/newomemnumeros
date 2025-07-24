@@ -25,9 +25,7 @@
 <template>
   <v-app theme="dark">
     <NavBar />
-
     <MenuLeft />
-    
     <v-main class="main-content">
       <slot />
     </v-main>
