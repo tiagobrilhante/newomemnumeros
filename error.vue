@@ -8,36 +8,38 @@
   const errorConfig = computed(() => {
     const { statusCode } = props.error
 
+    // Apenas configurações visuais baseadas no statusCode
     switch (statusCode) {
       case 403:
         return {
           icon: 'mdi-shield-lock',
-          color: 'warning',
-          title: 'Acesso Negado',
-          message: 'Você não tem permissão para acessar esta página. Entre em contato com o administrador se acredita que isso é um erro.'
+          color: 'warning'
         }
       case 404:
         return {
           icon: 'mdi-compass-off',
-          color: 'info',
-          title: 'Página Não Encontrada',
-          message: 'A página que você está procurando não existe ou foi movida para outro local.'
+          color: 'info'
         }
       case 500:
         return {
           icon: 'mdi-server-network-off',
-          color: 'error',
-          title: 'Erro Interno do Servidor',
-          message: 'Ops! Algo deu errado em nossos servidores. Tente novamente em alguns instantes.'
+          color: 'error'
         }
       default:
         return {
           icon: 'mdi-alert-circle',
-          color: 'error',
-          title: 'Erro Inesperado',
-          message: 'Ocorreu um erro inesperado. Por favor, tente novamente.'
+          color: 'error'
         }
     }
+  })
+
+  // Usa as mensagens que vêm do erro, com fallbacks internacionalizados
+  const errorTitle = computed(() => {
+    return props.error.statusMessage || $t(`errors.status${props.error.statusCode}Title`) || $t('errors.genericTitle')
+  })
+
+  const errorMessage = computed(() => {
+    return props.error.message || $t(`errors.status${props.error.statusCode}Message`) || $t('errors.genericMessage')
   })
 
   const isDev = import.meta.dev
@@ -55,7 +57,7 @@
   }
 
   useHead({
-    title: `Erro ${props.error.statusCode} - ${errorConfig.value.title}`
+    title: `Erro ${props.error.statusCode} - ${errorTitle.value}`
   })
 </script>
 
@@ -83,12 +85,12 @@
 
                 <!-- Error title -->
                 <h2 class="text-h5 mb-4">
-                  {{ errorConfig.title }}
+                  {{ errorTitle }}
                 </h2>
 
                 <!-- Error message -->
                 <p class="text-body-1 mb-6 text-medium-emphasis">
-                  {{ errorConfig.message }}
+                  {{ errorMessage }}
                 </p>
 
                 <!-- Actions buttons -->

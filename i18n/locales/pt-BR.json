@@ -66,10 +66,20 @@
     "unknownError": "Erro desconhecido",
     "invalidId": "ID inválido",
     "rankNotFound": "Posto/Grad não encontrado",
-    "invalidHierarchy": "Hierarquia inválida"
+    "invalidHierarchy": "Hierarquia inválida",
+    "tokenNotProvided": "Token não fornecido",
+    "userNotFound": "Usuário não encontrado",
+    "invalidToken": "Token inválido",
+    "accessDenied": "Acesso negado. Você não tem permissão para acessar esta página.",
+    "genericTitle": "Erro",
+    "genericMessage": "Ocorreu um erro inesperado. Por favor, tente novamente.",
+    "status403Title": "Acesso Negado",
+    "status404Title": "Página Não Encontrada", 
+    "status500Title": "Erro Interno do Servidor"
   },
   "success": {
     "userRegistered": "Usuário registrado com sucesso!",
+    "logoutSuccess": "Logout realizado com sucesso!",
     "rankRetrieved": "Posto/Grad encontrado",
     "rankCreated": "Posto/Grad criado com sucesso!",
     "rankUpdated": "Posto/Grad alterado com sucesso!",

@@ -66,10 +66,20 @@
     "unknownError": "Unknown error",
     "invalidId": "Invalid ID",
     "rankNotFound": "Rank not found",
-    "invalidHierarchy": "Invalid hierarchy"
+    "invalidHierarchy": "Invalid hierarchy",
+    "tokenNotProvided": "Token not provided",
+    "userNotFound": "User not found",
+    "invalidToken": "Invalid token",
+    "accessDenied": "Access denied. You don't have permission to access this page.",
+    "genericTitle": "Error",
+    "genericMessage": "An unexpected error occurred. Please try again.",
+    "status403Title": "Access Denied",
+    "status404Title": "Page Not Found",
+    "status500Title": "Internal Server Error"
   },
   "success": {
     "userRegistered": "User registered successfully!",
+    "logoutSuccess": "Logout completed successfully!",
     "rankRetrieved": "Rank found",
     "rankCreated": "Rank created successfully!",
     "rankUpdated": "Rank updated successfully!",

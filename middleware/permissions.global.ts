@@ -7,17 +7,24 @@ export default defineNuxtRouteMiddleware((to) => {
     return
   }
 
-  const requiredPermissions = routePermissionsMap[to.path]
+  const cleanPath = to.path.replace(/^\/[a-z]{2}-[A-Z]{2}/, '') || '/'
+
+  const requiredPermissions = routePermissionsMap[cleanPath]
   if (!requiredPermissions) {
     return
   }
 
   const { hasRoutePermission } = usePermissions()
+  const hasAccess = hasRoutePermission(cleanPath, requiredPermissions)
 
-  if (!hasRoutePermission(to.path, requiredPermissions)) {
+  if (!hasAccess) {
+    const nuxtApp = useNuxtApp()
+    const message = nuxtApp.$i18n?.t('errors.accessDenied') || 'Acesso Negado'
+
     throw createError({
       statusCode: 403,
-      statusMessage: 'Acesso negado. Você não tem permissão para acessar esta página.'
+      statusMessage: 'Forbidden',
+      message
     })
   }
 })

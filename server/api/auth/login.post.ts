@@ -6,6 +6,8 @@ import { setAuthCookie } from '~/server/utils/cookieAuth'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
+  const locale = getLocale(event)
+  
   try {
     const { email, password } = await readBody(event)
     const user = await authenticateUser(email, password)
@@ -15,6 +17,6 @@ export default defineEventHandler(async (event) => {
       user,
     }
   } catch (error) {
-    return handleError(error)
+    return handleError(error, locale)
   }
 })

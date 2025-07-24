@@ -13,7 +13,7 @@
   <v-app-bar :elevation="10" app class="navbar-top">
     <template #prepend>
       <v-app-bar-nav-icon>
-        <v-icon icon="$vuetify" />
+        <v-icon icon="mdi-alpha-n-circle-outline" />
       </v-app-bar-nav-icon>
       <v-app-bar-title>{{ appName }}</v-app-bar-title>
     </template>
