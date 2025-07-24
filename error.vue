@@ -8,7 +8,6 @@
   const errorConfig = computed(() => {
     const { statusCode } = props.error
 
-    // Apenas configurações visuais baseadas no statusCode
     switch (statusCode) {
       case 403:
         return {
@@ -33,7 +32,6 @@
     }
   })
 
-  // Usa as mensagens que vêm do erro, com fallbacks internacionalizados
   const errorTitle = computed(() => {
     return props.error.statusMessage || $t(`errors.status${props.error.statusCode}Title`) || $t('errors.genericTitle')
   })

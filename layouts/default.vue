@@ -6,7 +6,6 @@
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
 
-  // Inicializar sincronização de idioma globalmente
   useLanguageManager()
 
   useHead({

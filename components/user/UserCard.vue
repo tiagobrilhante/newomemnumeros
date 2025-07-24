@@ -16,7 +16,8 @@
 
       createAppError('errors.serverCommunication', {
         statusCode: 500,
-        statusMessage: 'Logout Error',
+        statusMessageKey: 'errors.serverCommunication',
+        fallbackStatusMessage: 'Logout Error',
         fallbackMessage: 'Erro ao fazer logout'
       })
     }

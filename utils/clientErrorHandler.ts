@@ -10,12 +10,12 @@ export interface ErrorHandlerOptions {
  * Similar ao handleError do servidor, mas adaptado para o contexto client-side
  */
 export function createAppError(
-  messageKey: string, 
+  messageKey: string,
   options: ErrorHandlerOptions = {}
 ) {
   const nuxtApp = useNuxtApp()
   const { $i18n } = nuxtApp
-  
+
   const {
     statusCode = 500,
     statusMessageKey,
@@ -23,7 +23,6 @@ export function createAppError(
     fallbackMessage = 'An error occurred'
   } = options
 
-  // Tenta traduzir a mensagem
   let message: string
   try {
     message = $i18n?.t(messageKey) || fallbackMessage
@@ -31,7 +30,6 @@ export function createAppError(
     message = fallbackMessage
   }
 
-  // Tenta traduzir o statusMessage se uma chave for fornecida
   let statusMessage: string
   if (statusMessageKey) {
     try {
@@ -50,29 +48,30 @@ export function createAppError(
   })
 }
 
-/**
- * Versões específicas para erros comuns
- */
+// noinspection JSUnusedGlobalSymbols
 export const createForbiddenError = (messageKey = 'errors.accessDenied') => {
   return createAppError(messageKey, {
     statusCode: 403,
-    statusMessage: 'Forbidden',
+    statusMessageKey: 'errors.status403Title',
+    fallbackStatusMessage: 'Forbidden',
     fallbackMessage: 'Acesso Negado'
   })
 }
-
+// noinspection JSUnusedGlobalSymbols
 export const createNotFoundError = (messageKey = 'errors.recordNotFound') => {
   return createAppError(messageKey, {
     statusCode: 404,
-    statusMessage: 'Not Found',
+    statusMessageKey: 'errors.status404Title',
+    fallbackStatusMessage: 'Not Found',
     fallbackMessage: 'Recurso não encontrado'
   })
 }
-
+// noinspection JSUnusedGlobalSymbols
 export const createUnauthorizedError = (messageKey = 'errors.invalidToken') => {
   return createAppError(messageKey, {
     statusCode: 401,
-    statusMessage: 'Unauthorized',
+    statusMessageKey: 'errors.invalidToken',
+    fallbackStatusMessage: 'Unauthorized',
     fallbackMessage: 'Não autorizado'
   })
 }

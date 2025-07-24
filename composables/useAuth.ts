@@ -1,6 +1,8 @@
 import { authService } from '~/services/auth.service'
 import { useAuthUserStore } from '~/stores/auth.store'
 import type { loginCredentials } from '~/types/auth'
+import type { ErrorHandlerOptions } from '~/utils/clientErrorHandler'
+import { createAppError } from '~/utils/clientErrorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export const useAuth = () => {
@@ -49,9 +51,10 @@ export const useAuth = () => {
     } catch (err) {
       createAppError('errors.serverCommunication', {
         statusCode: 500,
-        statusMessage: 'Logout Error',
+        statusMessageKey: 'errors.serverCommunication',
+        fallbackStatusMessage: 'Logout Error',
         fallbackMessage: 'Erro ao fazer logout',
-      })
+      } satisfies ErrorHandlerOptions)
     } finally {
       authStore.$reset()
       await navigateTo('/', { external: true })

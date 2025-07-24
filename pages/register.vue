@@ -83,7 +83,6 @@
     const result = await register(payload)
 
     if (result.success) {
-     /* console.log('Usuário registrado com sucesso!')*/
       await navigateTo('/')
     } else {
       apiResponse.value = result

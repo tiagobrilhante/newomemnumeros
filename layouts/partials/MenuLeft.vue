@@ -6,15 +6,12 @@
 
   const navigationStore = useNavigationStore()
   const { hasPermission } = usePermissions()
-  const { t } = useI18n()
   const localePath = useLocalePath()
   const route = useRoute()
   const loadingItem = ref<string | null>(null)
   const { mobile } = useDisplay()
 
-  // Função para verificar se um item está ativo
   const isItemActive = (itemPath: string) => {
-    // Comparar o path atual sem o prefixo do idioma
     const currentPath = route.path
     const localizedItemPath = localePath(itemPath)
     return currentPath === localizedItemPath
@@ -44,7 +41,6 @@
 
   const handleNavigation = async (path: string, titleKey: string) => {
     loadingItem.value = titleKey
-    // Usar localePath para manter o prefixo do idioma na URL
     await navigateTo(localePath(path))
     loadingItem.value = null
   }
