@@ -71,6 +71,8 @@
     "userNotFound": "Usuário não encontrado",
     "invalidToken": "Token inválido",
     "accessDenied": "Acesso negado. Você não tem permissão para acessar esta página.",
+    "languageChangeError": "Erro ao alterar idioma",
+    "unsupportedLanguage": "Idioma não suportado",
     "genericTitle": "Erro",
     "genericMessage": "Ocorreu um erro inesperado. Por favor, tente novamente.",
     "status403Title": "Acesso Negado",

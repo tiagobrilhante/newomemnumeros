@@ -44,7 +44,6 @@
       }
 
     } catch (err) {
-      // TODO - improve the error handlers
       apiError.value = $t('errorUnexpected')
     } finally {
       loading.value = false

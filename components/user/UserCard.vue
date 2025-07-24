@@ -13,8 +13,12 @@
     try {
       await logout()
     } catch (error) {
-      // TODO ajustar pra usar o handler de erros (com internacionalização)
-      console.error('Erro ao fazer logout:', error)
+
+      createAppError('errors.serverCommunication', {
+        statusCode: 500,
+        statusMessage: 'Logout Error',
+        fallbackMessage: 'Erro ao fazer logout'
+      })
     }
   }
 </script>

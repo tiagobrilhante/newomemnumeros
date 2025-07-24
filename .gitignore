@@ -9,3 +9,4 @@ dist
 .netlify
 .idea
 CLAUDE.md
+/.claude/

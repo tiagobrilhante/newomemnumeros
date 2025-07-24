@@ -1,12 +1,21 @@
 import { authService } from '~/services/auth.service'
-
 import { useAuthUserStore } from '~/stores/auth.store'
-import type { loginCredentials, registerData } from '~/types/auth'
+import type { loginCredentials } from '~/types/auth'
 
+// noinspection JSUnusedGlobalSymbols
 export const useAuth = () => {
   const authStore = useAuthUserStore()
+  const { $i18n } = useNuxtApp()
   const loading = ref(false)
   const error = ref<string | null>(null)
+
+  const getTranslatedMessage = (key: string, fallback: string): string => {
+    try {
+      return $i18n?.t(key) || fallback
+    } catch {
+      return fallback
+    }
+  }
 
   const login = async (credentials: loginCredentials) => {
     loading.value = true
@@ -19,12 +28,16 @@ export const useAuth = () => {
         authStore.setUser(response.user)
         return { success: true }
       } else {
-        error.value = 'Dados de login inválidos ou incompletos'
-        return { success: false, error: error.value }
+        const message = getTranslatedMessage('errors.invalidDataProvided', 'Dados de login inválidos ou incompletos')
+        error.value = message
+        return { success: false, error: message }
       }
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Erro inesperado na autenticação'
-      return { success: false, error: error.value }
+      const message = err instanceof Error
+        ? err.message
+        : getTranslatedMessage('errorUnexpected', 'Erro inesperado na autenticação')
+      error.value = message
+      return { success: false, error: message }
     } finally {
       loading.value = false
     }
@@ -34,7 +47,11 @@ export const useAuth = () => {
     try {
       await authService.logout()
     } catch (err) {
-      console.error('Erro ao fazer logout:', err)
+      createAppError('errors.serverCommunication', {
+        statusCode: 500,
+        statusMessage: 'Logout Error',
+        fallbackMessage: 'Erro ao fazer logout',
+      })
     } finally {
       authStore.$reset()
       await navigateTo('/', { external: true })
@@ -53,7 +70,9 @@ export const useAuth = () => {
       }
       return false
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Token inválido'
+      error.value = err instanceof Error
+        ? err.message
+        : getTranslatedMessage('errors.invalidToken', 'Token inválido')
       authStore.$reset()
       return false
     } finally {
@@ -66,11 +85,12 @@ export const useAuth = () => {
       const response = await authService.checkAccess()
       if (!response.hasAccess) {
         authStore.$reset()
-
       }
       return response.hasAccess
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Erro ao verificar acesso'
+      error.value = err instanceof Error
+        ? err.message
+        : getTranslatedMessage('errors.accessDenied', 'Erro ao verificar acesso')
       authStore.$reset()
       return false
     }

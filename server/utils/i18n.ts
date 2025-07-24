@@ -1,9 +1,10 @@
 import { readFile } from 'fs/promises'
 import { resolve } from 'path'
 import type { H3Event } from 'h3'
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from '~/config/i18n'
 
-const supportedLocales = ['pt-BR', 'en-US']
-const defaultLocale = 'pt-BR'
+const supportedLocales = SUPPORTED_LOCALES as readonly string[]
+const defaultLocale = DEFAULT_LOCALE
 
 const localeCache = new Map<string, any>()
 

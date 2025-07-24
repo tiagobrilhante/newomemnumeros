@@ -1,53 +1,74 @@
+import { getValidLocaleOrDefault, isValidLocale } from '~/config/i18n'
+import type { ErrorHandlerOptions } from '~/utils/clientErrorHandler'
+import { createAppError } from '~/utils/clientErrorHandler'
+
+// noinspection JSUnusedGlobalSymbols
 export const useLanguageManager = () => {
   const { locale, setLocale } = useI18n()
   const navigationStore = useNavigationStore()
+  const isChanging = ref(false)
 
   const initializeLanguage = () => {
-    if (navigationStore.selectedLanguage) {
-      setLocale(navigationStore.selectedLanguage)
+    const storedLanguage = navigationStore.selectedLanguage
+    if (storedLanguage && storedLanguage !== locale.value) {
+      void changeLanguage(storedLanguage)
     }
   }
 
-  const changeLanguage = (languageCode: string) => {
-    navigationStore.setSelectedLanguage(languageCode)
-    setLocale(languageCode)
+  const changeLanguage = async (languageCode: string) => {
+    if (isChanging.value || languageCode === locale.value) {
+      return
+    }
+
+    if (!isValidLocale(languageCode)) {
+      // Usa o handler para idioma inválido
+      const appError = createAppError('errors.unsupportedLanguage', {
+        statusCode: 400,
+        statusMessageKey: 'errors.unsupportedLanguage',
+        fallbackStatusMessage: 'Invalid Language',
+        fallbackMessage: `Idioma não suportado: ${languageCode}`,
+      } satisfies ErrorHandlerOptions)
+
+      console.error('Invalid language:', appError.message)
+      return
+    }
+
+    isChanging.value = true
+
+    try {
+      navigationStore.setSelectedLanguage(languageCode)
+      await setLocale(languageCode)
+      await nextTick()
+    } catch (error) {
+      createAppError('errors.languageChangeError', {
+        statusCode: 500,
+        statusMessageKey: 'errors.languageChangeError',
+        fallbackStatusMessage: 'Language Change Error',
+        fallbackMessage: 'Erro ao alterar idioma',
+      } satisfies ErrorHandlerOptions)
+
+      const validLocale = getValidLocaleOrDefault(locale.value)
+      navigationStore.setSelectedLanguage(validLocale)
+
+    } finally {
+      isChanging.value = false
+    }
   }
 
-  // Flag para evitar loops durante inicialização
-  const isInitializing = ref(false)
-
-  // Observar mudanças no i18n e sincronizar com a store (apenas se não estiver inicializando)
-  watch(locale, (newLocale, oldLocale) => {
-    // IMPORTANTE: Só aceitar mudanças se não estivermos controlando
-    if (!isInitializing.value && newLocale !== navigationStore.selectedLanguage) {
-      // Reverter para o valor da store em vez de aceitar a mudança externa
-      if (navigationStore.selectedLanguage) {
-        isInitializing.value = true
-        setLocale(navigationStore.selectedLanguage)
-        nextTick(() => {
-          isInitializing.value = false
-        })
-      }
-    }
-  })
-
-  // Observar mudanças na store e sincronizar com i18n (dar prioridade à store)
   watch(
     () => navigationStore.selectedLanguage,
-    (newLanguage, oldLanguage) => {
-      if (newLanguage && newLanguage !== locale.value) {
-        isInitializing.value = true
-        setLocale(newLanguage)
-        nextTick(() => {
-          isInitializing.value = false
-        })
+    (newLanguage) => {
+      if (newLanguage && newLanguage !== locale.value && !isChanging.value) {
+        void changeLanguage(newLanguage)
       }
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   return {
     selectedLanguage: computed(() => navigationStore.selectedLanguage),
+    currentLocale: computed(() => locale.value),
+    isChangingLanguage: readonly(isChanging),
     initializeLanguage,
     changeLanguage,
   }

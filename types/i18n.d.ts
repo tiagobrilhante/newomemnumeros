@@ -1,5 +1,8 @@
 import type { VueI18n } from 'vue-i18n'
 
+// Tipos de idiomas suportados
+export type SupportedLocale = 'pt-BR' | 'en-US'
+
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $t: VueI18n['t']

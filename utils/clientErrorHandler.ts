@@ -1,6 +1,7 @@
-interface ErrorHandlerOptions {
+export interface ErrorHandlerOptions {
   statusCode?: number
-  statusMessage?: string
+  statusMessageKey?: string
+  fallbackStatusMessage?: string
   fallbackMessage?: string
 }
 
@@ -17,7 +18,8 @@ export function createAppError(
   
   const {
     statusCode = 500,
-    statusMessage = 'Internal Server Error',
+    statusMessageKey,
+    fallbackStatusMessage = 'Internal Server Error',
     fallbackMessage = 'An error occurred'
   } = options
 
@@ -27,6 +29,18 @@ export function createAppError(
     message = $i18n?.t(messageKey) || fallbackMessage
   } catch {
     message = fallbackMessage
+  }
+
+  // Tenta traduzir o statusMessage se uma chave for fornecida
+  let statusMessage: string
+  if (statusMessageKey) {
+    try {
+      statusMessage = $i18n?.t(statusMessageKey) || fallbackStatusMessage
+    } catch {
+      statusMessage = fallbackStatusMessage
+    }
+  } else {
+    statusMessage = fallbackStatusMessage
   }
 
   return createError({

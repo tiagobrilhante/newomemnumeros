@@ -1,6 +1,6 @@
 <script setup lang="ts">
   const { brazilFlag, usFlag } = useIcons()
-  const { selectedLanguage, initializeLanguage, changeLanguage } = useLanguageManager()
+  const { selectedLanguage, changeLanguage } = useLanguageManager()
 
   const languages = [
     {
@@ -10,7 +10,7 @@
       countryCode: 'BR'
     },
     {
-      code: 'en-US', 
+      code: 'en-US',
       name: 'English',
       flag: usFlag,
       countryCode: 'US'
@@ -68,11 +68,11 @@
               class="language-flag"
             />
           </template>
-          
+
           <v-list-item-title class="font-weight-medium">
             {{ language.name }}
           </v-list-item-title>
-          
+
           <template #append>
             <v-icon
               v-show="language.code === selectedLanguage"

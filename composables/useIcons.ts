@@ -1,5 +1,6 @@
 import type { FunctionalComponent } from 'vue'
 
+// noinspection JSUnusedGlobalSymbols
 export const useIcons = () => {
   const createIcon = (name: string, props = {}): FunctionalComponent => {
     return () => h(resolveComponent('Icon'), {
