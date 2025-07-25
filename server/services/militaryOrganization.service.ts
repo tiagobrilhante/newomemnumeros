@@ -1,16 +1,19 @@
 import prisma from '~/server/prisma'
 import { handleError } from '~/server/utils/errorHandler'
 import { MilitaryOrganizationTransformer } from '~/server/transformers/militaryOrganization.transformer'
+import { sanitizeData } from '~/utils/sanitize-data'
 import type { militaryOrganization } from '~/types/military-organization'
-
-function sanitizeString(value: string): string {
-  if (!value) return ''
-  return value.trim()
-}
 
 function isValidColor(color: string): boolean {
   const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
   return hexColorRegex.test(color)
+}
+
+function sanitizeMilitaryOrganizationData(name: string, acronym: string) {
+  const sanitizedData = sanitizeData({ name, acronym })
+  const sanitizedName = sanitizedData.name
+  const sanitizedAcronym = sanitizedData.acronym.toUpperCase()
+  return { sanitizedName, sanitizedAcronym }
 }
 
 export async function getAllMilitaryOrganizations(locale: string) {
@@ -105,8 +108,8 @@ export async function createMilitaryOrganization(data: militaryOrganization, loc
       })
     }
 
-    const sanitizedName = sanitizeString(name)
-    const sanitizedAcronym = sanitizeString(acronym).toUpperCase()
+    // noinspection DuplicatedCode
+    const { sanitizedName, sanitizedAcronym } = sanitizeMilitaryOrganizationData(name, acronym)
 
     if (!sanitizedName || !sanitizedAcronym) {
       return createError({
@@ -203,8 +206,8 @@ export async function updateMilitaryOrganization(data: militaryOrganization, loc
       })
     }
 
-    const sanitizedName = sanitizeString(name)
-    const sanitizedAcronym = sanitizeString(acronym).toUpperCase()
+    // noinspection DuplicatedCode
+    const { sanitizedName, sanitizedAcronym } = sanitizeMilitaryOrganizationData(name, acronym)
 
     if (!sanitizedName || !sanitizedAcronym) {
       return createError({
