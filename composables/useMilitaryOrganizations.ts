@@ -1,8 +1,9 @@
-import type { militaryOrganization } from '~/types/military-organization'
+import { toast } from 'vue3-toastify'
 import { useMilitaryOrganizationStore } from '~/stores/military-organization.store'
 import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
-import { toast } from 'vue3-toastify'
 import { militaryOrganizationService } from '~/services/militaryOrganization.service'
+import type { militaryOrganization } from '~/types/military-organization'
+import type { ApiResponse } from '~/types/api-response'
 
 interface MilitaryOrganizationFilters {
   search?: string
@@ -45,27 +46,24 @@ export const useMilitaryOrganizations = () => {
     militaryOrganizations.value.filter(org => org.militaryOrganizationId === parentId),
   )
 
-  const fetchMilitaryOrganizations = async (): Promise<militaryOrganization[]> => {
 
+  const fetchMilitaryOrganizations = async (): Promise<militaryOrganization[]> => {
     loading.value = true
     error.value = ''
 
     try {
       const response = await militaryOrganizationService.findAll()
 
-      if (response.success) {
-        store.setMilitaryOrganizations(response.data)
-        return response.data
-      } else {
-        throw new Error(response.message || 'Erro ao carregar organizações militares')
+      if (!response.success) {
+        throw createMilitaryOrganizationError(
+          'errors.serverCommunication',
+          response.message || 'Erro ao carregar organizações militares',
+          response.statusCode || 500,
+        )
       }
-    } catch (error) {
-      const appError = createMilitaryOrganizationError(
-        'errors.serverCommunication',
-        'Erro ao carregar organizações militares',
-      )
-      console.error('Fetch military organizations error:', appError.message)
-      throw appError
+
+      store.setMilitaryOrganizations(response.data)
+      return response.data
     } finally {
       loading.value = false
     }
@@ -256,7 +254,7 @@ export const useMilitaryOrganizations = () => {
     }
   }
 
-  const findMilitaryOrganization = async (id: string): Promise<militaryOrganization | null> => {
+  const findMilitaryOrganization = async (id: string): Promise<militaryOrganization> => {
     if (!id) {
       throw createMilitaryOrganizationError(
         'errors.invalidId',
@@ -265,29 +263,50 @@ export const useMilitaryOrganizations = () => {
       )
     }
 
+    const cached = store.militaryOrganizations.find(mo => mo.id === id)
+    if (cached) {
+      store.setSelectedMilitaryOrganization(cached)
+      return cached
+    }
+
     loading.value = true
     error.value = ''
-    try {
-      const response = await militaryOrganizationService.findById(id)
 
-      if (response.success && response.data) {
-        store.setSelectedMilitaryOrganization(response.data)
-        return response.data
-      } else {
-        throw new Error(response.message || 'Organização militar não encontrada')
+    try {
+      let resp: ApiResponse<militaryOrganization | null>
+
+      try {
+        resp = await militaryOrganizationService.findById(id)
+      } catch (e: any) {
+        error.value = e.message ?? 'Falha de comunicação'
+        throw createMilitaryOrganizationError(
+          'errors.serverCommunication',
+          'Erro ao comunicar com o servidor',
+        )
       }
 
-    } catch (error) {
-      const appError = createMilitaryOrganizationError(
-        'errors.recordNotFound',
-        'Organização militar não encontrada',
-      )
-      console.error('Find military organization error:', appError.message)
-      throw appError
+      if (!resp.success || !resp.data) {
+        throw createMilitaryOrganizationError(
+          'errors.recordNotFound',
+          resp.message || 'Organização militar não encontrada',
+          resp.statusCode || 404,
+        )
+      }
+
+      const data = resp.data
+
+      const idx = store.militaryOrganizations.findIndex(mo => mo.id === id)
+      idx >= 0
+        ? store.militaryOrganizations.splice(idx, 1, data)
+        : store.militaryOrganizations.push(data)
+
+      store.setSelectedMilitaryOrganization(data)
+      return data
     } finally {
       loading.value = false
     }
   }
+
 
   const selectMilitaryOrganization = (militaryOrganization: militaryOrganization | null): void => {
     if (militaryOrganization) {
