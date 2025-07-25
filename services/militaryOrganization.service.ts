@@ -1,29 +1,30 @@
-import type {
-  createdMilitaryOrganization,
-  militaryOrganization,
-  updatedMilitaryOrganization,
-} from '~/types/core/organization'
+import type {militaryOrganization } from '~/types/military-organization'
 
 class MilitaryOrganizationService {
   private baseURL = '/api/military-organizations'
 
-  // Buscar todas as Organizações Militares
   async findAll(): Promise<militaryOrganization[]> {
     try {
-      return await $fetch<militaryOrganization[]>(this.baseURL, {
+
+      const teste =  await $fetch<militaryOrganization[]>(this.baseURL, {
         params: {
           include: {
             parentOrganization: true,
           },
         },
       })
+
+      console.log('teste')
+      console.log(teste)
+      console.log('teste')
+
+      return teste
     } catch (error) {
       console.error('Erro ao buscar organizações Militares:', error)
       throw error
     }
   }
 
-  // Buscar Organizações Militares por ID
   async findById(id: string): Promise<militaryOrganization | null> {
     try {
       return await $fetch<militaryOrganization>(`${this.baseURL}/${id}`)
@@ -33,8 +34,7 @@ class MilitaryOrganizationService {
     }
   }
 
-  // Criar nova organização militar
-  async create(data: createdMilitaryOrganization): Promise<militaryOrganization> {
+  async create(data: militaryOrganization): Promise<militaryOrganization> {
     try {
       return await $fetch<militaryOrganization>(this.baseURL, {
         method: 'POST',
@@ -52,10 +52,9 @@ class MilitaryOrganizationService {
     }
   }
 
-  // Atualizar Organização Militar
-  async update(data: updatedMilitaryOrganization): Promise<updatedMilitaryOrganization> {
+  async update(data: militaryOrganization): Promise<militaryOrganization> {
     try {
-      return await $fetch<updatedMilitaryOrganization>(`${this.baseURL}/${data.id}`, {
+      return await $fetch<militaryOrganization>(`${this.baseURL}/${data.id}`, {
         method: 'PUT',
         body: data,
       })
@@ -65,10 +64,9 @@ class MilitaryOrganizationService {
     }
   }
 
-  // Deletar Organização Militar
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<any> {
     try {
-      await $fetch(`${this.baseURL}/${id}`, {
+      return await $fetch(`${this.baseURL}/${id}`, {
         method: 'DELETE',
       })
     } catch (error) {
@@ -77,10 +75,9 @@ class MilitaryOrganizationService {
     }
   }
 
-  // Deletar Logo Organização Militar
-  async deleteLogo(id: string): Promise<updatedMilitaryOrganization> {
+  async deleteLogo(id: string): Promise<militaryOrganization> {
     try {
-      return await $fetch<updatedMilitaryOrganization>(`${this.baseURL}/delete-logo/${id}`, {
+      return await $fetch<militaryOrganization>(`${this.baseURL}/delete-logo/${id}`, {
         method: 'DELETE',
       })
     } catch (error) {
@@ -90,5 +87,4 @@ class MilitaryOrganizationService {
   }
 }
 
-// Instância única do serviço
 export const militaryOrganizationService = new MilitaryOrganizationService()

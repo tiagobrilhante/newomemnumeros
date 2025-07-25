@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { sectionsService } from '~/services/sectionsService'
-import type { section, createdSection, updatedSection } from '~/types/core/organization'
+import type { section } from '~/types/sections'
 
 type sectionState = {
   sections: section[]
@@ -58,7 +58,7 @@ export const useSectionStore = defineStore('sectionStore', {
       }
     },
 
-    async addSection(newSectionData: createdSection) {
+    async addSection(newSectionData: section) {
       this.loading = true
       this.error = null
 
@@ -78,7 +78,7 @@ export const useSectionStore = defineStore('sectionStore', {
       }
     },
 
-    async updateSection(updatedDataSection: updatedSection) {
+    async updateSection(updatedDataSection: section) {
       this.loading = true
       this.error = null
 

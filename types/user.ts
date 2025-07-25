@@ -1,21 +1,5 @@
 import type { rank } from '~/types/rank'
-
-export type militaryOrganization = {
-  id: string
-  name: string
-  acronym: string
-  color: string
-  logo: string
-  militaryOrganizationId: string | null
-}
-
-export type section = {
-  id: string
-  name: string
-  acronym: string
-  militaryOrganizationId: string
-  militaryOrganization: militaryOrganization
-}
+import type { section } from '~/types/sections'
 
 export type role = {
   id: string
@@ -23,7 +7,7 @@ export type role = {
   acronym: string
   sectionId: string
   section: section
-  permissions: string[] // Array de strings das permissões
+  permissions: string[]
 }
 
 export type user = {

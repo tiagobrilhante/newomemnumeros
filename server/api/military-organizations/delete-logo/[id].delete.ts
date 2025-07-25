@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
   try {
     const militaryOrganization = await prisma.militaryOrganization.findUnique({
       where: {
-        id: Number(id),
+        id,
         deleted: false,
       },
     })
@@ -33,12 +33,11 @@ export default defineEventHandler(async (event) => {
     }
 
     return await prisma.militaryOrganization.update({
-      where: { id: Number(id), deleted: false },
+      where: { id, deleted: false },
       data: {
         logo: '/logos/default/default.png',
       },
       include: {
-        users: { where: { deleted: false } },
         subOrganizations: true,
         parentOrganization: true,
       },

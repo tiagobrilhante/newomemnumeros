@@ -1,27 +1,52 @@
 <script lang="ts" setup>
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
-  import type { VDataTable, VSelect } from 'vuetify/components'
-  import { useSectionStore } from '~/stores/section.store'
-  import { useMilitaryOrganizationStore } from '~/stores/military-organization.store'
+  import type { VDataTable } from 'vuetify/components'
   import Form from '~/components/section/Form.vue'
-  import { toast } from 'vue3-toastify'
-  import 'vue3-toastify/dist/index.css'
-  import { retrieveMilitaryOrganizationAcronym } from '~/utils/retrieve-military-organization-acronym'
+
+  // ====================================
+  // CONFIGURAÇÃO E HEAD
+  // ====================================
+
+  const config = useRuntimeConfig()
+  const appName = config.public.APP_NAME
 
   useHead({
-    title: 'Gerenciamento de Seções',
+    title: $t('leftMenu.sections') + ' - ' + appName,
   })
 
-  const adminSectionStore = useSectionStore()
-  const militaryOrganizationStore = useMilitaryOrganizationStore()
+  // ====================================
+  // COMPOSABLES (Nova arquitetura)
+  // ====================================
+
+  // Composable de seções (business logic centralizada)
+  const {
+    sections,
+    selectedSection,
+    loading,
+    error,
+    fetchSectionsByOM,
+    deleteSection: deleteSectionComposable,
+    findSection,
+    selectSection,
+    clearSelection
+  } = useSections()
+
+  // Composable de organizações militares (nova arquitetura)
+  const {
+    militaryOrganizations,
+    loading: loadingOM,
+    fetchMilitaryOrganizations,
+    getMilitaryOrganizationAcronym
+  } = useMilitaryOrganizations()
+
   const selectedMilitaryOrganization = ref<number | null>(null)
+  const dialog = ref(false)
+  const loadingBtn = ref(false)
+
   const titleVariables = {
     title: 'Gerenciamento de Seções',
     icon: 'mdi-lan',
   }
-
-  const dialog = ref(false)
-  const loadingBtn = ref(false)
 
   const CARD_PROPS = reactive<{
     modalType: string
@@ -33,66 +58,63 @@
     selectedMilitaryOrganizationId: null,
   })
 
-  const openModal = async (type: string, id?: number) => {
+  const openModal = async (type: string, id?: string) => {
     CARD_PROPS.modalType = type
     dialog.value = true
+
     if (type === 'Cadastro') {
       CARD_PROPS.modalTextButton = 'Cadastrar'
       CARD_PROPS.selectedMilitaryOrganizationId = selectedMilitaryOrganization.value ?? null
-      adminSectionStore.clearSelectedSection()
+      clearSelection()
     } else if (type === 'Edição') {
       CARD_PROPS.modalTextButton = 'Editar'
       CARD_PROPS.selectedMilitaryOrganizationId = selectedMilitaryOrganization.value ?? null
       if (id !== undefined) {
-        await adminSectionStore.findSection(id)
-        const selectedSection = adminSectionStore.selectedSection
-        if (selectedSection) {
-          adminSectionStore.setSelectedSection(selectedSection)
+        try {
+          await findSection(id)
+        } catch (error) {
+          console.error('Error finding section:', error)
         }
       }
     } else {
       if (!id) return
       CARD_PROPS.modalTextButton = 'Excluir'
-      await adminSectionStore.findSection(id)
-      const selectedSection = adminSectionStore.selectedSection
-      if (selectedSection) {
-        adminSectionStore.setSelectedSection(selectedSection)
+      try {
+        await findSection(id)
+      } catch (error) {
+        console.error('Error finding section:', error)
       }
     }
   }
 
-  const deleteSection = async (id: number) => {
-    loadingBtn.value = true
-    await adminSectionStore
-      .deleteSection(id)
-      .then(() => {
-        toast('Seção excluída com Sucesso!', {
-          theme: 'dark',
-          type: 'success',
-          dangerouslyHTMLString: true,
-        })
-      })
-      .finally(() => {
-        loadingBtn.value = false
-        dialog.value = false
-      })
-  }
 
-  onMounted(() => {
-    // adminSectionStore.fetchSectionsByMilitaryOrganizationId(selectedMilitaryOrganization.value)
-    militaryOrganizationStore.fetchMilitaryOrganizations()
-  })
+  const handleDeleteSection = async (id: string) => {
+    loadingBtn.value = true
+
+    try {
+      await deleteSectionComposable(id)
+      // Sucesso - composable já mostra toast
+      dialog.value = false
+    } catch (error) {
+      // Erro já tratado pelo composable com toast
+      console.error('Delete error handled by composable')
+    } finally {
+      loadingBtn.value = false
+    }
+  }
 
   const getSectionsByOmId = async () => {
     if (selectedMilitaryOrganization.value) {
-      await adminSectionStore.fetchSectionsByMilitaryOrganizationId(
-        Number(selectedMilitaryOrganization.value)
-      )
+      try {
+        await fetchSectionsByOM(selectedMilitaryOrganization.value.toString())
+      } catch (error) {
+        console.error('Fetch sections error handled by composable')
+      }
     }
   }
 
   const closeDialog = () => {
-    adminSectionStore.clearSelectedSection()
+    clearSelection()
     dialog.value = false
   }
 
@@ -101,6 +123,10 @@
     { title: 'Sigla', key: 'acronym' },
     { title: 'Ações', key: 'actions', sortable: false, align: 'center' },
   ]
+
+  onMounted(() => {
+    fetchMilitaryOrganizations()
+  })
 </script>
 
 <template>
@@ -114,9 +140,10 @@
             <v-row>
               <v-col class="align-content-center">
                 <v-select
-                  v-if="militaryOrganizationStore.militaryOrganizations"
+                  v-if="militaryOrganizations.length > 0"
                   v-model="selectedMilitaryOrganization"
-                  :items="militaryOrganizationStore.militaryOrganizations"
+                  :items="militaryOrganizations"
+                  :loading="loadingOM"
                   class="pt-1"
                   density="compact"
                   item-title="acronym"
@@ -145,14 +172,11 @@
             <span
               >Seções Cadastradas -
               {{
-                retrieveMilitaryOrganizationAcronym(
-                  selectedMilitaryOrganization,
-                  militaryOrganizationStore.militaryOrganizations
-                )
+                getMilitaryOrganizationAcronym(selectedMilitaryOrganization || '')
               }}</span
             >
             <v-btn
-              :loading="adminSectionStore.loading"
+              :loading="loading"
               color="primary"
               prepend-icon="mdi-plus-circle"
               rounded="xl"
@@ -163,15 +187,15 @@
           </v-card-title>
 
           <v-card-text>
-            <v-alert v-if="adminSectionStore.error" class="mb-4 text-center" type="error">
-              {{ adminSectionStore.error }}
+            <v-alert v-if="error" class="mb-4 text-center" type="error">
+              {{ error }}
             </v-alert>
 
             <v-data-table
               v-else
               :headers="headers"
-              :items="adminSectionStore.sections"
-              :loading="adminSectionStore.loading"
+              :items="sections"
+              :loading="loading"
               density="compact"
               item-value="id"
             >
@@ -220,7 +244,7 @@
 
       <!-- exclui seção -->
       <v-card
-        v-else-if="CARD_PROPS.modalType === 'Exclusão' && adminSectionStore.selectedSection"
+        v-else-if="CARD_PROPS.modalType === 'Exclusão' && selectedSection"
         :title="CARD_PROPS.modalType + ' de Seção'"
         class="rounded-xl"
         prepend-icon="mdi-alert"
@@ -230,8 +254,8 @@
             <v-row>
               <v-col class="text-justify">
                 <p>
-                  Você tem certeza que deseja excluir a Organização Militar:
-                  <b> {{ adminSectionStore.selectedSection.name }}?</b>
+                  Você tem certeza que deseja excluir a Seção:
+                  <b> {{ selectedSection.name }}?</b>
                 </p>
                 <br >
                 <hr >
@@ -249,14 +273,14 @@
         <v-card-actions class="pb-4">
           <v-spacer />
           <v-btn
-            v-if="adminSectionStore.selectedSection?.id !== undefined"
+            v-if="selectedSection?.id !== undefined"
             :loading="loadingBtn"
             :text="CARD_PROPS.modalTextButton"
             color="error"
             prepend-icon="mdi-alert"
             rounded="xl"
             variant="elevated"
-            @click="deleteSection(adminSectionStore.selectedSection.id!)"
+            @click="handleDeleteSection(selectedSection.id!)"
           />
           <v-btn
             class="mr-8"

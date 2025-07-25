@@ -5,6 +5,14 @@
   import type { VForm } from 'vuetify/components'
   import type { RegisterResponse } from '~/services/register.service'
 
+
+  const config = useRuntimeConfig()
+  const appName = config.public.APP_NAME
+
+  useHead({
+    title: $t('signUp') + ' - ' + appName,
+  })
+
   definePageMeta({
     layout: 'guest-layout',
     auth: {

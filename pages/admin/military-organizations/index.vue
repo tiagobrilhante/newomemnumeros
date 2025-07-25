@@ -1,17 +1,25 @@
 <script lang="ts" setup>
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
   import type { VDataTable } from 'vuetify/components'
-  import { useMilitaryOrganizationStore } from '~/stores/military-organization.store'
   import Form from '~/components/military-organization/Form.vue'
-  import { toast } from 'vue3-toastify'
-  import 'vue3-toastify/dist/index.css'
   import { retrieveMiniImage } from '~/utils/retrieve-mini-image'
+
 
   useHead({
     title: 'Gerenciamento de Organizações Militares',
   })
 
-  const adminMilitaryOrganizationStore = useMilitaryOrganizationStore()
+  const {
+    militaryOrganizations,
+    selectedMilitaryOrganization,
+    loading,
+    error,
+    fetchMilitaryOrganizations,
+    deleteMilitaryOrganization: deleteMilitaryOrganizationComposable,
+    findMilitaryOrganization,
+    clearSelection,
+  } = useMilitaryOrganizations()
+
 
   const titleVariables = {
     title: 'Gerenciamento de Organizações Militares',
@@ -27,62 +35,54 @@
     modalTextButton: '',
   })
 
-  const openModal = async (type: string, id?: number, logo?: string) => {
+
+  const openModal = async (type: string, id?: string, logo?: string) => {
     CARD_PROPS.modalType = type
     dialog.value = true
+
     if (type === 'Cadastro') {
       CARD_PROPS.modalTextButton = 'Cadastrar'
-      adminMilitaryOrganizationStore.clearSelectedMilitaryOrganization()
+      clearSelection()
     } else if (type === 'Edição') {
       CARD_PROPS.modalTextButton = 'Editar'
       if (id !== undefined) {
-        await adminMilitaryOrganizationStore.findMilitaryOrganization(id)
-        const selectedMilitaryOrganization =
-          adminMilitaryOrganizationStore.selectedMilitaryOrganization
-        if (selectedMilitaryOrganization) {
-          adminMilitaryOrganizationStore.setSelectedMilitaryOrganization(
-            selectedMilitaryOrganization
-          )
+        try {
+          await findMilitaryOrganization(id)
+        } catch (error) {
+          console.error('Error finding military organization:', error)
         }
       }
     } else if (type === 'Logo') {
       logoToShow.value = logo
     } else {
+      // Exclusão
       if (!id) return
       CARD_PROPS.modalTextButton = 'Excluir'
-      await adminMilitaryOrganizationStore.findMilitaryOrganization(id)
-      const selectedMilitaryOrganization =
-        adminMilitaryOrganizationStore.selectedMilitaryOrganization
-      if (selectedMilitaryOrganization) {
-        adminMilitaryOrganizationStore.setSelectedMilitaryOrganization(selectedMilitaryOrganization)
+      try {
+        await findMilitaryOrganization(id)
+      } catch (error) {
+        console.error('Error finding military organization:', error)
       }
     }
   }
 
-  const deleteMilitaryOrganization = async (id: number) => {
+
+  const handleDeleteMilitaryOrganization = async (id: string) => {
     loadingBtn.value = true
-    await adminMilitaryOrganizationStore
-      .deleteMilitaryOrganization(id)
-      .then(() => {
-        // TODO criar modulo para abstrair a chamada pura nos componentes
-        toast('Om excluída com Sucesso!', {
-          theme: 'dark',
-          type: 'success',
-          dangerouslyHTMLString: true,
-        })
-      })
-      .finally(() => {
-        loadingBtn.value = false
-        dialog.value = false
-      })
+
+    try {
+      await deleteMilitaryOrganizationComposable(id.toString())
+      dialog.value = false
+    } catch (error) {
+      console.error('Delete error handled by composable')
+    } finally {
+      loadingBtn.value = false
+    }
   }
 
-  onMounted(() => {
-    adminMilitaryOrganizationStore.fetchMilitaryOrganizations()
-  })
-
   const closeDialog = () => {
-    adminMilitaryOrganizationStore.clearSelectedMilitaryOrganization()
+    clearSelection()
+    logoToShow.value = undefined
     dialog.value = false
   }
 
@@ -94,6 +94,10 @@
     { title: 'Om Pai', key: 'parentOrganization' },
     { title: 'Ações', key: 'actions', sortable: false, align: 'center' },
   ]
+
+  onMounted(() => {
+    fetchMilitaryOrganizations()
+  })
 </script>
 
 <template>
@@ -106,7 +110,7 @@
           <v-card-title class="d-flex justify-space-between align-center">
             <span>Organizações Militares Cadastradas</span>
             <v-btn
-              :loading="adminMilitaryOrganizationStore.loading"
+              :loading="loading"
               color="primary"
               prepend-icon="mdi-plus-circle"
               rounded="xl"
@@ -118,18 +122,18 @@
 
           <v-card-text>
             <v-alert
-              v-if="adminMilitaryOrganizationStore.error"
+              v-if="error"
               class="mb-4 text-center"
               type="error"
             >
-              {{ adminMilitaryOrganizationStore.error }}
+              {{ error }}
             </v-alert>
 
             <v-data-table
               v-else
               :headers="headers"
-              :items="adminMilitaryOrganizationStore.militaryOrganizations"
-              :loading="adminMilitaryOrganizationStore.loading"
+              :items="militaryOrganizations"
+              :loading="loading"
               density="compact"
               item-value="id"
             >
@@ -223,7 +227,7 @@
       <v-card
         v-else-if="
           CARD_PROPS.modalType === 'Exclusão' &&
-          adminMilitaryOrganizationStore.selectedMilitaryOrganization
+          selectedMilitaryOrganization
         "
         :title="CARD_PROPS.modalType + ' de Organização Militar'"
         class="rounded-xl"
@@ -235,35 +239,16 @@
               <v-col class="text-justify">
                 <p>
                   Você tem certeza que deseja excluir a Organização Militar:
-                  <b> {{ adminMilitaryOrganizationStore.selectedMilitaryOrganization.name }}?</b>
+                  <b> {{ selectedMilitaryOrganization.name }}?</b>
                 </p>
-                <br >
-                <hr >
-                <br >
+                <br>
+                <hr>
+                <br>
                 <p>Essa ação é irreversível.</p>
 
-                <p
-                  v-if="
-                    adminMilitaryOrganizationStore.selectedMilitaryOrganization.users &&
-                    adminMilitaryOrganizationStore.selectedMilitaryOrganization.users.length > 0
-                  "
-                >
-                  Um total de:
-                  {{ adminMilitaryOrganizationStore.selectedMilitaryOrganization.users.length }}
-
-                  <span
-                    v-if="
-                      adminMilitaryOrganizationStore.selectedMilitaryOrganization.users.length > 1
-                    "
-                  >
-                    usuários serão afetados.</span
-                  >
-                  <span v-else> usuário será afetado. </span>
-                </p>
-
-                <br >
-                <hr >
-                <br >
+                <br>
+                <hr>
+                <br>
                 <p>
                   As contas vinculadas a essa Organização militar, deixarão de ter acesso ao
                   sistema.
@@ -275,7 +260,7 @@
         <v-card-actions class="pb-4">
           <v-spacer />
           <v-btn
-            v-if="adminMilitaryOrganizationStore.selectedMilitaryOrganization"
+            v-if="selectedMilitaryOrganization"
             :loading="loadingBtn"
             :text="CARD_PROPS.modalTextButton"
             color="error"
@@ -283,8 +268,8 @@
             rounded="xl"
             variant="elevated"
             @click="
-              deleteMilitaryOrganization(
-                adminMilitaryOrganizationStore.selectedMilitaryOrganization.id
+              handleDeleteMilitaryOrganization(
+                selectedMilitaryOrganization.id
               )
             "
           />
@@ -308,7 +293,7 @@
         <v-card-text>
           <v-row>
             <v-col align-self="center" class="text-center">
-              <img v-if="logoToShow" :src="logoToShow" alt="Logo" >
+              <img v-if="logoToShow" :src="logoToShow" alt="Logo">
               <span v-else> Sem logo cadastrado </span>
             </v-col>
           </v-row>

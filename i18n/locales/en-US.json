@@ -44,7 +44,8 @@
     "mainMenu": "Main Menu",
     "home": "Home",
     "militaryOrganizations": "Military Organizations",
-    "sections": "Sections",
+    "militaryOrganization": "Military Organization",
+    "sections": "Sections Management",
     "userManagement": "User Management",
     "rolesAndPermissions": "Roles and Permissions",
     "userLinks": "Vinculação de usuários"
@@ -86,7 +87,14 @@
     "rankCreated": "Rank created successfully!",
     "rankUpdated": "Rank updated successfully!",
     "rankDeleted": "Rank deleted successfully!",
-    "ranksByHierarchyRetrieved": "Ranks found by hierarchy"
+    "ranksByHierarchyRetrieved": "Ranks found by hierarchy",
+    "sectionCreated": "Section created successfully!",
+    "sectionUpdated": "Section updated successfully!",
+    "sectionDeleted": "Section deleted successfully!",
+    "militaryOrganizationCreated": "Military organization created successfully!",
+    "militaryOrganizationUpdated": "Military organization updated successfully!",
+    "militaryOrganizationDeleted": "Military organization deleted successfully!",
+    "militaryOrganizationLogoDeleted": "Military organization logo removed successfully!"
   },
 
   "$vuetify": {
@@ -114,6 +122,10 @@
       "lastPage": "Last page",
       "pageText": "{0}-{1} of {2}"
     },
-    "noDataText": "No data to display"
+    "noDataText": "No data to display",
+    "input": {
+      "prependAction": "Prepend action",
+      "clear": "Clear"
+    }
   }
 }

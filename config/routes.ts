@@ -17,10 +17,10 @@ export const routesConfig: RouteConfig[] = [
   },
   {
     path: '/admin/military-organizations',
-    titleKey: 'leftMenu.militaryOrganizations',
+    titleKey: 'leftMenu.militaryOrganization',
     icon: 'mdi-domain',
     color: '#515757',
-    accessLevel: ['militaryOrganizations.read'],
+    accessLevel: ['militaryOrganization.read'],
   },
   {
     path: '/admin/sections',

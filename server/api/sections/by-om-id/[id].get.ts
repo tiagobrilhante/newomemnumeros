@@ -4,7 +4,7 @@ import prisma from '~/server/prisma'
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
 
-  if (!id || isNaN(Number(id))) {
+  if (!id) {
     throw createError({
       statusCode: 400,
       message: 'ID inválido',
@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   try {
     return await prisma.section.findMany({
       where: {
-        militaryOrganizationId: Number(id),
+        militaryOrganizationId: id,
         deleted: false,
       },
       include: {

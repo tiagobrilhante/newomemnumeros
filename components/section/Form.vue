@@ -4,7 +4,7 @@
   import 'vue3-toastify/dist/index.css'
   import type { section, createdSection, updatedSection, militaryOrganization } from '~/types/core/organization'
   import { sectionsService } from '~/services/sectionsService'
-  import { militaryOrganizationService } from '~/services/militaryOrganizationsService'
+  import { militaryOrganizationService } from '~/services/militaryOrganization.service'
   import { retrieveMilitaryOrganizationAcronym } from '~/utils/retrieve-military-organization-acronym'
 
   const loading = ref(false)

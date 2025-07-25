@@ -4,6 +4,13 @@
   //import { retrieveMilitaryOrganizationLogo } from '~/utils/retrieve-military-organization-logo'
   import { useAuthUserStore } from '~/stores/auth.store'
 
+  const config = useRuntimeConfig()
+  const appName = config.public.APP_NAME
+
+  useHead({
+    title: $t('home') + ' - ' + appName,
+  })
+
   definePageMeta({
     auth: true
   })

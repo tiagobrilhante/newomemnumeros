@@ -3,7 +3,7 @@
   import { toast } from 'vue3-toastify'
   import 'vue3-toastify/dist/index.css'
   import type { militaryOrganization } from '~/types/core/organization'
-  import { militaryOrganizationService } from '~/services/militaryOrganizationsService'
+  import { militaryOrganizationService } from '~/services/militaryOrganization.service'
   import InputImage from '~/components/utils/InputImage.vue'
 
   const loading = ref(false)
@@ -35,11 +35,13 @@
   }>()
 
   const militaryOrganizations = ref<militaryOrganization[]>([])
-  const selectedMilitaryOrganization = ref<number | null>(null)
+  const selectedMilitaryOrganization = ref<string | null>(null)
 
   const adminMilitaryOrganizationStore = useMilitaryOrganizationStore()
 
   const isComponentVisible = ref(false)
+
+  const {createMilitaryOrganization} = useMilitaryOrganizations()
 
   militaryOrganizations.value =
     (await militaryOrganizationService.findAll()) as militaryOrganization[]
@@ -70,10 +72,11 @@
     logoBase.value = logo.value
   }
 
+  /*
   const filteredMilitaryOrganizations = computed(() => {
     return militaryOrganizations.value.filter((org) => org.id !== id.value)
   })
-
+*/
   const proceedAction = async () => {
     loading.value = true
 
@@ -106,19 +109,12 @@
       }
 
       if (cardProps.modalType === 'Cadastro') {
-        await adminMilitaryOrganizationStore.addMilitaryOrganization({
+        await createMilitaryOrganization({
           name: name.value.trim(),
           acronym: acronym.value.trim(),
           color: color.value.trim(),
           militaryOrganizationId: selectedMilitaryOrganization.value ?? null,
           logo: logo.value ?? null,
-        })
-
-        // TODO criar modulo para abstrair a chamada pura nos componentes
-        toast('Om cadastrada com sucesso!', {
-          theme: 'dark',
-          type: 'success',
-          dangerouslyHTMLString: true,
         })
       } else {
         logoToSend.value = logo.value

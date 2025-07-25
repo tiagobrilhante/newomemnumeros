@@ -1,30 +1,13 @@
-import prisma from '~/server/prisma'
+import { getAllMilitaryOrganizations } from '~/server/services/militaryOrganization.service'
+import { handleError } from '~/server/utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (_event) => {
+export default defineEventHandler(async (event) => {
+  const locale = getLocale(event)
+
   try {
-    return await prisma.militaryOrganization.findMany({
-      where: {
-        deleted: false,
-      },
-      include: {
-        subOrganizations: {
-          where: {
-            deleted: false,
-          },
-        },
-        parentOrganization: {
-          where: {
-            deleted: false,
-          },
-        },
-      },
-    })
+    return await getAllMilitaryOrganizations(locale)
   } catch (error) {
-    console.error('Erro ao buscar Organizações Militares:', error)
-    throw createError({
-      statusCode: 500,
-      message: 'Erro ao buscar Organizações Militares',
-    })
+    throw await handleError(error, locale)
   }
 })

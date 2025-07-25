@@ -44,7 +44,8 @@
     "mainMenu": "Menu Principal",
     "home": "Página Inicial",
     "militaryOrganizations": "Organizações Militares",
-    "sections": "Seções",
+    "militaryOrganization": "Organização Militar",
+    "sections": "Gerenciamento de Seções",
     "userManagement": "Gerenciamento de usuários",
     "rolesAndPermissions": "Permissões",
     "userLinks": "Vinculação de usuários"
@@ -76,7 +77,7 @@
     "genericTitle": "Erro",
     "genericMessage": "Ocorreu um erro inesperado. Por favor, tente novamente.",
     "status403Title": "Acesso Negado",
-    "status404Title": "Página Não Encontrada", 
+    "status404Title": "Página Não Encontrada",
     "status500Title": "Erro Interno do Servidor"
   },
   "success": {
@@ -86,7 +87,14 @@
     "rankCreated": "Posto/Grad criado com sucesso!",
     "rankUpdated": "Posto/Grad alterado com sucesso!",
     "rankDeleted": "Posto/Grad excluído com sucesso!",
-    "ranksByHierarchyRetrieved": "Postos/Grads encontrados por hierarquia"
+    "ranksByHierarchyRetrieved": "Postos/Grads encontrados por hierarquia",
+    "sectionCreated": "Seção criada com sucesso!",
+    "sectionUpdated": "Seção atualizada com sucesso!",
+    "sectionDeleted": "Seção excluída com sucesso!",
+    "militaryOrganizationCreated": "Organização militar criada com sucesso!",
+    "militaryOrganizationUpdated": "Organização militar atualizada com sucesso!",
+    "militaryOrganizationDeleted": "Organização militar excluída com sucesso!",
+    "militaryOrganizationLogoDeleted": "Logo da organização militar removido com sucesso!"
   },
 
   "$vuetify": {
@@ -114,6 +122,10 @@
       "lastPage": "Última página",
       "pageText": "{0}-{1} de {2}"
     },
-    "noDataText": "Sem dados para exibir"
+    "noDataText": "Sem dados para exibir",
+    "input": {
+      "prependAction": "Ação anterior",
+      "clear": "Limpar"
+    }
   }
 }
