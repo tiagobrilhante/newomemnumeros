@@ -53,11 +53,12 @@ export const useMilitaryOrganizations = () => {
     try {
       const response = await militaryOrganizationService.findAll()
 
-      // como verificar a padronização da api (resposta)
       if (response.success) {
         store.setMilitaryOrganizations(response.data)
+        return response.data
+      } else {
+        throw new Error(response.message || 'Erro ao carregar organizações militares')
       }
-      // se der errado eu preciso tratar os erros que vieram da consulta
     } catch (error) {
       const appError = createMilitaryOrganizationError(
         'errors.serverCommunication',
@@ -163,12 +164,9 @@ export const useMilitaryOrganizations = () => {
     try {
       const response = await militaryOrganizationService.update(data)
 
-      // se der certo eu ajusto a store
       if (response.success) {
         store.updateMilitaryOrganization(response.data)
       }
-
-      // se não der, tenho que ver o errro
 
     } catch (error) {
       const appError = createMilitaryOrganizationError(
@@ -199,7 +197,6 @@ export const useMilitaryOrganizations = () => {
       const response = await militaryOrganizationService.delete(id)
 
       if (response.success) {
-        // Feedback de sucesso
         const successMessage = getTranslatedMessage(
           'success.militaryOrganizationDeleted',
           'Organização militar excluída com sucesso!',
@@ -207,8 +204,7 @@ export const useMilitaryOrganizations = () => {
         toast.success(successMessage)
         store.clearDeletedMilitaryOrganization(id)
       }
-
-      // tenho que tratar o erro em caso de falha
+      // todo tratar o erro em falha
 
     } catch (error) {
       const appError = createMilitaryOrganizationError(
@@ -273,12 +269,13 @@ export const useMilitaryOrganizations = () => {
     error.value = ''
     try {
       const response = await militaryOrganizationService.findById(id)
-      // se deu certo eu coloco na store
-      if (response.success) {
-        store.setSelectedMilitaryOrganization(response.data)
-      }
 
-      // se não deu eu vejo como tratar o erro
+      if (response.success && response.data) {
+        store.setSelectedMilitaryOrganization(response.data)
+        return response.data
+      } else {
+        throw new Error(response.message || 'Organização militar não encontrada')
+      }
 
     } catch (error) {
       const appError = createMilitaryOrganizationError(
@@ -292,8 +289,6 @@ export const useMilitaryOrganizations = () => {
     }
   }
 
-
-  // esse parece ok
   const selectMilitaryOrganization = (militaryOrganization: militaryOrganization | null): void => {
     if (militaryOrganization) {
       store.setSelectedMilitaryOrganization(militaryOrganization)
@@ -302,17 +297,14 @@ export const useMilitaryOrganizations = () => {
     }
   }
 
-  // esse parece ok
   const clearSelection = (): void => {
     store.clearSelectedMilitaryOrganization()
   }
 
-  // esse parece ok
   const clearState = (): void => {
     store.clearMilitaryOrganizationState()
   }
 
-  // esse parece ok
   const filterMilitaryOrganizations = (filters: MilitaryOrganizationFilters) => {
     return computed(() => {
       let filtered = militaryOrganizations.value
@@ -336,7 +328,6 @@ export const useMilitaryOrganizations = () => {
     })
   }
 
-  // esse parece ok
   const isAcronymTaken = (acronym: string, excludeId?: string): boolean => {
     return militaryOrganizations.value.some(
       mo =>
@@ -345,7 +336,6 @@ export const useMilitaryOrganizations = () => {
     )
   }
 
-  // esse parece ok
   const getMilitaryOrganizationStats = () => {
     return computed(() => ({
       total: militaryOrganizations.value.length,
@@ -354,17 +344,14 @@ export const useMilitaryOrganizations = () => {
     }))
   }
 
-  // esse parece ok
   const getMilitaryOrganizationById = (id: string): militaryOrganization | undefined => {
     return militaryOrganizations.value.find(org => org.id === id)
   }
 
-//esse parece ok
   const getMilitaryOrganizationAcronym = (id: string): string => {
     const militaryOrganization = militaryOrganizations.value.find(org => org.id === id)
     return militaryOrganization?.acronym || ''
   }
-
 
   return {
     militaryOrganizations: readonly(militaryOrganizations),

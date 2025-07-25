@@ -1,42 +1,36 @@
-import type {militaryOrganization } from '~/types/military-organization'
+import type { militaryOrganization } from '~/types/military-organization'
+import type { ApiResponse } from '~/types/api-response'
 
 class MilitaryOrganizationService {
   private baseURL = '/api/military-organizations'
 
-  async findAll(): Promise<militaryOrganization[]> {
+  async findAll(): Promise<ApiResponse<militaryOrganization[]>> {
     try {
-
-      const teste =  await $fetch<militaryOrganization[]>(this.baseURL, {
+      return await $fetch<ApiResponse<militaryOrganization[]>>(this.baseURL, {
         params: {
           include: {
             parentOrganization: true,
           },
         },
       })
-
-      console.log('teste')
-      console.log(teste)
-      console.log('teste')
-
-      return teste
     } catch (error) {
       console.error('Erro ao buscar organizações Militares:', error)
       throw error
     }
   }
 
-  async findById(id: string): Promise<militaryOrganization | null> {
+  async findById(id: string): Promise<ApiResponse<militaryOrganization | null>> {
     try {
-      return await $fetch<militaryOrganization>(`${this.baseURL}/${id}`)
+      return await $fetch<ApiResponse<militaryOrganization | null>>(`${this.baseURL}/${id}`)
     } catch (error) {
       console.error(`Erro ao buscar Organização Militar ${id}:`, error)
       throw error
     }
   }
 
-  async create(data: militaryOrganization): Promise<militaryOrganization> {
+  async create(data: militaryOrganization): Promise<ApiResponse<militaryOrganization>> {
     try {
-      return await $fetch<militaryOrganization>(this.baseURL, {
+      return await $fetch<ApiResponse<militaryOrganization>>(this.baseURL, {
         method: 'POST',
         body: data,
         params: {
@@ -52,9 +46,9 @@ class MilitaryOrganizationService {
     }
   }
 
-  async update(data: militaryOrganization): Promise<militaryOrganization> {
+  async update(data: militaryOrganization): Promise<ApiResponse<militaryOrganization>> {
     try {
-      return await $fetch<militaryOrganization>(`${this.baseURL}/${data.id}`, {
+      return await $fetch<ApiResponse<militaryOrganization>>(`${this.baseURL}/${data.id}`, {
         method: 'PUT',
         body: data,
       })
@@ -64,9 +58,9 @@ class MilitaryOrganizationService {
     }
   }
 
-  async delete(id: string): Promise<any> {
+  async delete(id: string): Promise<ApiResponse<void>> {
     try {
-      return await $fetch(`${this.baseURL}/${id}`, {
+      return await $fetch<ApiResponse<void>>(`${this.baseURL}/${id}`, {
         method: 'DELETE',
       })
     } catch (error) {
@@ -75,9 +69,9 @@ class MilitaryOrganizationService {
     }
   }
 
-  async deleteLogo(id: string): Promise<militaryOrganization> {
+  async deleteLogo(id: string): Promise<ApiResponse<militaryOrganization>> {
     try {
-      return await $fetch<militaryOrganization>(`${this.baseURL}/delete-logo/${id}`, {
+      return await $fetch<ApiResponse<militaryOrganization>>(`${this.baseURL}/delete-logo/${id}`, {
         method: 'DELETE',
       })
     } catch (error) {

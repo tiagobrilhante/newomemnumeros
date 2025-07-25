@@ -7,4 +7,6 @@ export type militaryOrganization = {
   militaryOrganizationId?: string | null
   militaryOrganizations?: militaryOrganization[]
   parentOrganization?: militaryOrganization
+  subOrganizationsCount?: number
+  usersCount?: number
 }
