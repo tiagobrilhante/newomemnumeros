@@ -2,22 +2,20 @@ import { Prisma } from '@prisma/client'
 import { createError } from 'h3'
 
 export async function handleError(error: unknown, locale: string): Promise<Error> {
-  // Se é uma string que começa com 'errors.', é uma chave de tradução
   if (typeof error === 'string' && error.startsWith('errors.')) {
     return createError({
-      statusCode: 401, // padrão para erros de auth
-      message: await serverTByLocale(locale, error)
+      statusCode: 401,
+      message: await serverTByLocale(locale, error),
     })
   }
 
   if (error && typeof error === 'object' && 'statusCode' in error && 'message' in error) {
     const errorObj = error as any
-    // Se a mensagem é uma chave de tradução, traduz
     if (typeof errorObj.message === 'string' && errorObj.message.startsWith('errors.')) {
       return createError({
         statusCode: errorObj.statusCode,
         message: await serverTByLocale(locale, errorObj.message),
-        data: errorObj.data
+        data: errorObj.data,
       })
     }
     return error as unknown as Error
@@ -28,7 +26,6 @@ export async function handleError(error: unknown, locale: string): Promise<Error
     let message: string
     let statusCode: number
 
-    // Prisma code
     switch (error.code) {
       case 'P2002':
         message = await serverTByLocale(locale, 'errors.duplicateEntry')

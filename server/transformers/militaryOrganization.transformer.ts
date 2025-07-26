@@ -1,62 +1,41 @@
 import type { MilitaryOrganization } from '@prisma/client'
 import { BaseTransformer } from './base.transformer'
 
-// Tipos para organizações militares com relacionamentos
 type MilitaryOrganizationWithRelations = MilitaryOrganization & {
   subOrganizations?: MilitaryOrganization[]
   parentOrganization?: MilitaryOrganization | null
-  users?: {
-    id: string
-    name: string
-    serviceName: string
-  }[]
 }
 
 export class MilitaryOrganizationTransformer extends BaseTransformer {
-  /**
-   * Transformação padrão para organizações militares com relacionamentos
-   */
   static transform(militaryOrganization: MilitaryOrganizationWithRelations) {
-    const { 
-      subOrganizations, 
-      parentOrganization, 
-      users,
-      createdAt, 
-      updatedAt, 
-      deleted, 
-      ...cleanOrganization 
+    const {
+      subOrganizations,
+      parentOrganization,
+      createdAt,
+      updatedAt,
+      deleted,
+      ...cleanOrganization
     } = militaryOrganization
 
     return {
       ...cleanOrganization,
-      // Inclui relacionamentos transformados se existirem
       ...(subOrganizations && {
         subOrganizations: this.removeAuditFieldsFromCollection(subOrganizations)
       }),
       ...(parentOrganization && {
         parentOrganization: this.removeAuditFields(parentOrganization)
       }),
-      ...(users && {
-        users: users.map(user => ({
-          id: user.id,
-          name: user.name,
-          serviceName: user.serviceName
-        }))
-      })
     }
   }
 
-  /**
-   * Transformação para autenticação - inclui apenas dados essenciais
-   */
   static transformForAuth(militaryOrganization: MilitaryOrganizationWithRelations) {
-    const { 
-      id, 
-      name, 
-      acronym, 
-      color, 
+    const {
+      id,
+      name,
+      acronym,
+      color,
       logo,
-      parentOrganization 
+      parentOrganization
     } = militaryOrganization
 
     return {
@@ -75,25 +54,18 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
     }
   }
 
-  /**
-   * Transformação para listagem básica - sem relacionamentos detalhados
-   */
-  static transformForList(militaryOrganization: MilitaryOrganizationWithRelations) {
-    const { 
-      createdAt, 
-      updatedAt, 
+    static transformForList(militaryOrganization: MilitaryOrganizationWithRelations) {
+    const {
+      createdAt,
+      updatedAt,
       deleted,
       subOrganizations,
-      users,
-      ...cleanOrganization 
+      ...cleanOrganization
     } = militaryOrganization
 
     return {
       ...cleanOrganization,
-      // Contadores para sub-organizações e usuários
       subOrganizationsCount: subOrganizations?.length || 0,
-      usersCount: users?.length || 0,
-      // Organização pai simplificada
       ...(militaryOrganization.parentOrganization && {
         parentOrganization: {
           id: militaryOrganization.parentOrganization.id,
@@ -104,11 +76,8 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
     }
   }
 
-  /**
-   * Transformação de coleção com controle de profundidade
-   */
-  static collection(
-    militaryOrganizations: MilitaryOrganizationWithRelations[], 
+    static collection(
+    militaryOrganizations: MilitaryOrganizationWithRelations[],
     mode: 'full' | 'auth' | 'list' = 'list'
   ) {
     return militaryOrganizations.map(org => {
@@ -124,36 +93,26 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
     })
   }
 
-  /**
-   * Transformação hierárquica - organiza em estrutura de árvore
-   */
+
   static transformHierarchical(militaryOrganizations: MilitaryOrganizationWithRelations[]) {
-    const transformed = this.collection(militaryOrganizations, 'full')
-    
-    // Separa organizações raiz das subordinadas
-    const rootOrganizations = transformed.filter(org => !org.militaryOrganizationId)
-    const subordinateOrganizations = transformed.filter(org => org.militaryOrganizationId)
-    
-    // Constrói hierarquia
-    const buildHierarchy = (parentId: number | null): any[] => {
+    const rootOrganizations = militaryOrganizations.filter(org => !org.militaryOrganizationId)
+    const subordinateOrganizations = militaryOrganizations.filter(org => org.militaryOrganizationId)
+
+    const buildHierarchy = (parentId: string | null): any[] => {
       return subordinateOrganizations
         .filter(org => org.militaryOrganizationId === parentId)
         .map(org => ({
-          ...org,
+          ...this.transform(org),
           children: buildHierarchy(org.id)
         }))
     }
 
-    // Adiciona filhos às organizações raiz
     return rootOrganizations.map(rootOrg => ({
-      ...rootOrg,
+      ...this.transform(rootOrg),
       children: buildHierarchy(rootOrg.id)
     }))
   }
 
-  /**
-   * Transformação para seleção em formulários
-   */
   static transformForSelect(militaryOrganizations: MilitaryOrganizationWithRelations[]) {
     return militaryOrganizations.map(org => ({
       id: org.id,
@@ -161,7 +120,6 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
       acronym: org.acronym,
       label: `${org.acronym} - ${org.name}`,
       value: org.id.toString(),
-      // Inclui informação se é organização pai
       isParent: !org.militaryOrganizationId,
       parentId: org.militaryOrganizationId
     }))
