@@ -1,4 +1,4 @@
-import prisma from '../prisma'
+import { prisma } from '../utils/prisma'
 import { handleError } from '../utils/errorHandler'
 import { MilitaryOrganizationTransformer } from '../transformers/militaryOrganization.transformer'
 

@@ -1,4 +1,4 @@
-import prisma from '../../prisma'
+import { prisma } from '../../utils/prisma'
 import { handleError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    // todo... refatorar pra um service
     return await prisma.rank.create({
       data: {
         name: body.name,

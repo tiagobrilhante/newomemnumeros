@@ -1,4 +1,4 @@
-import prisma from '../../../prisma'
+import { prisma } from '../../../utils/prisma'
 import path from 'path'
 import fs from 'fs/promises'
 
@@ -6,13 +6,14 @@ import fs from 'fs/promises'
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
 
-  if (!id ) {
+  if (!id) {
     throw createError({
       statusCode: 400,
       message: 'ID inválido',
     })
   }
 
+  // todo, tenho que refatorar isso para um service...
   try {
     const militaryOrganization = await prisma.militaryOrganization.findUnique({
       where: {
@@ -26,7 +27,7 @@ export default defineEventHandler(async (event) => {
       const userDir = path.resolve(
         'public',
         'logos',
-        path.dirname(militaryOrganization.logo).replace(/^\/logos\//, '')
+        path.dirname(militaryOrganization.logo).replace(/^\/logos\//, ''),
       )
       await fs.rm(userDir, { recursive: true, force: true })
       console.timeEnd('removeFiles')

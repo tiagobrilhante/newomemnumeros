@@ -1,4 +1,4 @@
-import prisma from '../prisma'
+import { prisma } from '../utils/prisma'
 import bcrypt from 'bcrypt'
 import { createError } from 'h3'
 import { UserTransformer } from '../transformers/user.transformer'

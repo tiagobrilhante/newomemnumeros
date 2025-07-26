@@ -1,4 +1,4 @@
-import prisma from '../../prisma'
+import {prisma} from '../../utils/prisma'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {

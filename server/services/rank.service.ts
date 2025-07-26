@@ -1,4 +1,4 @@
-import prisma from '../prisma'
+import { prisma } from '../utils/prisma'
 import { handleError } from '../utils/errorHandler'
 
 export async function getAllRanks(locale: string) {
