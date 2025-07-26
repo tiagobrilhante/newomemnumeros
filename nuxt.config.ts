@@ -15,6 +15,10 @@ export default defineNuxtConfig({
     '@nuxt/icon',
   ],
 
+  future: {
+    compatibilityVersion: 4
+  },
+
   vuetify: {
     moduleOptions: {
       styles: true,
@@ -30,6 +34,7 @@ export default defineNuxtConfig({
       },
     },
   },
+
   runtimeConfig: {
     public: {
       APP_NAME: process.env.NUXT_APP_NAME || '',
