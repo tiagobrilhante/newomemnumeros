@@ -1,6 +1,6 @@
 import prisma from '../prisma'
 import bcrypt from 'bcrypt'
-import { cpf } from 'cpf-cnpj-validator'
+import { CPF as cpf } from '@julioakira/cpf-cnpj-utils'
 import { handleError } from '../utils/errorHandler'
 
 function sanitizeCPF(value: string): string {
@@ -42,7 +42,7 @@ export async function registerUser(
 
     const sanitizedCPF = sanitizeCPF(rawCpf)
 
-    if (!cpf.isValid(sanitizedCPF)) {
+    if (!cpf.Validate(sanitizedCPF)) {
       return createError({
         statusCode: 400,
         message: await serverTByLocale(locale, 'errors.cpfInvalid'),

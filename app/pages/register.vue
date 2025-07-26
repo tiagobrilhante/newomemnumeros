@@ -1,7 +1,6 @@
 <script lang="ts" setup>
   import { rankService } from '~/services/rank.service'
-  import { cpf } from 'cpf-cnpj-validator'
-  import type { rank } from '~/types/rank'
+  import { CPF as cpf } from '@julioakira/cpf-cnpj-utils'
   import type { VForm } from 'vuetify/components'
   import type { RegisterResponse } from '~/services/register.service'
 
@@ -51,7 +50,7 @@
     return (v: string) => !!v || `${$t(fieldKey)} ${$t('isRequired')}`
   }
 
-  const requiredRule = [ (v: string) => !!v || `${$t('thisField')} ${$t('isRequired')}` ]
+  const requiredRule = [(v: string) => !!v || `${$t('thisField')} ${$t('isRequired')}`]
 
   const emailRules = [
     createRequiredRule('emailField'),
@@ -60,7 +59,7 @@
 
   const cpfRules = [
     createRequiredRule('cpfField'),
-    (v: string) => cpf.isValid(v) ||  `${$t('cpfField')} ${$t('mustBeValid')}`,
+    (v: string) => cpf.Validate(v) || `${$t('cpfField')} ${$t('mustBeValid')}`,
   ]
 
   const passwordRules = [

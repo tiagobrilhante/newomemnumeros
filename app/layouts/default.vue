@@ -23,12 +23,18 @@
 
 <template>
   <v-app theme="dark">
-    <NavBar />
-    <MenuLeft />
+    <KeepAlive>
+      <NavBar />
+    </KeepAlive>
+    <KeepAlive>
+      <MenuLeft />
+    </KeepAlive>
     <v-main class="main-content">
       <slot />
     </v-main>
-    <Footer />
+    <KeepAlive>
+      <Footer />
+    </KeepAlive>
   </v-app>
 </template>
 

@@ -19,15 +19,23 @@
   })
 </script>
 <template>
-  <v-app theme="dark">
-    <NavBar />
-    <v-main class="login-background my-space">
-      <v-container class="my-container" fluid>
-        <slot />
-      </v-container>
-    </v-main>
-    <Footer />
-  </v-app>
+  <KeepAlive>
+    <v-app theme="dark">
+
+
+      <NavBar />
+
+      <v-main class="login-background my-space">
+        <v-container class="my-container" fluid>
+          <slot />
+        </v-container>
+      </v-main>
+
+      <Footer />
+
+
+    </v-app>
+  </KeepAlive>
 </template>
 
 <style scoped>

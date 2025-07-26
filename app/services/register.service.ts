@@ -1,6 +1,3 @@
-import type { registerData } from '~/types/register'
-import { sanitizeData } from '~/utils/sanitize-data'
-
 export interface RegisterResponse {
   success: boolean
   message: string
