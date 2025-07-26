@@ -1,19 +1,14 @@
 <script lang="ts" setup>
-  import { useMilitaryOrganizationStore } from '~/stores/military-organization.store'
-  import { toast } from 'vue3-toastify'
-  import 'vue3-toastify/dist/index.css'
-  import type { militaryOrganization } from '~/types/core/organization'
-  import { militaryOrganizationService } from '~/services/militaryOrganization.service'
-  import InputImage from '~/components/utils/InputImage.vue'
+    import InputImage from '~/components/utils/InputImage.vue'
+  const {createMilitaryOrganization, updateMilitaryOrganization, militaryOrganizations, loading} = useMilitaryOrganizations()
 
-  const loading = ref(false)
+
   const isFather = ref(false)
   const id = ref(0)
   const name = ref('')
   const color = ref('')
   const acronym = ref('')
   const changeLogo = ref(false)
-  const loadingBtn = ref(false)
   const openDialogDeleteLogo = ref(false)
   const logo = ref('')
   const logoBase = ref('')
@@ -34,17 +29,12 @@
     }
   }>()
 
-  const militaryOrganizations = ref<militaryOrganization[]>([])
   const selectedMilitaryOrganization = ref<string | null>(null)
 
   const adminMilitaryOrganizationStore = useMilitaryOrganizationStore()
 
   const isComponentVisible = ref(false)
 
-  const {createMilitaryOrganization} = useMilitaryOrganizations()
-
-  militaryOrganizations.value =
-    (await militaryOrganizationService.findAll()) as militaryOrganization[]
 
   watch(
     () => adminMilitaryOrganizationStore.selectedMilitaryOrganization,
@@ -72,13 +62,12 @@
     logoBase.value = logo.value
   }
 
-  /*
+
   const filteredMilitaryOrganizations = computed(() => {
-    return militaryOrganizations.value.filter((org) => org.id !== id.value)
+    return militaryOrganizations.value.filter((org: militaryOrganization) => org.id !== id.value)
   })
-*/
+
   const proceedAction = async () => {
-    loading.value = true
 
     if (!name.value || !acronym.value) {
       const specifiedErrors = []
@@ -99,7 +88,6 @@
       error.value.active = true
       error.value.msgError = 'Por favor, preencha todos os campos corretamente.'
       error.value.arrayOfErrors = specifiedErrors
-      loading.value = false
       return
     }
 
@@ -122,7 +110,7 @@
           logoToSend.value = null
         }
 
-        await adminMilitaryOrganizationStore.updateMilitaryOrganization({
+        await updateMilitaryOrganization({
           id: id.value,
           name: name.value.trim(),
           acronym: acronym.value.trim(),
@@ -132,23 +120,14 @@
         })
 
         // TODO criar modulo para abstrair a chamada pura nos componentes
-        toast('Om alterada com sucesso!', {
-          theme: 'dark',
-          type: 'success',
-          dangerouslyHTMLString: true,
-        })
+
       }
 
       emit('close-dialog')
     } catch (error) {
       console.error('Error ao realizar a operação:', error)
-      toast('Houve um erro ao processar a operação! <br>' + error, {
-        theme: 'dark',
-        type: 'error',
-        dangerouslyHTMLString: true,
-      })
     } finally {
-      loading.value = false
+      console.log('teste')
     }
   }
 
@@ -173,35 +152,24 @@
     logo.value = logoBase.value
   }
 
+  // corrigir
   const deleteMilitaryOrganizationLogo = async (id: number) => {
-    loading.value = true
     try {
       await adminMilitaryOrganizationStore.deleteMilitaryOrganizationLogo(id)
-      toast('Logo excluído com sucesso!', {
-        theme: 'dark',
-        type: 'success',
-        dangerouslyHTMLString: true,
-      })
+
       openDialogDeleteLogo.value = false
 
-      // Forçar a atualização do logo
       logo.value = '/logos/default/default.png'
     } catch (error) {
       console.error('Error ao realizar a operação:', error)
-      toast('Houve um erro ao processar a operação! <br>' + error, {
-        theme: 'dark',
-        type: 'error',
-        dangerouslyHTMLString: true,
-      })
     } finally {
-      loading.value = false
-      loadingBtn.value = false
+      console.log('teste')
     }
   }
 </script>
 
 <template>
-  <v-card>
+  <v-card rounded="xl">
     <v-form @submit.prevent="proceedAction">
       <v-card-title>
         <v-row>
@@ -214,6 +182,8 @@
         </v-row>
       </v-card-title>
       <v-card-text>
+
+        {{ militaryOrganizations}}
         <v-container fluid>
           <v-row dense>
             <v-col cols="12">
@@ -396,7 +366,7 @@
         <v-spacer />
         <v-btn
           v-if="adminMilitaryOrganizationStore.selectedMilitaryOrganization"
-          :loading="loadingBtn"
+          :loading="loading"
           color="error"
           prepend-icon="mdi-alert"
           rounded="xl"
