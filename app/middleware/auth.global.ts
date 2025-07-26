@@ -1,3 +1,5 @@
+import type { AuthRouteMeta } from '~/types/auth'
+
 // noinspection JSUnusedGlobalSymbols
 export default defineNuxtRouteMiddleware((to) => {
   const routeAuthMeta = to.meta.auth;

@@ -1,3 +1,5 @@
+import type { createdSection, updatedSection, section } from '~/types/core/organization'
+
 class SectionService {
   private baseURL = '/api/sections'
 

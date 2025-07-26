@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { userService } from '~/services/userService'
+import type { userWithoutPassword, userState } from '~/types/user'
 
 export const useAdminUserStore = defineStore('userStore', {
   state: (): userState => ({

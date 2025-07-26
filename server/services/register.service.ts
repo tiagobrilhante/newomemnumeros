@@ -1,4 +1,4 @@
-import { prisma } from '../utils/prisma'
+import prisma from '../prisma'
 import bcrypt from 'bcrypt'
 import { CPF as cpf } from '@julioakira/cpf-cnpj-utils'
 import { handleError } from '../utils/errorHandler'

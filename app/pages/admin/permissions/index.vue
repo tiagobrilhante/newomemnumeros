@@ -1,11 +1,14 @@
 <!--suppress JSUnusedGlobalSymbols -->
 <script lang="ts" setup>
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
+  import { useHead } from '#imports'
   import { toast } from 'vue3-toastify'
   import { usePermissionSetupStore } from '~/stores/admin/permissionSetupStore'
   import { useMilitaryOrganizationStore } from '~/stores/military-organization.store'
   import { useSectionStore } from '~/stores/section.store'
+  import type { permissionSetupSubmission } from '~/types/permissions/permission-setup'
   import type { VDataTable, VSelect } from 'vuetify/components'
+  import type { section, militaryOrganization } from '~/types/core/organization'
   import { PERMISSION_CATEGORIES } from '~/constants/permissions'
   import { retrieveMilitaryOrganizationAcronym } from '~/utils/retrieve-military-organization-acronym'
   import { retrieveMilitaryOrganizationLogo } from '~/utils/retrieve-military-organization-logo'

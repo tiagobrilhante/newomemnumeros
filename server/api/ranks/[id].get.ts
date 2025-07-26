@@ -1,4 +1,4 @@
-import { prisma } from '../../utils/prisma'
+import prisma from '../../prisma'
 import { handleError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols

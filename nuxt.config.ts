@@ -72,6 +72,11 @@ export default defineNuxtConfig({
     define: {
       'process.env.DEBUG': true,
     },
+    resolve: {
+      alias: {
+        '.prisma/client/index-browser': './node_modules/.prisma/client/index-browser.js',
+      },
+    },
   },
   typescript: {
     strict: true,

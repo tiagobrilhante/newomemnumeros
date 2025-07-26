@@ -4,7 +4,9 @@
   import { usePermissionSetupStore } from '~/stores/admin/permissionSetupStore'
   import type { VDataTable, VSelect } from 'vuetify/components'
   import { toast } from 'vue3-toastify'
+  import type { sectionFunctionUser } from '~/types/core/organization-function-user'
   import FindUserAndLink from '~/components/vinculo-section-users/FindUserAndLink.vue'
+  import type { permissionSetupUser } from '~/types/permissions/permission-setup-user'
   import ShowUserPermissionSetup from '~/components/vinculo-section-users/ShowUserPermissionSetup.vue'
 
   useHead({

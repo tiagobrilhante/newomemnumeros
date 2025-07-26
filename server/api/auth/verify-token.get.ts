@@ -1,7 +1,7 @@
-import { prisma } from '../../utils/prisma'
-import type { JwtPayload } from 'jsonwebtoken'
 import jwt from 'jsonwebtoken'
-import { clearAuthCookie, getTokenFromRequest } from '../../utils/cookieAuth'
+import type { JwtPayload } from 'jsonwebtoken'
+import prisma from '../../prisma'
+import { getTokenFromRequest, clearAuthCookie } from '../../utils/cookieAuth'
 import { UserTransformer } from '../../transformers/user.transformer'
 import { handleError } from '../../utils/errorHandler'
 
@@ -28,13 +28,13 @@ export default defineEventHandler(async (event) => {
           include: {
             section: {
               include: {
-                militaryOrganization: true,
-              },
+                militaryOrganization: true
+              }
             },
             permissions: {
               include: {
-                permission: true,
-              },
+                permission: true
+              }
             },
           },
         },

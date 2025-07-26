@@ -1,5 +1,6 @@
 import type { RegisterResponse } from '~/services/register.service'
 import { registerService } from '~/services/register.service'
+import type { registerData } from '~/types/register'
 
 // noinspection JSUnusedGlobalSymbols
 export const useRegister = () => {
