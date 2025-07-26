@@ -1,6 +1,3 @@
-import type { militaryOrganization } from '~/types/military-organization'
-import type { ApiResponse } from '~/types/api-response'
-
 class MilitaryOrganizationService {
   private baseURL = '/api/military-organizations'
 

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-  import { computed, ref, watch, onMounted, nextTick } from 'vue'
-  import { useNavigationStore } from '~/stores/navigation.store'
+    import { useNavigationStore } from '~/stores/navigation.store'
   import { useDisplay } from 'vuetify'
   import { routesConfig } from '~/config/routes'
 

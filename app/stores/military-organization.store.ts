@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import type { militaryOrganization } from '~/types/military-organization'
 
 type militaryOrganizationState = {
   militaryOrganizations: militaryOrganization[]

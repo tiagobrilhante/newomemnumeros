@@ -1,4 +1,3 @@
-import type { section } from '~/types/sections'
 import { useSectionStore } from '~/stores/section.store'
 import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
 import { toast } from 'vue3-toastify'
@@ -57,7 +56,7 @@ export const useSections = () => {
   const totalSections = computed(() => store.totalSections)
 
   // Seções filtradas por organização militar
-  const sectionsByOM = computed(() => (militaryOrganizationId: string) => 
+  const sectionsByOM = computed(() => (militaryOrganizationId: string) =>
     sections.value.filter(section => section.militaryOrganizationId === militaryOrganizationId)
   )
 
@@ -125,7 +124,7 @@ export const useSections = () => {
 
     // Validação de duplicação de sigla
     const existingSection = sections.value.find(
-      s => s.acronym.toLowerCase() === data.acronym.toLowerCase() 
+      s => s.acronym.toLowerCase() === data.acronym.toLowerCase()
         && s.militaryOrganizationId === data.militaryOrganizationId
     )
 
@@ -185,7 +184,7 @@ export const useSections = () => {
     // Validação de duplicação de sigla (excluindo a seção atual)
     const existingSection = sections.value.find(
       s => s.id !== data.id
-        && s.acronym.toLowerCase() === data.acronym.toLowerCase() 
+        && s.acronym.toLowerCase() === data.acronym.toLowerCase()
         && s.militaryOrganizationId === data.militaryOrganizationId
     )
 
@@ -330,7 +329,7 @@ export const useSections = () => {
       if (filters.search?.trim()) {
         const searchTerm = filters.search.toLowerCase()
         filtered = filtered.filter(
-          section => 
+          section =>
             section.name.toLowerCase().includes(searchTerm) ||
             section.acronym.toLowerCase().includes(searchTerm)
         )
@@ -345,7 +344,7 @@ export const useSections = () => {
    */
   const isAcronymTaken = (acronym: string, militaryOrganizationId: string, excludeId?: string): boolean => {
     return sections.value.some(
-      section => 
+      section =>
         section.id !== excludeId &&
         section.acronym.toLowerCase() === acronym.toLowerCase() &&
         section.militaryOrganizationId === militaryOrganizationId
@@ -377,10 +376,10 @@ export const useSections = () => {
     loading: readonly(loading),
     error: readonly(error),
     totalSections: readonly(totalSections),
-    
+
     // Computeds utilitários
     sectionsByOM,
-    
+
     // Operações CRUD
     fetchSections,
     fetchSectionsByOM,
@@ -388,11 +387,11 @@ export const useSections = () => {
     updateSection,
     deleteSection,
     findSection,
-    
+
     // Gerenciamento de seleção
     selectSection,
     clearSelection,
-    
+
     // Utilitários
     filterSections,
     isAcronymTaken,

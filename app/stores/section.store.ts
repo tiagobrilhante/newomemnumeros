@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 import { sectionsService } from '~/services/sectionsService'
-import type { section } from '~/types/sections'
 
 type sectionState = {
   sections: section[]

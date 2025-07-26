@@ -1,5 +1,3 @@
-import type { rank } from '~/types/rank'
-
 class RankService {
   private baseURL = '/api/ranks'
 

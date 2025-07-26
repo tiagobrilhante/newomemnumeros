@@ -1,6 +1,3 @@
-import type { rank } from '~/types/rank'
-import type { section } from '~/types/sections'
-
 export type role = {
   id: string
   name: string

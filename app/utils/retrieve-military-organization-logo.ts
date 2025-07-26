@@ -1,5 +1,3 @@
-import type { militaryOrganization } from '~/types/core/organization'
-
 export const retrieveMilitaryOrganizationLogo = (
   id: number,
   tipo: string,

@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
   import type { NuxtError } from '#app'
 
   const props = defineProps<{
@@ -12,22 +12,22 @@
       case 403:
         return {
           icon: 'mdi-shield-lock',
-          color: 'warning'
+          color: 'warning',
         }
       case 404:
         return {
           icon: 'mdi-compass-off',
-          color: 'info'
+          color: 'info',
         }
       case 500:
         return {
           icon: 'mdi-server-network-off',
-          color: 'error'
+          color: 'error',
         }
       default:
         return {
           icon: 'mdi-alert-circle',
-          color: 'error'
+          color: 'error',
         }
     }
   })
@@ -55,7 +55,7 @@
   }
 
   useHead({
-    title: `Erro ${props.error.statusCode} - ${errorTitle.value}`
+    title: `Erro ${props.error.statusCode} - ${errorTitle.value}`,
   })
 </script>
 
@@ -64,20 +64,20 @@
     <v-main>
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
-          <v-col cols="12" sm="8" md="6" lg="4">
+          <v-col cols="12" lg="4" md="6" sm="8">
             <v-card class="mx-auto" elevation="8" rounded="xl">
               <v-card-text class="text-center pa-8">
                 <!-- Error Icon -->
                 <v-icon
                   :color="errorConfig.color"
-                  size="80"
                   class="mb-4"
+                  size="80"
                 >
                   {{ errorConfig.icon }}
                 </v-icon>
 
                 <!-- Error code -->
-                <h1 class="text-h3 font-weight-bold mb-2" :class="`text-${errorConfig.color}`">
+                <h1 :class="`text-${errorConfig.color}`" class="text-h3 font-weight-bold mb-2">
                   {{ error.statusCode }}
                 </h1>
 
@@ -97,12 +97,12 @@
                   <!-- go to home-->
                   <v-col cols="12">
                     <v-btn
-                      color="primary"
-                      variant="elevated"
-                      size="large"
-                      rounded="xl"
                       block
+                      color="primary"
                       prepend-icon="mdi-home"
+                      rounded="xl"
+                      size="large"
+                      variant="elevated"
                       @click="goHome"
                     >
                       {{ $t('goToHome') }}
@@ -115,10 +115,10 @@
                     <v-btn
                       block
                       color="surface-variant"
-                      variant="outlined"
-                      size="large"
-                      rounded="xl"
                       prepend-icon="mdi-arrow-left"
+                      rounded="xl"
+                      size="large"
+                      variant="outlined"
                       @click="goBack"
                     >
                       {{ $t('goBack') }}
@@ -134,8 +134,8 @@
                   variant="accordion"
                 >
                   <v-expansion-panel
-                    title="Detalhes técnicos"
                     text-color="error"
+                    title="Detalhes técnicos"
                   >
                     <v-expansion-panel-text>
                       <pre class="text-caption text-left overflow-auto">{{ error.stack }}</pre>
@@ -152,12 +152,12 @@
 </template>
 
 <style scoped>
-.fill-height {
-  min-height: 100vh;
-}
+  .fill-height {
+    min-height: 100vh;
+  }
 
-pre {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-}
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 </style>

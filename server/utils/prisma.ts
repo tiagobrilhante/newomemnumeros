@@ -1,8 +1,20 @@
 import { PrismaClient } from '@prisma/client'
 
-const g = globalThis as unknown as { prisma?: PrismaClient }
+// Initialize Prisma Client with explicit error handling
+let prismaInstance: PrismaClient | undefined
 
-export const prisma =
-  g.prisma ?? new PrismaClient(/* { log: ['warn', 'error'] } */)
+try {
+  // Create a new PrismaClient instance with explicit options
+  prismaInstance = new PrismaClient({
+    log: ['error'],
+    errorFormat: 'pretty',
+  })
 
-if (process.env.NODE_ENV !== 'production') g.prisma = prisma
+  console.log('Prisma Client initialized successfully')
+} catch (error) {
+  console.error('Failed to initialize Prisma Client:', error)
+  throw error
+}
+
+// Export the initialized Prisma Client instance
+export const prisma = prismaInstance

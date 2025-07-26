@@ -1,6 +1,5 @@
 import { authService } from '~/services/auth.service'
 import { useAuthUserStore } from '~/stores/auth.store'
-import type { loginCredentials } from '~/types/auth'
 import type { ErrorHandlerOptions } from '~/utils/clientErrorHandler'
 import { createAppError } from '~/utils/clientErrorHandler'
 
