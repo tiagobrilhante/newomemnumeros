@@ -1,10 +1,10 @@
-import prisma from '~/server/prisma'
+import prisma from '../../prisma'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
 
-  if (!id || isNaN(Number(id))) {
+  if (!id) {
     throw createError({
       statusCode: 400,
       message: 'ID inválido',
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   try {
     await prisma.user.delete({
       where: {
-        id: Number(id),
+        id,
         deleted: false,
       },
     })

@@ -1,4 +1,4 @@
-import { getValidLocaleOrDefault, isValidLocale } from '~/config/i18n'
+import { getValidLocaleOrDefault, isValidLocale } from '#shared/config/i18n'
 import type { ErrorHandlerOptions } from '~/utils/clientErrorHandler'
 import { createAppError } from '~/utils/clientErrorHandler'
 

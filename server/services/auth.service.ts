@@ -1,7 +1,7 @@
-import prisma from '~/server/prisma'
+import prisma from '../prisma'
 import bcrypt from 'bcrypt'
 import { createError } from 'h3'
-import { UserTransformer } from '~/server/transformers/user.transformer'
+import { UserTransformer } from '../transformers/user.transformer'
 
 export async function authenticateUser(email: string, password: string) {
   if (!email || !password) {

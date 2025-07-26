@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken'
 import type { JwtPayload } from 'jsonwebtoken'
-import prisma from '~/server/prisma'
-import { getTokenFromRequest, clearAuthCookie } from '~/server/utils/cookieAuth'
-import { UserTransformer } from '~/server/transformers/user.transformer'
-import { handleError } from '~/server/utils/errorHandler'
+import prisma from '../../prisma'
+import { getTokenFromRequest, clearAuthCookie } from '../../utils/cookieAuth'
+import { UserTransformer } from '../../transformers/user.transformer'
+import { handleError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {

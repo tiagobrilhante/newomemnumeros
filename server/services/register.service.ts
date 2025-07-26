@@ -1,7 +1,7 @@
-import prisma from '~/server/prisma'
+import prisma from '../prisma'
 import bcrypt from 'bcrypt'
 import { cpf } from 'cpf-cnpj-validator'
-import { handleError } from '~/server/utils/errorHandler'
+import { handleError } from '../utils/errorHandler'
 
 function sanitizeCPF(value: string): string {
   if (!value) return ''

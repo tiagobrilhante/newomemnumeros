@@ -1,5 +1,5 @@
-import { getRanksByHierarchy } from '~/server/services/rank.service'
-import { handleError } from '~/server/utils/errorHandler'
+import { getRanksByHierarchy } from '../../../services/rank.service'
+import { handleError } from '../../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {

@@ -1,5 +1,5 @@
-import { registerUser } from '~/server/services/register.service'
-import { handleError } from '~/server/utils/errorHandler'
+import { registerUser } from '../../services/register.service'
+import { handleError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {

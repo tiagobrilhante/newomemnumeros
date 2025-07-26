@@ -1,7 +1,7 @@
 import { readFile } from 'fs/promises'
 import { resolve } from 'path'
 import type { H3Event } from 'h3'
-import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from '~/config/i18n'
+import { SUPPORTED_LOCALES, DEFAULT_LOCALE } from '#shared/config/i18n'
 
 const supportedLocales = SUPPORTED_LOCALES as readonly string[]
 const defaultLocale = DEFAULT_LOCALE

@@ -1,11 +1,10 @@
-import prisma from '~/server/prisma'
+import prisma from '../../prisma'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
-    // Validação básica
     if (!body || !body.serviceName) {
       return createError({
         statusCode: 400,
@@ -13,7 +12,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const [seviceName, militaryOrganizationId] = body.serviceName.split('-')
+    const [seviceName] = body.serviceName.split('-')
 
     const searchTerm = seviceName.toLowerCase()
 
@@ -22,25 +21,13 @@ export default defineEventHandler(async (event) => {
         serviceName: {
           contains: searchTerm,
         },
-        militaryOrganizationId: parseInt(militaryOrganizationId),
       },
       select: {
         id: true,
         serviceName: true,
         name: true,
         rank: true,
-        militaryOrganization: true,
         password: false,
-        sectionFunctionUser: {
-          where: {
-            deleted: false,
-          },
-          select: {
-            section: true,
-            functionName: true,
-            deleted: true,
-          },
-        },
       },
     })
   } catch (error) {

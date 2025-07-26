@@ -1,5 +1,5 @@
-import { getMilitaryOrganizationById } from '~/server/services/militaryOrganization.service'
-import { handleError } from '~/server/utils/errorHandler'
+import { getMilitaryOrganizationById } from '../../services/militaryOrganization.service'
+import { handleError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {

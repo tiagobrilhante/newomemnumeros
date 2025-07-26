@@ -1,4 +1,4 @@
-import prisma from '~/server/prisma'
+import prisma from '../../prisma'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
@@ -26,18 +26,7 @@ export default defineEventHandler(async (event) => {
         serviceName: true,
         name: true,
         rank: true,
-        militaryOrganization: true,
-        password: false,
-        sectionFunctionUser: {
-          where: {
-            deleted: false,
-          },
-          select: {
-            section: true,
-            functionName: true,
-            deleted: true,
-          },
-        },
+        password: false
       },
     })
   } catch (error) {

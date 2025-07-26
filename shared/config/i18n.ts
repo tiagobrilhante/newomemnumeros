@@ -1,5 +1,3 @@
-import type { SupportedLocale } from '~/types/i18n'
-
 export const SUPPORTED_LOCALES: readonly SupportedLocale[] = ['pt-BR', 'en-US'] as const
 
 export const DEFAULT_LOCALE: SupportedLocale = 'pt-BR'

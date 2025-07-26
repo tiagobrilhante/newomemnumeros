@@ -41,7 +41,7 @@
 
 
   .login-background {
-    background-image: url('assets/bglogin.jpg');
+    background-image: url('../assets/bglogin.jpg');
     background-color: #222222;
     background-repeat: repeat;
     background-size: 1000px 1000px;

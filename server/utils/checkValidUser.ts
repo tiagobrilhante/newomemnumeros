@@ -1,5 +1,5 @@
 import type { H3Event } from 'h3'
-import protectRoute from '~/server/utils/protectRoute'
+import protectRoute from '../utils/protectRoute'
 
 export async function checkValidUser(event: H3Event) {
   await protectRoute(event)

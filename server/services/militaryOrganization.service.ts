@@ -1,8 +1,6 @@
-import prisma from '~/server/prisma'
-import { handleError } from '~/server/utils/errorHandler'
-import { MilitaryOrganizationTransformer } from '~/server/transformers/militaryOrganization.transformer'
-import { sanitizeData } from '~/utils/sanitize-data'
-import type { militaryOrganization } from '~/types/military-organization'
+import prisma from '../prisma'
+import { handleError } from '../utils/errorHandler'
+import { MilitaryOrganizationTransformer } from '../transformers/militaryOrganization.transformer'
 
 function isValidColor(color: string): boolean {
   const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/

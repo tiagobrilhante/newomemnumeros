@@ -54,7 +54,7 @@
     "@types/qrcode": "^1.5.5",
     "@vueuse/nuxt": "^13.5.0",
     "eslint": "^9.17.0",
-    "nuxt": "^3.17.7",
+    "nuxt": "^4.0.0",
     "prettier": "^3.6.2",
     "prisma": "6.12.0",
     "sass": "^1.89.2",

@@ -1,8 +1,3 @@
-import type { loginCredentials } from '~/types/auth'
-import type { user } from '~/types/user'
-import { sanitizeData } from '~/utils/sanitize-data'
-
-
 type VerifyTokenResponse = { user: user }
 type CheckAccessResponse = { hasAccess: boolean }
 
@@ -14,7 +9,7 @@ class AuthService {
     try {
       return await $fetch<VerifyTokenResponse>(endpoint, {
         method: 'GET',
-        credentials: 'include'
+        credentials: 'include',
       })
     } catch (error) {
       console.error(`Erro ao verificar token no endpoint: ${endpoint}`, error)
@@ -47,7 +42,7 @@ class AuthService {
     try {
       return await $fetch<CheckAccessResponse>(endpoint, {
         method: 'GET',
-        credentials: 'include'
+        credentials: 'include',
       })
     } catch (error) {
       console.error(error)
@@ -58,7 +53,7 @@ class AuthService {
     try {
       await $fetch(`${this.baseURL}/logout`, {
         method: 'POST',
-        credentials: 'include'
+        credentials: 'include',
       })
     } catch (error) {
       console.error('Erro ao fazer logout:', error)

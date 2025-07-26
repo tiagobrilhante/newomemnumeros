@@ -1,7 +1,7 @@
 import type { H3Event } from 'h3'
 import jwt from 'jsonwebtoken'
 import type { JwtPayload } from 'jsonwebtoken'
-import prisma from '~/server/prisma'
+import prisma from '../prisma'
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string

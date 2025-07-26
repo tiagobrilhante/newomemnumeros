@@ -1,5 +1,5 @@
-import { updateRank } from '~/server/services/rank.service'
-import { handleError } from '~/server/utils/errorHandler'
+import { updateRank } from '../../services/rank.service'
+import { handleError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {

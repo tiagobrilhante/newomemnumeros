@@ -1,5 +1,5 @@
-import prisma from '~/server/prisma'
-import { handleError } from '~/server/utils/errorHandler'
+import prisma from '../prisma'
+import { handleError } from '../utils/errorHandler'
 
 export async function getAllRanks(locale: string) {
   try {

@@ -1,5 +1,5 @@
-import prisma from '~/server/prisma'
-import { handleError } from '~/server/utils/errorHandler'
+import prisma from '../../prisma'
+import { handleError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {

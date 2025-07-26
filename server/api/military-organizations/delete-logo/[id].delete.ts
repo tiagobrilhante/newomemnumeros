@@ -1,4 +1,4 @@
-import prisma from '~/server/prisma'
+import prisma from '../../../prisma'
 import path from 'path'
 import fs from 'fs/promises'
 
@@ -6,7 +6,7 @@ import fs from 'fs/promises'
 export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
 
-  if (!id || isNaN(Number(id))) {
+  if (!id ) {
     throw createError({
       statusCode: 400,
       message: 'ID inválido',

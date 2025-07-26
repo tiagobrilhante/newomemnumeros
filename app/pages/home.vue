@@ -8,7 +8,7 @@
   const appName = config.public.APP_NAME
 
   useHead({
-    title: $t('home') + ' - ' + appName,
+    title: $t('leftMenu.home') + ' - ' + appName,
   })
 
   definePageMeta({

@@ -1,5 +1,4 @@
-import prisma from '~/server/prisma'
-import type { userWithoutPassword } from '~/types/user'
+import prisma from '../../prisma'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (_event): Promise<userWithoutPassword[]> => {
@@ -9,30 +8,7 @@ export default defineEventHandler(async (_event): Promise<userWithoutPassword[]>
         deleted: false,
       },
       include: {
-        militaryOrganization: true,
         rank: true,
-        sectionFunctionUser: {
-          include: {
-            section: true,
-          },
-        },
-        permissionSetupUser: {
-          include: {
-            permissionSetup: {
-              include: {
-                permissions: {
-                  include: {
-                    linkSectionPermission: {
-                      include: {
-                        section: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
       },
     })
 
