@@ -1,12 +1,13 @@
 export type militaryOrganization = {
-  id?: string
-  name: string
-  acronym: string
-  color?: string
-  logo?: string
-  militaryOrganizationId?: string | null
-  militaryOrganizations?: militaryOrganization[]
-  parentOrganization?: militaryOrganization
-  subOrganizationsCount?: number
-  usersCount?: number
+  readonly id?: string
+  readonly name: string
+  readonly acronym: string
+  readonly color?: string
+  readonly logo?: string
+  readonly militaryOrganizationId?: string | null
+  readonly parentOrganization?: militaryOrganization
+  readonly militaryOrganizations?: readonly militaryOrganization[]
+
+  readonly subOrganizationsCount?: number
+  readonly usersCount?: number
 }

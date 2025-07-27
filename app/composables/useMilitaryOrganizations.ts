@@ -2,8 +2,6 @@ import { toast } from 'vue3-toastify'
 import { useMilitaryOrganizationStore } from '~/stores/military-organization.store'
 import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
 import { militaryOrganizationService } from '~/services/militaryOrganization.service'
-import type { militaryOrganization } from '~/types/military-organization'
-import type { ApiResponse } from '~/types/api-response'
 
 interface MilitaryOrganizationFilters {
   search?: string
@@ -306,7 +304,6 @@ export const useMilitaryOrganizations = () => {
       loading.value = false
     }
   }
-
 
   const selectMilitaryOrganization = (militaryOrganization: militaryOrganization | null): void => {
     if (militaryOrganization) {

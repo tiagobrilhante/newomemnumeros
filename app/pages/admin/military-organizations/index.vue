@@ -7,11 +7,11 @@
   const appName = config.public.APP_NAME
 
   useHead({
-    title: $t('militaryOrganizationsManagement')  + ' - ' + appName,
+    title: $t('militaryOrganizationsManagement') + ' - ' + appName,
   })
 
   definePageMeta({
-    auth: true
+    auth: true,
   })
 
   const {
@@ -25,6 +25,7 @@
   } = useMilitaryOrganizations()
 
   const dialog = ref(false)
+  const search = ref('')
 
   const CARD_PROPS = reactive({
     modalType: '',
@@ -84,25 +85,28 @@
   <v-container fluid>
     <v-row>
       <v-col>
-        <BaseTitle :title-variables="{
-    title: $t('militaryOrganizationsManagement'),
-    icon: 'mdi-domain',
-  }" />
+        <BaseTitle :title-variables="{title: $t('militaryOrganizationsManagement'),icon: 'mdi-domain'}" />
 
         <v-card class="border border-solid border-opacity-100" rounded="xl">
 
           <!-- card title e add MO btn-->
-          <v-card-title class="d-flex justify-space-between align-center">
-            <span>{{ $t('listedMilitaryOrganizations') }}</span>
-            <v-btn
-              :loading="loading"
-              :text="$t('add') + ' ' + $t('leftMenu.militaryOrganization') "
-              color="primary"
-              prepend-icon="mdi-plus-circle"
-              rounded="xl"
-              size="small"
-              @click="openModal('add')"
-            />
+          <v-card-title>
+            <v-row>
+              <v-col class="px-5 d-flex justify-space-between align-center">
+                <span>{{ $t('listedMilitaryOrganizations') }}</span>
+                <v-btn
+                  :loading="loading"
+                  :text="$t('add') + ' ' + $t('leftMenu.militaryOrganization') "
+                  class="mt-2"
+                  color="primary"
+                  prepend-icon="mdi-plus-circle"
+                  rounded="xl"
+                  size="small"
+                  @click="openModal('add')"
+                />
+              </v-col>
+            </v-row>
+
           </v-card-title>
 
           <v-card-text>
@@ -121,8 +125,8 @@
               :headers="headers"
               :items="militaryOrganizations"
               :loading="loading"
+              :search="search"
               density="compact"
-              item-value="id"
             >
               <!-- color-->
               <template #[`item.color`]="{ item }">
@@ -135,7 +139,6 @@
               </template>
 
               <!--if parent-->
-              <!-- todo needs internationalization -->
               <template #[`item.parentOrganization`]="{ item }">
                 <span v-if="item.parentOrganization">{{ item.parentOrganization?.acronym }}</span>
                 <span v-else> {{ $t('isParentMilitaryOrganization') }} </span>
@@ -146,20 +149,10 @@
                 <v-row class="d-flex justify-center align-center">
                   <v-col class="text-center">
                     <v-img
-                      v-if="item.logo && item.logo === '/logos/default/default.png'"
-                      alt="Sem logo cadastrado"
+                      :alt="item.logo === '/logos/default/default.png' ? 'Sem Logo cadastrado' : `Logo ${item.acronym}`"
+                      :src="item.logo && item.logo !== '/logos/default/default.png' ? retrieveMiniImage(item.logo) : '/logos/default/default_mini.png'"
                       class="pt-2 cursor-pointer hover-effect mx-auto"
-                      src="/logos/default/default_mini.png"
-                      width="auto"
-                      @click="openModal('logo', item)"
-                    />
-                    <v-img
-                      v-else-if="item.logo && item.logo !== '/logos/default/default.png'"
-                      :alt="`Logo ${item.acronym}`"
-                      :src="retrieveMiniImage(item.logo)"
-                      class="pt-auto pb-auto d-flex justify-center align-center mx-auto cursor-pointer hover-effect"
-                      height="auto"
-                      width="auto"
+                      max-width="50"
                       @click="openModal('logo', item)"
                     />
                   </v-col>
@@ -167,41 +160,38 @@
               </template>
 
               <!-- actions-->
-              <!-- todo needs internationalization -->
               <template #[`item.actions`]="{ item }">
 
                 <!-- edit -->
                 <v-tooltip :text="$t('edit')" location="top">
                   <template v-slot:activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  class="mr-3"
-                  color="primary"
-                  icon="mdi-pencil"
-                  size="x-small"
-                  :loading="loading"
-                  variant="outlined"
-                  @click="openModal('edit', item)"
-                  />
+                    <v-btn
+                      :loading="loading"
+                      class="mr-3"
+                      color="primary"
+                      icon="mdi-pencil"
+                      size="x-small"
+                      v-bind="props"
+                      variant="outlined"
+                      @click="openModal('edit', item)"
+                    />
                   </template>
                 </v-tooltip>
-
 
                 <!-- delete-->
                 <v-tooltip :text="$t('delete')" location="top">
                   <template v-slot:activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  color="error"
-                  icon="mdi-delete"
-                  size="x-small"
-                  variant="outlined"
-                  :loading="loading"
-                  @click="openModal('delete', item)"
-                />
+                    <v-btn
+                      :loading="loading"
+                      color="error"
+                      icon="mdi-delete"
+                      size="x-small"
+                      v-bind="props"
+                      variant="outlined"
+                      @click="openModal('delete', item)"
+                    />
                   </template>
                 </v-tooltip>
-
 
               </template>
             </v-data-table>
@@ -226,7 +216,6 @@
       />
 
       <!-- for exclusions-->
-
       <military-organization-delete-military-organization
         v-else-if="CARD_PROPS.modalType === 'delete' && selectedMilitaryOrganization"
         :card-props="CARD_PROPS"
