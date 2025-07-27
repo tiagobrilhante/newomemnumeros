@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import type { militaryOrganization } from '~/types/military-organization'
 
 type militaryOrganizationState = {
   militaryOrganizations: militaryOrganization[]
@@ -20,7 +19,7 @@ export const useMilitaryOrganizationStore = defineStore('militaryOrganizationSto
 
     updateMilitaryOrganization(updatedDataMilitaryOrganization: militaryOrganization) {
       const militaryOrganizationIndex = this.militaryOrganizations.findIndex(
-        (militaryOrganization) => militaryOrganization.id === updatedDataMilitaryOrganization.id,
+        (militaryOrganization: militaryOrganization) => militaryOrganization.id === updatedDataMilitaryOrganization.id,
       )
       if (militaryOrganizationIndex !== -1) {
         this.militaryOrganizations[militaryOrganizationIndex] = {

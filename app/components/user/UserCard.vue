@@ -42,7 +42,7 @@
                     <v-icon left>mdi-account</v-icon>
 
                     {{ useAuthStore.user.rank?.acronym }} {{ useAuthStore.user.serviceName }}<br >
-                    <b>{{ $t('nameLabel') }}:</b> {{ useAuthStore.user.name }}<br >
+                    <b>{{ $t('name') }}:</b> {{ useAuthStore.user.name }}<br >
                     <b>{{ $t('cpfLabel') }}: </b>{{ useAuthStore.user.cpf }}<br >
                     <b>{{ $t('emailLabel') }}: </b>{{ useAuthStore.user.email }}<br >
                   </v-alert>

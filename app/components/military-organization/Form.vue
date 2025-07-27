@@ -173,7 +173,7 @@
     <v-form @submit.prevent="proceedAction">
       <v-card-title>
         <v-row>
-          <v-col cols="10">{{ cardProps.modalType }} de Organização Militar</v-col>
+          <v-col cols="10">{{ $t(cardProps.modalType) }}  {{$t('leftMenu.militaryOrganization') }} </v-col>
           <v-col class="text-right pr-0 pt-0" cols="2">
             <v-btn icon variant="plain" @click="emit('close-dialog')">
               <v-icon>mdi-close</v-icon>
@@ -182,8 +182,6 @@
         </v-row>
       </v-card-title>
       <v-card-text>
-
-        {{ militaryOrganizations}}
         <v-container fluid>
           <v-row dense>
             <v-col cols="12">

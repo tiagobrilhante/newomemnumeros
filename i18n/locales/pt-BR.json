@@ -29,7 +29,7 @@
   "serviceNameLabel": "Nome de Guerra",
   "serviceNamePlaceholder": "Insira o seu Nome de Guerra",
   "fullNameLabel": "Nome completo",
-  "nameLabel": "Nome",
+  "name": "Nome",
   "fullNamePlaceholder": "Insira o seu nome completo",
   "cpfLabel": "CPF",
   "cpfPlaceholder": "CPF",
@@ -39,8 +39,23 @@
   "passwordDoesNotMatch": "As senhas não coincidem. Tente novamente.",
   "editData": "Alterar dados",
   "welcomeMessage": "seja bem-vindo ao",
+  "color": "Cor",
+  "acronym": "Sigla",
+  "logo": "Logo",
+  "parentOrganization": "Om Pai",
+  "actions": "Ações",
+  "create": "Criar",
+  "update": "Alterar",
+  "edit": "Editar",
+  "delete": "Excluir",
+  "add": "Adicionar",
+  "militaryOrganizationsManagement": "Gerenciamento de Organizações Militares",
+  "listedMilitaryOrganizations": "Organizações Militares Cadastradas",
+  "isParentMilitaryOrganization": "É OM pai.",
+  "save": "Salvar",
+  "cancel": "Cancelar",
 
-  "leftMenu" : {
+  "leftMenu": {
     "mainMenu": "Menu Principal",
     "home": "Página Inicial",
     "militaryOrganizations": "Organizações Militares",
@@ -50,7 +65,6 @@
     "rolesAndPermissions": "Permissões",
     "userLinks": "Vinculação de usuários"
   },
-
   "errors": {
     "allFieldsRequired": "Todos os campos são obrigatórios",
     "emailAlreadyExists": "Este e-mail já está cadastrado.",
@@ -96,7 +110,6 @@
     "militaryOrganizationDeleted": "Organização militar excluída com sucesso!",
     "militaryOrganizationLogoDeleted": "Logo da organização militar removido com sucesso!"
   },
-
   "$vuetify": {
     "open": "Abrir",
     "close": "Fechar",
@@ -105,8 +118,8 @@
       "rowsPerPageText": "Itens por página:",
       "pageText": "{0}-{1} de {2}"
     },
-    "pagination" : {
-      "ariaLabel" : {
+    "pagination": {
+      "ariaLabel": {
         "root": "Navegação de paginação"
       }
     },
