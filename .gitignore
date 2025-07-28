@@ -10,3 +10,7 @@ dist
 .idea
 CLAUDE.md
 /.claude/
+
+# Ignore uploaded logos but keep default
+public/logos/*
+!public/logos/default/

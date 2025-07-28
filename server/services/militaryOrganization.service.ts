@@ -3,6 +3,7 @@ import { handleError } from '../utils/errorHandler'
 import { MilitaryOrganizationTransformer } from '../transformers/militaryOrganization.transformer'
 import { DEFAULT_MO_COLOR } from '#shared/constants/defaults'
 import { imageUploadService } from './imageUpload.service'
+import { sanitizeForFilename } from '#shared/utils/sanitize-data'
 
 function isValidColor(color: string): boolean {
   const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
@@ -158,8 +159,11 @@ export async function createMilitaryOrganization(data: militaryOrganization, loc
     // Processar logo se for base64
     let logoPath = '/logos/default/default.png'
     if (logo && logo.startsWith('data:')) {
+      // Sanitizar acronym para uso em pasta/arquivo
+      const folderName = sanitizeForFilename(sanitizedAcronym)
+      
       // Usar método específico para logos com thumbnail
-      const uploadResult = await imageUploadService.saveLogoWithThumb(logo, sanitizedAcronym)
+      const uploadResult = await imageUploadService.saveLogoWithThumb(logo, folderName)
 
       if (!uploadResult.success) {
         return createError({
@@ -302,8 +306,11 @@ export async function updateMilitaryOrganization(data: militaryOrganization, loc
           await imageUploadService.deleteImage(existingOrganization.logo)
         }
 
+        // Sanitizar acronym para uso em pasta/arquivo
+        const folderName = sanitizeForFilename(sanitizedAcronym)
+        
         // Usar método específico para logos com thumbnail
-        const uploadResult = await imageUploadService.saveLogoWithThumb(logo, sanitizedAcronym)
+        const uploadResult = await imageUploadService.saveLogoWithThumb(logo, folderName)
 
         if (!uploadResult.success) {
           return createError({
@@ -397,15 +404,33 @@ export async function deleteMilitaryOrganization(id: string, locale: string) {
       })
     }
 
+    // Processar logo antes de deletar
+    let logoToDelete = null
+    if (existingOrganization.logo !== '/logos/default/default.png') {
+      logoToDelete = existingOrganization.logo
+    }
+
+    // Primeiro atualizar o logo para default e marcar como deleted
     await prisma.militaryOrganization.update({
       where: {
         id,
       },
       data: {
+        logo: '/logos/default/default.png', // Resetar para default antes de deletar
         deleted: true,
         updatedAt: new Date(),
       },
     })
+
+    // Depois deletar a pasta da organização se havia logo customizado
+    if (logoToDelete) {
+      // Extrair o acronym da URL do logo para deletar a pasta
+      const acronym = logoToDelete.split('/')[2] // /logos/ACRONYM/logo.png
+      
+      if (acronym) {
+        await imageUploadService.deleteOrganizationFolder(acronym)
+      }
+    }
 
     return {
       success: true,

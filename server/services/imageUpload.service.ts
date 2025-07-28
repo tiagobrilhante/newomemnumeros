@@ -145,6 +145,42 @@ export class ImageUploadService {
   }
 
   /**
+   * Remove pasta inteira de uma entidade (genérico)
+   */
+  async deleteEntityFolder(
+    folder: 'logos' | 'profiles' | 'documents',
+    entityId: string
+  ): Promise<{ success: boolean; error?: string }> {
+    try {
+      const folderPath = path.join(this.baseUploadDir, folder, entityId)
+      
+      // Verificar se pasta existe
+      try {
+        await fs.access(folderPath)
+        await fs.rmdir(folderPath, { recursive: true })
+        return { success: true }
+      } catch {
+        // Pasta não existe, considerar como sucesso
+        return { success: true }
+      }
+      
+    } catch (error) {
+      console.error(`Error deleting ${folder} folder for entity ${entityId}:`, error)
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown error' 
+      }
+    }
+  }
+
+  /**
+   * Remove pasta inteira de logos de uma organização (método específico para retrocompatibilidade)
+   */
+  async deleteOrganizationFolder(organizationId: string): Promise<{ success: boolean; error?: string }> {
+    return this.deleteEntityFolder('logos', organizationId)
+  }
+
+  /**
    * Move uma imagem de um local para outro
    */
   async moveImage(
