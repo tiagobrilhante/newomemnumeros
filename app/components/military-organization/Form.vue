@@ -1,18 +1,41 @@
 <script lang="ts" setup>
-    import InputImage from '~/components/utils/InputImage.vue'
-  const {createMilitaryOrganization, updateMilitaryOrganization, militaryOrganizations, loading} = useMilitaryOrganizations()
+  import type { VForm } from 'vuetify/components'
 
+  const {
+    createMilitaryOrganization,
+    updateMilitaryOrganization,
+    deleteMilitaryOrganizationLogo,
+    militaryOrganizations,
+    selectedMilitaryOrganization,
+    loading,
+  } = useMilitaryOrganizations()
+
+  const { cardProps } = defineProps<{
+    cardProps: {
+      modalType: string
+      modalTextButton: string
+    }
+  }>()
+
+  const adminMilitaryOrganizationStore = useMilitaryOrganizationStore()
+  const emit = defineEmits(['close-dialog'])
 
   const isFather = ref(false)
-  const id = ref(0)
+  const id = ref<string | undefined | null>(null)
+  const father = ref<string | undefined>(undefined)
   const name = ref('')
-  const color = ref('')
+  const color = ref<string | undefined>(undefined)
   const acronym = ref('')
   const changeLogo = ref(false)
   const openDialogDeleteLogo = ref(false)
   const logo = ref('')
   const logoBase = ref('')
   const logoToSend = ref<string | null>(null)
+  const form = ref<VForm | null>(null)
+  const inputProps = reactive({
+    label: $t('selectMOBadge'),
+  })
+
   const error = ref<{
     msgError: string
     active: boolean
@@ -22,86 +45,48 @@
     active: false,
     arrayOfErrors: [],
   })
-  const { cardProps } = defineProps<{
-    cardProps: {
-      modalType: string
-      modalTextButton: string
+
+  // form validations
+  const requiredRule = [(v: string) => !!v || `${$t('thisField')} ${$t('isRequired')}`]
+
+  if (cardProps.modalType === 'edit' && selectedMilitaryOrganization.value) {
+    changeLogo.value = false
+    id.value = selectedMilitaryOrganization.value?.id
+    logoBase.value = selectedMilitaryOrganization.value?.logo ?? '/logos/default/default.png'
+    name.value = selectedMilitaryOrganization.value?.name ?? ''
+    color.value = selectedMilitaryOrganization.value?.color ?? ''
+    acronym.value = selectedMilitaryOrganization.value?.acronym ?? ''
+    father.value = selectedMilitaryOrganization.value?.militaryOrganizationId ?? ''
+
+    if (!father.value && !selectedMilitaryOrganization.value?.parentOrganization) {
+      isFather.value = true
     }
-  }>()
-
-  const selectedMilitaryOrganization = ref<string | null>(null)
-
-  const adminMilitaryOrganizationStore = useMilitaryOrganizationStore()
-
-  const isComponentVisible = ref(false)
-
-
-  watch(
-    () => adminMilitaryOrganizationStore.selectedMilitaryOrganization,
-    (newVal) => {
-      if (newVal) {
-        isComponentVisible.value = true
-        id.value = newVal.id
-        name.value = newVal.name
-        acronym.value = newVal.acronym
-        logo.value = newVal.logo
-        color.value = newVal.color
-        selectedMilitaryOrganization.value = newVal.militaryOrganizationId
-        isFather.value = !newVal.militaryOrganizationId
-      }
-    },
-    { immediate: true }
-  )
-
-  if (cardProps.modalType !== 'Edição') {
-    changeLogo.value = false
   }
-
-  if (cardProps.modalType === 'Edição') {
-    changeLogo.value = false
-    logoBase.value = logo.value
-  }
-
 
   const filteredMilitaryOrganizations = computed(() => {
-    return militaryOrganizations.value.filter((org: militaryOrganization) => org.id !== id.value)
+    if (!id.value) return militaryOrganizations.value
+    return militaryOrganizations.value.filter((mo: militaryOrganization) => mo.id !== id.value)
   })
 
   const proceedAction = async () => {
-
-    if (!name.value || !acronym.value) {
-      const specifiedErrors = []
-
-      if (!name.value) {
-        specifiedErrors.push('Por favor, preencha o nome da Organização Militar.')
-      }
-
-      if (!acronym.value) {
-        specifiedErrors.push('Por favor, preencha a sigla da Organização Militar.')
-      }
-
-      if (!isFather.value && !selectedMilitaryOrganization.value) {
-        specifiedErrors.push('Por favor, selecione a OM pai.')
-      }
-
-      // TODO eu posso criar um componente para exibir os erros
-      error.value.active = true
-      error.value.msgError = 'Por favor, preencha todos os campos corretamente.'
-      error.value.arrayOfErrors = specifiedErrors
-      return
-    }
+    const { valid } = (await form.value?.validate()) || { valid: false }
+    if (!valid) return
 
     try {
-      if (isFather.value) {
-        selectedMilitaryOrganization.value = null
+      if (color.value === undefined) {
+        color.value = getRandomColor()
+      } else {
+
+        color.value = color.value.trim()
       }
 
-      if (cardProps.modalType === 'Cadastro') {
+      if (cardProps.modalType === 'add') {
+
         await createMilitaryOrganization({
           name: name.value.trim(),
           acronym: acronym.value.trim(),
-          color: color.value.trim(),
-          militaryOrganizationId: selectedMilitaryOrganization.value ?? null,
+          color: color.value,
+          militaryOrganizationId: father.value ?? null,
           logo: logo.value ?? null,
         })
       } else {
@@ -110,12 +95,13 @@
           logoToSend.value = null
         }
 
+
         await updateMilitaryOrganization({
           id: id.value,
           name: name.value.trim(),
           acronym: acronym.value.trim(),
-          color: color.value.trim(),
-          militaryOrganizationId: selectedMilitaryOrganization.value || null,
+          color: color.value,
+          militaryOrganizationId: father.value || null,
           logo: changeLogo.value ? (logoToSend.value ?? undefined) : undefined,
         })
 
@@ -131,11 +117,6 @@
     }
   }
 
-  const emit = defineEmits(['close-dialog'])
-
-  const inputProps = reactive({
-    label: 'Selecione o distintivo da Om',
-  })
 
   const resetError = () => {
     error.value.msgError = ''
@@ -153,9 +134,12 @@
   }
 
   // corrigir
-  const deleteMilitaryOrganizationLogo = async (id: number) => {
+  const doDeleteMilitaryOrganizationLogo = async () => {
     try {
-      await adminMilitaryOrganizationStore.deleteMilitaryOrganizationLogo(id)
+      const selectedOrg = selectedMilitaryOrganization.value
+      if (!selectedOrg?.id) return
+      
+      await deleteMilitaryOrganizationLogo(selectedOrg.id)
 
       openDialogDeleteLogo.value = false
 
@@ -170,10 +154,11 @@
 
 <template>
   <v-card rounded="xl">
-    <v-form @submit.prevent="proceedAction">
+    <v-form ref="form" lazy-validation @submit.prevent="proceedAction">
+      <!-- card title-->
       <v-card-title>
         <v-row>
-          <v-col cols="10">{{ $t(cardProps.modalType) }}  {{$t('leftMenu.militaryOrganization') }} </v-col>
+          <v-col cols="10">{{ $t(cardProps.modalType) }} {{ $t('leftMenu.militaryOrganization') }}</v-col>
           <v-col class="text-right pr-0 pt-0" cols="2">
             <v-btn icon variant="plain" @click="emit('close-dialog')">
               <v-icon>mdi-close</v-icon>
@@ -181,11 +166,13 @@
           </v-col>
         </v-row>
       </v-card-title>
+
+      <!-- card text-->
       <v-card-text>
         <v-container fluid>
           <v-row dense>
             <v-col cols="12">
-              <!-- Exibe mensagem de erro, se houver -->
+              <!-- Error Alert TODO revisar -->
               <v-alert
                 v-if="error.active"
                 class="mb-5"
@@ -202,9 +189,10 @@
               </v-alert>
 
               <v-row>
+
+                <!--color-->
                 <v-col cols="4">
-                  <!--cor-->
-                  <h4>Selecione a cor da OM</h4>
+                  <h4>{{ $t('moColorSelect') }}</h4>
                   <v-color-picker
                     v-model="color"
                     hide-inputs
@@ -214,58 +202,65 @@
                     width="auto"
                   />
                 </v-col>
-                <v-col cols="8">
-                  <v-checkbox v-model="isFather" hide-details label="é Om pai" />
 
-                  <!-- Select de Om -->
+                <!-- inputs-->
+                <v-col cols="8">
+                  <v-checkbox v-model="isFather" :label="$t('isParentMilitaryOrganization')" hide-details />
+
+                  <!-- MO Selector-->
                   <v-select
                     v-if="!isFather"
                     id="selectedMilitaryOrganization"
-                    v-model="selectedMilitaryOrganization"
+                    v-model="father"
                     :items="filteredMilitaryOrganizations"
+                    :label="$t('parentMilitaryOrganization')"
+                    :placeholder="$t('selectParentMilitaryOrganization')"
+                    class="mb-3"
                     density="compact"
                     item-title="acronym"
                     item-value="id"
-                    label="OM pai"
-                    placeholder="Selecione a om pai"
                     variant="outlined"
                   />
 
-                  <!-- Campo de nome -->
+                  <!-- Name - full -->
                   <v-text-field
                     id="name"
                     v-model="name"
+                    :label="$t('fullNameMO')"
+                    :placeholder="$t('MOName')"
+                    :rules="requiredRule"
+                    class="mb-3"
                     density="compact"
-                    label="Nome da Organização Militar (completo)"
-                    placeholder="Nome da Om"
                     required
                     variant="outlined"
                     @input="resetError"
                   />
 
-                  <!-- Campo Sigla -->
+                  <!-- acronym -->
                   <v-text-field
                     id="acronym"
                     v-model="acronym"
+                    :label="$t('acronym')"
+                    :placeholder="$t('acronym')"
+                    :rules="requiredRule"
+                    class="mb-3"
                     density="compact"
-                    label="Sigla da Om"
-                    placeholder="Sigla"
                     required
                     variant="outlined"
                     @input="resetError"
                   />
 
                   <!--TODO tenho que fazer o logo-->
-                  <!--  <nuxt-img alt="image" height="200" src="/logos/default/default.png" width="200" />-->
+                  <!--                   <v-img alt="logo" class="mx-auto" height="200" src="/logos/default/default.png" width="200" />-->
 
                   <v-container fluid>
-                    <v-row v-if="!changeLogo && cardProps.modalType === 'Edição'">
+                    <v-row v-if="!changeLogo && cardProps.modalType === 'edit'">
                       <v-col class="text-center" cols="12">
-                        <nuxt-img :src="logo" alt="image" class="rounded-xl" width="200" />
+                        <nuxt-img :src="logo || '/logos/default/default.png'" alt="image" class="rounded-xl" width="200" />
                       </v-col>
                     </v-row>
 
-                    <v-row v-if="!changeLogo && cardProps.modalType === 'Edição'" no-gutters>
+                    <v-row v-if="!changeLogo && cardProps.modalType === 'edit'" no-gutters>
                       <v-col class="text-center">
                         <v-btn
                           color="primary"
@@ -273,7 +268,7 @@
                           size="small"
                           variant="outlined"
                           @click="changeLogo = true"
-                          >Alterar Escudo
+                        >Alterar Escudo
                         </v-btn>
                         <v-btn
                           v-if="logo !== '/logos/default/default.png'"
@@ -291,20 +286,20 @@
                       </v-col>
                     </v-row>
 
-                    <InputImage
-                      v-if="cardProps.modalType !== 'Edição' || changeLogo"
+                    <utils-input-image
+                      v-if="cardProps.modalType !== 'edit' || changeLogo"
                       :input-props="inputProps"
                       @handle-image="handleImage"
                     />
                     <!-- cancela a alteração do escudo-->
                     <v-btn
-                      v-if="cardProps.modalType === 'Edição' && changeLogo"
+                      v-if="cardProps.modalType === 'edit' && changeLogo"
                       block
                       class="mt-2"
                       color="warning"
                       size="small"
                       @click="closeChangeLogo"
-                      >Cancelar Alteração do Escudo da OM
+                    >Cancelar Alteração do Escudo da OM
                     </v-btn>
                   </v-container>
                 </v-col>
@@ -313,8 +308,12 @@
           </v-row>
         </v-container>
       </v-card-text>
+
+      <!-- actions-->
       <v-card-actions>
         <v-spacer />
+
+        <!-- submit-->
         <v-btn
           :text="cardProps.modalTextButton"
           color="primary"
@@ -322,17 +321,21 @@
           type="submit"
           variant="tonal"
         />
+
+        <!-- cancel-->
         <v-btn
+          :text="$t('cancel')"
           color="secondary"
           rounded="xl"
-          text="Cancelar"
           variant="tonal"
           @click="emit('close-dialog')"
         />
       </v-card-actions>
+
     </v-form>
   </v-card>
 
+  <!-- dialog for logo exclusion-->
   <v-dialog
     v-if="openDialogDeleteLogo && adminMilitaryOrganizationStore.selectedMilitaryOrganization"
     v-model="openDialogDeleteLogo"
@@ -352,9 +355,9 @@
                 Você tem certeza que deseja excluir o logo da Organização Militar:
                 <b> {{ adminMilitaryOrganizationStore.selectedMilitaryOrganization.name }}?</b>
               </p>
-              <br >
-              <hr >
-              <br >
+              <br>
+              <hr>
+              <br>
               <p>Essa ação é irreversível.</p>
             </v-col>
           </v-row>
@@ -370,11 +373,7 @@
           rounded="xl"
           text="Excluir"
           variant="elevated"
-          @click="
-            deleteMilitaryOrganizationLogo(
-              adminMilitaryOrganizationStore.selectedMilitaryOrganization.id
-            )
-          "
+          @click="doDeleteMilitaryOrganizationLogo()"
         />
         <v-btn
           class="mr-8"
@@ -387,6 +386,7 @@
       </v-card-actions>
     </v-card>
   </v-dialog>
+
 </template>
 
 <style scoped>

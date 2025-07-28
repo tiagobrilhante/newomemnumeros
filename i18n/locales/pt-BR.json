@@ -51,9 +51,21 @@
   "add": "Adicionar",
   "militaryOrganizationsManagement": "Gerenciamento de Organizações Militares",
   "listedMilitaryOrganizations": "Organizações Militares Cadastradas",
-  "isParentMilitaryOrganization": "É OM pai.",
+  "isParentMilitaryOrganization": "É OM pai",
+  "parentMilitaryOrganization": "OM pai",
+  "selectParentMilitaryOrganization": "Selecione a OM pai",
   "save": "Salvar",
   "cancel": "Cancelar",
+  "moColorSelect": "Selecione a cor da OM",
+  "fullNameMO": "Nome da Organização Militar (completo)",
+  "MOName": "Nme da OM",
+  "selectMOBadge": "Selecione o distintivo da OM",
+
+  "imageEditor": {
+    "zoomInstruction": "Use o scroll do mouse para ajustar o zoom da imagem.",
+    "moveInstruction": "Com o botão direito do mouse, clique na imagem (mantendo pressionado) para movimentar a imagem.",
+    "centerInstruction": "Centralize a imagem no retângulo exibido."
+  },
 
   "leftMenu": {
     "mainMenu": "Menu Principal",

@@ -1,6 +1,8 @@
 import prisma from '../prisma'
 import { handleError } from '../utils/errorHandler'
 import { MilitaryOrganizationTransformer } from '../transformers/militaryOrganization.transformer'
+import { DEFAULT_MO_COLOR } from '#shared/constants/defaults'
+import { imageUploadService } from './imageUpload.service'
 
 function isValidColor(color: string): boolean {
   const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
@@ -153,12 +155,30 @@ export async function createMilitaryOrganization(data: militaryOrganization, loc
       }
     }
 
+    // Processar logo se for base64
+    let logoPath = '/logos/default/default.png'
+    if (logo && logo.startsWith('data:')) {
+      // Usar método específico para logos com thumbnail
+      const uploadResult = await imageUploadService.saveLogoWithThumb(logo, sanitizedAcronym)
+
+      if (!uploadResult.success) {
+        return createError({
+          statusCode: 400,
+          message: uploadResult.error || 'Failed to upload logo'
+        })
+      }
+
+      logoPath = uploadResult.publicUrl!
+    } else if (logo) {
+      logoPath = logo
+    }
+
     const newMilitaryOrganization = await prisma.militaryOrganization.create({
       data: {
         name: sanitizedName,
         acronym: sanitizedAcronym,
-        color: color || '#1976d2',
-        logo: logo || '/logos/default/default.png',
+        color: color || DEFAULT_MO_COLOR,
+        logo: logoPath,
         militaryOrganizationId,
       },
       include: {
@@ -190,14 +210,14 @@ export async function updateMilitaryOrganization(data: militaryOrganization, loc
   try {
     const { id, name, acronym, color, logo, militaryOrganizationId } = data
 
-    if (!id || !name || !acronym) {
+    if (!name || !acronym) {
       return createError({
         statusCode: 400,
         message: await serverTByLocale(locale, 'errors.allFieldsRequired'),
       })
     }
 
-    if (isNaN(Number(id))) {
+    if (!id) {
       return createError({
         statusCode: 400,
         message: await serverTByLocale(locale, 'errors.invalidId'),
@@ -237,8 +257,8 @@ export async function updateMilitaryOrganization(data: militaryOrganization, loc
 
     const duplicateOrganization = await prisma.militaryOrganization.findFirst({
       where: {
+        NOT: { id },
         acronym: sanitizedAcronym,
-        id,
         deleted: false,
       },
     })
@@ -265,11 +285,42 @@ export async function updateMilitaryOrganization(data: militaryOrganization, loc
         })
       }
 
-      if (Number(militaryOrganizationId) === Number(id)) {
+      if (militaryOrganizationId === id) {
         return createError({
           statusCode: 400,
           message: await serverTByLocale(locale, 'errors.invalidHierarchy') || 'Organization cannot be its own parent',
         })
+      }
+    }
+
+    // Processar logo para update
+    let logoPath = existingOrganization.logo
+    if (logo !== undefined) {
+      if (logo && logo.startsWith('data:')) {
+        // Deletar logo antigo se não for default
+        if (existingOrganization.logo !== '/logos/default/default.png') {
+          await imageUploadService.deleteImage(existingOrganization.logo)
+        }
+
+        // Usar método específico para logos com thumbnail
+        const uploadResult = await imageUploadService.saveLogoWithThumb(logo, sanitizedAcronym)
+
+        if (!uploadResult.success) {
+          return createError({
+            statusCode: 400,
+            message: uploadResult.error || 'Failed to upload logo'
+          })
+        }
+
+        logoPath = uploadResult.publicUrl!
+      } else if (logo === null) {
+        // Resetar para default
+        if (existingOrganization.logo !== '/logos/default/default.png') {
+          await imageUploadService.deleteImage(existingOrganization.logo)
+        }
+        logoPath = '/logos/default/default.png'
+      } else if (logo) {
+        logoPath = logo
       }
     }
 
@@ -281,7 +332,7 @@ export async function updateMilitaryOrganization(data: militaryOrganization, loc
         name: sanitizedName,
         acronym: sanitizedAcronym,
         color: color || existingOrganization.color,
-        logo: logo || existingOrganization.logo,
+        logo: logoPath,
         militaryOrganizationId: militaryOrganizationId,
       },
       include: {
@@ -369,7 +420,7 @@ export async function deleteMilitaryOrganization(id: string, locale: string) {
 
 export async function deleteMilitaryOrganizationLogo(id: string, locale: string) {
   try {
-    if (!id || isNaN(Number(id))) {
+    if (!id) {
       return createError({
         statusCode: 400,
         message: await serverTByLocale(locale, 'errors.invalidId'),
@@ -388,6 +439,11 @@ export async function deleteMilitaryOrganizationLogo(id: string, locale: string)
         statusCode: 404,
         message: await serverTByLocale(locale, 'errors.recordNotFound'),
       })
+    }
+
+    // Deletar arquivo de logo se não for default
+    if (existingOrganization.logo !== '/logos/default/default.png') {
+      await imageUploadService.deleteImage(existingOrganization.logo)
     }
 
     const updatedOrganization = await prisma.militaryOrganization.update({

@@ -100,8 +100,8 @@ export const useMilitaryOrganizations = () => {
       const organizationData: militaryOrganization = {
         name: data.name.trim() as string,
         acronym: data.acronym.trim().toUpperCase() as string,
-        color: data.color || '#1976d2',
-        logo: data.logo || '/logos/default/default.png',
+        color: data.color,
+        logo: data.logo === null ? '/logos/default/default.png' : data.logo,
         militaryOrganizationId: data.militaryOrganizationId || null,
       }
 
@@ -158,7 +158,13 @@ export const useMilitaryOrganizations = () => {
     error.value = ''
 
     try {
-      const response = await militaryOrganizationService.update(data)
+      // Processar logo antes de enviar
+      const processedData = {
+        ...data,
+        logo: data.logo === null ? '/logos/default/default.png' : data.logo
+      }
+
+      const response = await militaryOrganizationService.update(processedData)
 
       if (response.success) {
         store.updateMilitaryOrganization(response.data)

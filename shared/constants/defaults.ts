@@ -1,0 +1,1 @@
+export const DEFAULT_MO_COLOR = '#1976d2'

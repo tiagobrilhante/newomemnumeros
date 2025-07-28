@@ -73,6 +73,15 @@ export default defineEventHandler(async (event: H3Event) => {
     } catch (error) {
       if (error instanceof jwt.JsonWebTokenError) {
         console.log(`[AUTH] JWT verification error: ${error.message}`)
+        
+        // Limpar cookies de autenticação
+        deleteCookie(event, 'auth-token')
+        
+        // Retornar erro 401 para forçar logout no frontend
+        throw createError({
+          statusCode: 401,
+          statusMessage: 'Token expired or invalid'
+        })
       } else {
         console.error('[AUTH] Token verification error:', error)
       }

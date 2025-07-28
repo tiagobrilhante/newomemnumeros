@@ -52,8 +52,20 @@
   "militaryOrganizationsManagement": "Military Organizations Management",
   "listedMilitaryOrganizations": "Listed Military Organizations",
   "isParentMilitaryOrganization": "This is a parent",
+  "parentMilitaryOrganization": "Parent MO",
+  "selectParentMilitaryOrganization": "Select Parent MO",
   "save": "Save",
   "cancel": "Cancel",
+  "moColorSelect": "Select MO color",
+  "fullNameMO": "Military Organization Full Name",
+  "MOName": "MO name",
+  "selectMOBadge": "Select MO Badge",
+
+  "imageEditor": {
+    "zoomInstruction": "Use mouse scroll to adjust image zoom.",
+    "moveInstruction": "Right-click and hold on the image to move it.",
+    "centerInstruction": "Center the image within the displayed rectangle."
+  },
 
   "leftMenu" : {
     "mainMenu": "Main Menu",
