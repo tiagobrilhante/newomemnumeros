@@ -30,7 +30,6 @@
   const openDialogDeleteLogo = ref(false)
   const logo = ref('')
   const logoBase = ref('')
-  const logoToSend = ref<string | null>(null)
   const form = ref<VForm | null>(null)
   const inputProps = reactive({
     label: $t('selectMOBadge'),
@@ -53,6 +52,7 @@
     changeLogo.value = false
     id.value = selectedMilitaryOrganization.value?.id
     logoBase.value = selectedMilitaryOrganization.value?.logo ?? '/logos/default/default.png'
+    logo.value = selectedMilitaryOrganization.value?.logo ?? '/logos/default/default.png'
     name.value = selectedMilitaryOrganization.value?.name ?? ''
     color.value = selectedMilitaryOrganization.value?.color ?? ''
     acronym.value = selectedMilitaryOrganization.value?.acronym ?? ''
@@ -68,52 +68,45 @@
     return militaryOrganizations.value.filter((mo: militaryOrganization) => mo.id !== id.value)
   })
 
+  const prepareFormData = () => ({
+    name: name.value.trim(),
+    acronym: acronym.value.trim(),
+    color: color.value?.trim() || getRandomColor(),
+    militaryOrganizationId: father.value || null,
+  })
+
+  const prepareLogo = (): string | undefined => {
+    if (cardProps.modalType === 'add') {
+      return logo.value || undefined
+    }
+
+    return changeLogo.value ? (logo.value || undefined) : undefined
+  }
+
   const proceedAction = async () => {
     const { valid } = (await form.value?.validate()) || { valid: false }
     if (!valid) return
 
     try {
-      if (color.value === undefined) {
-        color.value = getRandomColor()
-      } else {
-
-        color.value = color.value.trim()
-      }
+      const formData = prepareFormData()
+      const logoData = prepareLogo()
 
       if (cardProps.modalType === 'add') {
-
-        await createMilitaryOrganization({
-          name: name.value.trim(),
-          acronym: acronym.value.trim(),
-          color: color.value,
-          militaryOrganizationId: father.value ?? null,
-          logo: logo.value ?? null,
-        })
+        await createMilitaryOrganization({ ...formData, logo: logoData })
       } else {
-        logoToSend.value = logo.value
-        if (!changeLogo.value) {
-          logoToSend.value = null
-        }
-
-
         await updateMilitaryOrganization({
-          id: id.value,
-          name: name.value.trim(),
-          acronym: acronym.value.trim(),
-          color: color.value,
-          militaryOrganizationId: father.value || null,
-          logo: changeLogo.value ? (logoToSend.value ?? undefined) : undefined,
+          id: id.value || undefined,
+          ...formData,
+          logo: logoData
         })
-
-        // TODO criar modulo para abstrair a chamada pura nos componentes
-
       }
 
       emit('close-dialog')
-    } catch (error) {
-      console.error('Error ao realizar a operação:', error)
-    } finally {
-      console.log('teste')
+    } catch (error: any) {
+      showError(
+        $t('errors.operationFailed') || 'Erro ao realizar operação',
+        [error?.message || error?.toString() || 'Erro desconhecido']
+      )
     }
   }
 
@@ -122,6 +115,12 @@
     error.value.msgError = ''
     error.value.active = false
     error.value.arrayOfErrors = []
+  }
+
+  const showError = (message: string, details?: string[]) => {
+    error.value.msgError = message
+    error.value.arrayOfErrors = details || []
+    error.value.active = true
   }
 
   const handleImage = (image: string) => {
@@ -133,21 +132,21 @@
     logo.value = logoBase.value
   }
 
-  // corrigir
   const doDeleteMilitaryOrganizationLogo = async () => {
+    const selectedOrg = selectedMilitaryOrganization.value
+    if (!selectedOrg?.id) return
+
     try {
-      const selectedOrg = selectedMilitaryOrganization.value
-      if (!selectedOrg?.id) return
-      
       await deleteMilitaryOrganizationLogo(selectedOrg.id)
 
       openDialogDeleteLogo.value = false
-
       logo.value = '/logos/default/default.png'
-    } catch (error) {
-      console.error('Error ao realizar a operação:', error)
-    } finally {
-      console.log('teste')
+      logoBase.value = '/logos/default/default.png'
+    } catch (error: any) {
+      showError(
+        $t('errors.deleteLogoFailed') || 'Erro ao excluir logo',
+        [error?.message || error?.toString() || 'Erro desconhecido']
+      )
     }
   }
 </script>
@@ -250,57 +249,69 @@
                     @input="resetError"
                   />
 
-                  <!--TODO tenho que fazer o logo-->
-                  <!--                   <v-img alt="logo" class="mx-auto" height="200" src="/logos/default/default.png" width="200" />-->
-
+                  <!-- badge actions-->
                   <v-container fluid>
+
+                    <!-- show badge if edit -->
                     <v-row v-if="!changeLogo && cardProps.modalType === 'edit'">
                       <v-col class="text-center" cols="12">
-                        <nuxt-img :src="logo || '/logos/default/default.png'" alt="image" class="rounded-xl" width="200" />
+                        <v-img :src="logo || '/logos/default/default.png'" alt="image" class="rounded-xl mx-auto"
+                               width="200" />
                       </v-col>
                     </v-row>
 
+                    <!-- actions on edit-->
                     <v-row v-if="!changeLogo && cardProps.modalType === 'edit'" no-gutters>
                       <v-col class="text-center">
+                        <!-- change-->
                         <v-btn
+                          :text="$t('changeBadge')"
                           color="primary"
                           rounded="xl"
                           size="small"
                           variant="outlined"
                           @click="changeLogo = true"
-                        >Alterar Escudo
-                        </v-btn>
-                        <v-btn
-                          v-if="logo !== '/logos/default/default.png'"
-                          class="ml-2"
-                          color="error"
-                          rounded="xl"
-                          size="small"
-                          variant="outlined"
-                          @click="openDialogDeleteLogo = true"
                         >
-                          <template #default>
-                            <v-icon>mdi-delete</v-icon>
-                          </template>
                         </v-btn>
+
+                        <!-- delete-->
+                        <v-tooltip :text="$t('deleteBadge')" location="top">
+                          <template v-slot:activator="{ props }">
+                            <v-btn
+                              v-if="logo !== '/logos/default/default.png'"
+                              class="ml-2"
+                              color="error"
+                              icon="mdi-delete"
+                              rounded="xl"
+                              size="x-small"
+                              v-bind="props"
+                              variant="outlined"
+                              @click="openDialogDeleteLogo = true"
+                            />
+                          </template>
+                        </v-tooltip>
                       </v-col>
                     </v-row>
 
+                    <!-- component for input images-->
                     <utils-input-image
                       v-if="cardProps.modalType !== 'edit' || changeLogo"
                       :input-props="inputProps"
                       @handle-image="handleImage"
                     />
-                    <!-- cancela a alteração do escudo-->
+
+                    <!-- cancel changes-->
                     <v-btn
                       v-if="cardProps.modalType === 'edit' && changeLogo"
                       block
+                      rounded="xl"
                       class="mt-2"
                       color="warning"
                       size="small"
                       @click="closeChangeLogo"
-                    >Cancelar Alteração do Escudo da OM
-                    </v-btn>
+                      :text="$t('cancelBadgeChange')"
+                    />
+
                   </v-container>
                 </v-col>
               </v-row>
@@ -343,22 +354,22 @@
     persistent
   >
     <v-card
+      :title="$t('deleteMOLogo')"
       class="rounded-xl"
       prepend-icon="mdi-alert"
-      title="Exclusão de logo de Organização Militar"
     >
       <v-card-text>
         <v-container fluid>
           <v-row>
             <v-col class="text-justify">
               <p>
-                Você tem certeza que deseja excluir o logo da Organização Militar:
-                <b> {{ adminMilitaryOrganizationStore.selectedMilitaryOrganization.name }}?</b>
+                {{ $t('confirmDeleteMilitaryLogo') }}<br>
+                <b>{{ $t('leftMenu.militaryOrganization') }}: </b> {{ adminMilitaryOrganizationStore.selectedMilitaryOrganization.name }}
               </p>
               <br>
               <hr>
               <br>
-              <p>Essa ação é irreversível.</p>
+              <p>{{ $t('irreversibleAction') }}</p>
             </v-col>
           </v-row>
         </v-container>
@@ -368,18 +379,18 @@
         <v-btn
           v-if="adminMilitaryOrganizationStore.selectedMilitaryOrganization"
           :loading="loading"
+          :text="$t('delete')"
           color="error"
           prepend-icon="mdi-alert"
           rounded="xl"
-          text="Excluir"
           variant="elevated"
           @click="doDeleteMilitaryOrganizationLogo()"
         />
         <v-btn
+          :text="$t('cancel')"
           class="mr-8"
           color="secondary"
           rounded="xl"
-          text="Cancelar"
           variant="tonal"
           @click="openDialogDeleteLogo = false"
         />

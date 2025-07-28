@@ -58,8 +58,14 @@
   "cancel": "Cancelar",
   "moColorSelect": "Selecione a cor da OM",
   "fullNameMO": "Nome da Organização Militar (completo)",
-  "MOName": "Nme da OM",
+  "MOName": "Nome da OM",
   "selectMOBadge": "Selecione o distintivo da OM",
+  "deleteBadge": "Excluir escudo",
+  "changeBadge": "Alterar escudo",
+  "deleteMOLogo": "Exclusão de logo de Organização Militar",
+  "irreversibleAction": "Essa ação é irreversível.",
+  "confirmDeleteMilitaryLogo": "Você tem certeza que deseja excluir o logo da Organização Militar?",
+  "cancelBadgeChange": "Cancelar Alteração do Escudo da OM",
 
   "imageEditor": {
     "zoomInstruction": "Use o scroll do mouse para ajustar o zoom da imagem.",
@@ -104,7 +110,9 @@
     "genericMessage": "Ocorreu um erro inesperado. Por favor, tente novamente.",
     "status403Title": "Acesso Negado",
     "status404Title": "Página Não Encontrada",
-    "status500Title": "Erro Interno do Servidor"
+    "status500Title": "Erro Interno do Servidor",
+    "operationFailed": "Erro ao realizar operação",
+    "deleteLogoFailed": "Erro ao excluir logo"
   },
   "success": {
     "userRegistered": "Usuário registrado com sucesso!",

@@ -60,6 +60,12 @@
   "fullNameMO": "Military Organization Full Name",
   "MOName": "MO name",
   "selectMOBadge": "Select MO Badge",
+  "deleteBadge": "Delete Badge",
+  "changeBadge": "Change Badge",
+  "deleteMOLogo": "Military Organization Logo Deletion",
+  "irreversibleAction": "This action cannot be undone.",
+  "confirmDeleteMilitaryLogo": "Are you sure you want to delete the Military Organization logo?",
+  "cancelBadgeChange": "Cancel Military Organization Badge Change",
 
   "imageEditor": {
     "zoomInstruction": "Use mouse scroll to adjust image zoom.",
@@ -103,9 +109,11 @@
     "unsupportedLanguage": "Unsupported language",
     "genericTitle": "Error",
     "genericMessage": "An unexpected error occurred. Please try again.",
-    "status403Title": "Access Denied",
+    "status403Title": "Access Denied",  
     "status404Title": "Page Not Found",
-    "status500Title": "Internal Server Error"
+    "status500Title": "Internal Server Error",
+    "operationFailed": "Operation failed",
+    "deleteLogoFailed": "Failed to delete logo"
   },
   "success": {
     "userRegistered": "User registered successfully!",

@@ -45,8 +45,9 @@ export class ImageUploadService {
       await fs.writeFile(logoPath, processedImage)
       await fs.writeFile(logoMiniPath, processedMiniImage)
       
-      // Retornar URL do logo normal
-      const publicUrl = `/logos/${organizationId}/logo.png`
+      // Retornar URL do logo normal com timestamp para evitar cache
+      const timestamp = Date.now()
+      const publicUrl = `/logos/${organizationId}/logo.png?v=${timestamp}`
       
       return {
         success: true,

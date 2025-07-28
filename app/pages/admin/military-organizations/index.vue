@@ -152,7 +152,8 @@
                       :alt="item.logo === '/logos/default/default.png' ? 'Sem Logo cadastrado' : `Logo ${item.acronym}`"
                       :src="item.logo && item.logo !== '/logos/default/default.png' ? retrieveMiniImage(item.logo) : '/logos/default/default_mini.png'"
                       class="pt-2 cursor-pointer hover-effect mx-auto"
-                      max-width="50"
+                      width="50"
+                      height="58"
                       @click="openModal('logo', item)"
                     />
                   </v-col>

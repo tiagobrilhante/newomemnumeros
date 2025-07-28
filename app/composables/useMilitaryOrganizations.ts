@@ -166,6 +166,10 @@ export const useMilitaryOrganizations = () => {
 
       const response = await militaryOrganizationService.update(processedData)
 
+      console.log('response')
+      console.log(response)
+      console.log('response')
+
       if (response.success) {
         store.updateMilitaryOrganization(response.data)
       }
