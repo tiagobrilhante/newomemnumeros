@@ -1,0 +1,42 @@
+/* White thick border utility class */
+.white-thick-border {
+  border: 2px solid white !important;
+}
+
+.white-thick-border-top {
+  border-top: 2px solid white !important;
+}
+
+.white-thick-border-bottom {
+  border-bottom: 2px solid white !important;
+}
+
+.white-thick-border-left {
+  border-left: 2px solid white !important;
+}
+
+.white-thick-border-right {
+  border-right: 2px solid white !important;
+}
+
+
+/* Grey thick border utility class */
+.grey-thick-border {
+  border: 2px solid grey !important;
+}
+
+.grey-thick-border-top {
+  border-top: 1px solid grey !important;
+}
+
+.grey-thick-border-bottom {
+  border-bottom: 1px solid grey !important;
+}
+
+.grey-thick-border-left {
+  border-left: 1px solid grey !important;
+}
+
+.grey-thick-border-right {
+  border-right: 1px solid grey !important;
+}

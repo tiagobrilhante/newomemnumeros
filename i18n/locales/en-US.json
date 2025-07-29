@@ -66,6 +66,9 @@
   "irreversibleAction": "This action cannot be undone.",
   "confirmDeleteMilitaryLogo": "Are you sure you want to delete the Military Organization logo?",
   "cancelBadgeChange": "Cancel Military Organization Badge Change",
+  "militaryOrganizationBadge": "Military Organization Badge",
+  "confirmDeleteMilitaryOrganization": "Are you sure you want to delete the Military Organization:",
+  "consequenceDeleteMilitaryOrganization": "Accounts linked to this Military Organization will lose access to some system functionalities.",
 
   "imageEditor": {
     "zoomInstruction": "Use mouse scroll to adjust image zoom.",
@@ -109,11 +112,24 @@
     "unsupportedLanguage": "Unsupported language",
     "genericTitle": "Error",
     "genericMessage": "An unexpected error occurred. Please try again.",
-    "status403Title": "Access Denied",  
+    "status403Title": "Access Denied",
     "status404Title": "Page Not Found",
     "status500Title": "Internal Server Error",
     "operationFailed": "Operation failed",
-    "deleteLogoFailed": "Failed to delete logo"
+    "deleteLogoFailed": "Failed to delete logo",
+    "technicalDetails": "Technical Details"
+  },
+  "validation": {
+    "nameRequired": "Name cannot be empty",
+    "nameMaxLength": "Name must be at most 255 characters",
+    "acronymRequired": "Acronym cannot be empty",
+    "acronymMaxLength": "Acronym must be at most 10 characters",
+    "invalidColorFormat": "Color must be in hexadecimal format (#RRGGBB or #RGB)",
+    "invalidUUID": "Parent organization ID must be a valid UUID",
+    "invalidID": "ID must be a valid UUID",
+    "idRequired": "ID is required",
+    "unknownError": "Unknown validation error",
+    "invalidInputData": "Invalid input data"
   },
   "success": {
     "userRegistered": "User registered successfully!",

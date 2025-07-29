@@ -14,6 +14,8 @@
     cardProps: {
       modalType: string
       modalTextButton: string
+      modalIcon: string
+      btnIcon: string
     }
   }>()
 
@@ -63,6 +65,13 @@
     }
   }
 
+  // Watch for changes in isFather checkbox to clear father selection
+  watch(isFather, (newValue) => {
+    if (newValue) {
+      father.value = ''
+    }
+  })
+
   const filteredMilitaryOrganizations = computed(() => {
     if (!id.value) return militaryOrganizations.value
     return militaryOrganizations.value.filter((mo: militaryOrganization) => mo.id !== id.value)
@@ -72,7 +81,7 @@
     name: name.value.trim(),
     acronym: acronym.value.trim(),
     color: color.value?.trim() || getRandomColor(),
-    militaryOrganizationId: father.value || null,
+    militaryOrganizationId: isFather.value ? null : (father.value || null),
   })
 
   const prepareLogo = (): string | undefined => {
@@ -97,7 +106,7 @@
         await updateMilitaryOrganization({
           id: id.value || undefined,
           ...formData,
-          logo: logoData
+          logo: logoData,
         })
       }
 
@@ -105,7 +114,7 @@
     } catch (error: any) {
       showError(
         $t('errors.operationFailed') || 'Erro ao realizar operação',
-        [error?.message || error?.toString() || 'Erro desconhecido']
+        [error?.message || error?.toString() || 'Erro desconhecido'],
       )
     }
   }
@@ -145,21 +154,21 @@
     } catch (error: any) {
       showError(
         $t('errors.deleteLogoFailed') || 'Erro ao excluir logo',
-        [error?.message || error?.toString() || 'Erro desconhecido']
+        [error?.message || error?.toString() || 'Erro desconhecido'],
       )
     }
   }
 </script>
 
 <template>
-  <v-card rounded="xl">
+  <v-card :loading class="white-thick-border" rounded="xl">
     <v-form ref="form" lazy-validation @submit.prevent="proceedAction">
       <!-- card title-->
-      <v-card-title>
+      <v-card-title class="bg-surface-light pt-4">
         <v-row>
-          <v-col cols="10">{{ $t(cardProps.modalType) }} {{ $t('leftMenu.militaryOrganization') }}</v-col>
-          <v-col class="text-right pr-0 pt-0" cols="2">
-            <v-btn icon variant="plain" @click="emit('close-dialog')">
+          <v-col cols="10"><v-icon class="mr-3 mt-0" size="small">{{cardProps.modalIcon}}</v-icon>{{ $t(cardProps.modalType) }} {{ $t('leftMenu.militaryOrganization') }}</v-col>
+          <v-col class="text-right pr-2 pt-1" cols="2">
+            <v-btn icon variant="text" size="small" @click="emit('close-dialog')">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-col>
@@ -171,11 +180,13 @@
         <v-container fluid>
           <v-row dense>
             <v-col cols="12">
-              <!-- Error Alert TODO revisar -->
+
+              <!--alert errors -->
               <v-alert
                 v-if="error.active"
                 class="mb-5"
                 closable
+                rounded="xl"
                 type="error"
                 @click:close="resetError"
               >
@@ -187,23 +198,10 @@
                 </ul>
               </v-alert>
 
+              <!-- inputs-->
               <v-row>
 
-                <!--color-->
-                <v-col cols="4">
-                  <h4>{{ $t('moColorSelect') }}</h4>
-                  <v-color-picker
-                    v-model="color"
-                    hide-inputs
-                    mode="hex"
-                    rounded="l"
-                    show-swatches
-                    width="auto"
-                  />
-                </v-col>
-
-                <!-- inputs-->
-                <v-col cols="8">
+                <v-col cols="12">
                   <v-checkbox v-model="isFather" :label="$t('isParentMilitaryOrganization')" hide-details />
 
                   <!-- MO Selector-->
@@ -218,6 +216,7 @@
                     density="compact"
                     item-title="acronym"
                     item-value="id"
+                    rounded="xl"
                     variant="outlined"
                   />
 
@@ -231,6 +230,7 @@
                     class="mb-3"
                     density="compact"
                     required
+                    rounded="xl"
                     variant="outlined"
                     @input="resetError"
                   />
@@ -245,83 +245,104 @@
                     class="mb-3"
                     density="compact"
                     required
+                    rounded="xl"
                     variant="outlined"
                     @input="resetError"
                   />
 
-                  <!-- badge actions-->
-                  <v-container fluid>
 
-                    <!-- show badge if edit -->
-                    <v-row v-if="!changeLogo && cardProps.modalType === 'edit'">
-                      <v-col class="text-center" cols="12">
-                        <v-img :src="logo || '/logos/default/default.png'" alt="image" class="rounded-xl mx-auto"
-                               width="200" />
-                      </v-col>
-                    </v-row>
-
-                    <!-- actions on edit-->
-                    <v-row v-if="!changeLogo && cardProps.modalType === 'edit'" no-gutters>
-                      <v-col class="text-center">
-                        <!-- change-->
-                        <v-btn
-                          :text="$t('changeBadge')"
-                          color="primary"
-                          rounded="xl"
-                          size="small"
-                          variant="outlined"
-                          @click="changeLogo = true"
-                        >
-                        </v-btn>
-
-                        <!-- delete-->
-                        <v-tooltip :text="$t('deleteBadge')" location="top">
-                          <template v-slot:activator="{ props }">
-                            <v-btn
-                              v-if="logo !== '/logos/default/default.png'"
-                              class="ml-2"
-                              color="error"
-                              icon="mdi-delete"
-                              rounded="xl"
-                              size="x-small"
-                              v-bind="props"
-                              variant="outlined"
-                              @click="openDialogDeleteLogo = true"
-                            />
-                          </template>
-                        </v-tooltip>
-                      </v-col>
-                    </v-row>
-
-                    <!-- component for input images-->
-                    <utils-input-image
-                      v-if="cardProps.modalType !== 'edit' || changeLogo"
-                      :input-props="inputProps"
-                      @handle-image="handleImage"
-                    />
-
-                    <!-- cancel changes-->
-                    <v-btn
-                      v-if="cardProps.modalType === 'edit' && changeLogo"
-                      block
-                      rounded="xl"
-                      class="mt-2"
-                      color="warning"
-                      size="small"
-                      @click="closeChangeLogo"
-                      :text="$t('cancelBadgeChange')"
-                    />
-
-                  </v-container>
                 </v-col>
               </v-row>
+
+              <!--color-->
+              <v-row dense>
+                <v-col>
+                  <span class="ml-5 text-caption">{{ $t('moColorSelect') }}</span>
+                  <v-color-picker
+                    v-model="color"
+                    class="grey-thick-border pa-3 mt-2"
+                    height="auto"
+                    hide-inputs
+                    landscape
+                    mode="hex"
+                    rounded="xl"
+                    show-swatches
+                    width="auto"
+                  />
+                </v-col>
+              </v-row>
+
+              <!-- badge actions-->
+              <v-container fluid class="mt-3">
+
+                <!-- show badge if edit -->
+                <v-row v-if="!changeLogo && cardProps.modalType === 'edit'" dense>
+                  <v-col class="text-center" cols="12">
+                    <v-img :src="logo || '/logos/default/default.png'" alt="image" class="rounded-xl mx-auto"
+                           width="200" />
+                  </v-col>
+                </v-row>
+
+                <!-- actions on edit-->
+                <v-row v-if="!changeLogo && cardProps.modalType === 'edit'" no-gutters>
+                  <v-col class="text-center">
+                    <!-- change-->
+                    <v-btn
+                      :text="$t('changeBadge')"
+                      color="primary"
+                      rounded="xl"
+                      size="small"
+                      variant="outlined"
+                      @click="changeLogo = true"
+                    >
+                    </v-btn>
+
+                    <!-- delete-->
+                    <v-tooltip :text="$t('deleteBadge')" location="top">
+                      <template v-slot:activator="{ props }">
+                        <v-btn
+                          v-if="logo !== '/logos/default/default.png'"
+                          class="ml-2"
+                          color="error"
+                          icon="mdi-delete"
+                          rounded="xl"
+                          size="x-small"
+                          v-bind="props"
+                          variant="outlined"
+                          @click="openDialogDeleteLogo = true"
+                        />
+                      </template>
+                    </v-tooltip>
+                  </v-col>
+                </v-row>
+
+                <!-- component for input images-->
+                <utils-input-image
+                  v-if="cardProps.modalType !== 'edit' || changeLogo"
+                  :input-props="inputProps"
+                  @handle-image="handleImage"
+                />
+
+                <!-- cancel changes-->
+                <v-btn
+                  v-if="cardProps.modalType === 'edit' && changeLogo"
+                  :text="$t('cancelBadgeChange')"
+                  block
+                  class="mt-2"
+                  color="warning"
+                  rounded="xl"
+                  size="small"
+                  @click="closeChangeLogo"
+                />
+
+              </v-container>
             </v-col>
           </v-row>
         </v-container>
       </v-card-text>
 
       <!-- actions-->
-      <v-card-actions>
+      <v-card-actions class="bg-surface-light py-4 px-5">
         <v-spacer />
 
         <!-- submit-->
@@ -330,15 +351,19 @@
           color="primary"
           rounded="xl"
           type="submit"
-          variant="tonal"
+          :prepend-icon="cardProps.btnIcon"
+          class="mr-5 px-4"
+          variant="elevated"
         />
 
         <!-- cancel-->
         <v-btn
           :text="$t('cancel')"
-          color="secondary"
+          color="error"
+          class="px-4"
+          prepend-icon="mdi-cancel"
           rounded="xl"
-          variant="tonal"
+          variant="elevated"
           @click="emit('close-dialog')"
         />
       </v-card-actions>
@@ -364,7 +389,8 @@
             <v-col class="text-justify">
               <p>
                 {{ $t('confirmDeleteMilitaryLogo') }}<br>
-                <b>{{ $t('leftMenu.militaryOrganization') }}: </b> {{ adminMilitaryOrganizationStore.selectedMilitaryOrganization.name }}
+                <b>{{ $t('leftMenu.militaryOrganization') }}: </b>
+                {{ adminMilitaryOrganizationStore.selectedMilitaryOrganization.name }}
               </p>
               <br>
               <hr>

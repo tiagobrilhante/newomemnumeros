@@ -158,7 +158,6 @@ export const useMilitaryOrganizations = () => {
     error.value = ''
 
     try {
-      // Processar logo antes de enviar
       const processedData = {
         ...data,
         logo: data.logo === null ? '/logos/default/default.png' : data.logo
@@ -166,12 +165,13 @@ export const useMilitaryOrganizations = () => {
 
       const response = await militaryOrganizationService.update(processedData)
 
-      console.log('response')
-      console.log(response)
-      console.log('response')
-
       if (response.success) {
         store.updateMilitaryOrganization(response.data)
+        const successMessage = getTranslatedMessage(
+          'success.militaryOrganizationUpdated',
+          'Organização militar atualizada com sucesso!',
+        )
+        toast.success(successMessage)
       }
 
     } catch (error) {
@@ -243,6 +243,10 @@ export const useMilitaryOrganizations = () => {
       if (response.success) {
 
         store.deleteMilitaryOrganizationLogo(response.data)
+
+        if (selectedMilitaryOrganization.value?.id === response.data.id) {
+          store.setSelectedMilitaryOrganization(response.data)
+        }
 
         const successMessage = getTranslatedMessage(
           'success.militaryOrganizationLogoDeleted',

@@ -84,4 +84,6 @@ export default defineNuxtConfig({
   },
 
   plugins: ['~/plugins/vue-mask.ts', '~/plugins/vue3-toastify.ts'],
+  
+  css: ['~/assets/app.css'],
 })

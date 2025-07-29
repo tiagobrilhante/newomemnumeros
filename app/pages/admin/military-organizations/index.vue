@@ -30,6 +30,8 @@
   const CARD_PROPS = reactive({
     modalType: '',
     modalTextButton: '',
+    modalIcon: '',
+    btnIcon: '',
     showCancelBtn: true,
   })
 
@@ -43,18 +45,25 @@
     switch (type) {
       case 'add':
         CARD_PROPS.modalTextButton = $t('save')
+        CARD_PROPS.modalIcon = 'mdi-plus-circle'
+        CARD_PROPS.btnIcon = 'mdi-content-save-check'
         clearSelection()
         break
       case 'edit':
         if (!militaryOrganization?.id) return
+        CARD_PROPS.modalIcon = 'mdi-pencil-circle'
+        CARD_PROPS.btnIcon = 'mdi-content-save-check'
         CARD_PROPS.modalTextButton = $t('update')
         break
       case 'logo':
         if (!militaryOrganization?.id) return
+        CARD_PROPS.modalIcon = 'mdi-shield-star'
         CARD_PROPS.modalTextButton = $t('$vuetify.close')
         break
       case 'delete':
         if (!militaryOrganization?.id) return
+        CARD_PROPS.modalIcon = 'mdi-alert'
+        CARD_PROPS.btnIcon = 'mdi-delete'
         CARD_PROPS.modalTextButton = $t('delete')
         break
     }
@@ -152,8 +161,8 @@
                       :alt="item.logo === '/logos/default/default.png' ? 'Sem Logo cadastrado' : `Logo ${item.acronym}`"
                       :src="item.logo && item.logo !== '/logos/default/default.png' ? retrieveMiniImage(item.logo) : '/logos/default/default_mini.png'"
                       class="pt-2 cursor-pointer hover-effect mx-auto"
-                      width="50"
                       height="58"
+                      width="50"
                       @click="openModal('logo', item)"
                     />
                   </v-col>

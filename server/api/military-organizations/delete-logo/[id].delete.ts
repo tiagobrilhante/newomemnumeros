@@ -1,39 +1,48 @@
 import prisma from '../../../prisma'
 import path from 'path'
 import fs from 'fs/promises'
+import {
+  militaryOrganizationParamsSchema,
+  validateMilitaryOrganizationData,
+  createValidationError
+} from '../../../schemas/militaryOrganization.schema'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
+  const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 
-  if (!id ) {
-    throw createError({
-      statusCode: 400,
-      message: 'ID inválido',
-    })
+  const paramValidation = await validateMilitaryOrganizationData(
+    militaryOrganizationParamsSchema,
+    { id },
+    locale
+  )
+
+  if (!paramValidation.success) {
+    throw await createValidationError(paramValidation.errors, locale)
   }
 
   try {
+    const validatedId = paramValidation.data.id
+
     const militaryOrganization = await prisma.militaryOrganization.findUnique({
       where: {
-        id,
+        id: validatedId,
         deleted: false,
       },
     })
 
     if (militaryOrganization && militaryOrganization.logo !== '/logos/default/default.png') {
-      console.time('removeFiles')
       const userDir = path.resolve(
         'public',
         'logos',
         path.dirname(militaryOrganization.logo).replace(/^\/logos\//, '')
       )
       await fs.rm(userDir, { recursive: true, force: true })
-      console.timeEnd('removeFiles')
     }
 
     return await prisma.militaryOrganization.update({
-      where: { id, deleted: false },
+      where: { id: validatedId, deleted: false },
       data: {
         logo: '/logos/default/default.png',
       },

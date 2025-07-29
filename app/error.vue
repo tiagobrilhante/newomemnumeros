@@ -104,9 +104,8 @@
                       block
                       prepend-icon="mdi-home"
                       @click="goHome"
-                    >
-                      {{ $t('goToHome') }}
-                    </v-btn>
+                      :text="$t('goToHome')"
+                    />
 
                   </v-col>
 
@@ -120,21 +119,20 @@
                       rounded="xl"
                       prepend-icon="mdi-arrow-left"
                       @click="goBack"
-                    >
-                      {{ $t('goBack') }}
-                    </v-btn>
+                      :text="$t('goBack')"
+                    />
                   </v-col>
 
                 </v-row>
 
-                <!-- Informações técnicas (apenas em desenvolvimento) -->
+                <!-- Tech Details (only in dev) -->
                 <v-expansion-panels
                   v-if="isDev && error.stack"
                   class="mt-6"
                   variant="accordion"
                 >
                   <v-expansion-panel
-                    title="Detalhes técnicos"
+                    :title="$t('errors.technicalDetails')"
                     text-color="error"
                   >
                     <v-expansion-panel-text>

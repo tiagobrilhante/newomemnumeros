@@ -4,6 +4,10 @@ import { MilitaryOrganizationTransformer } from '../transformers/militaryOrganiz
 import { DEFAULT_MO_COLOR } from '#shared/constants/defaults'
 import { imageUploadService } from './imageUpload.service'
 import { sanitizeForFilename } from '#shared/utils/sanitize-data'
+import type {
+  MilitaryOrganizationCreateInput,
+  MilitaryOrganizationUpdateInput
+} from '../schemas/militaryOrganization.schema'
 
 function isValidColor(color: string): boolean {
   const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
@@ -98,33 +102,11 @@ export async function getMilitaryOrganizationById(id: string, locale: string) {
   }
 }
 
-export async function createMilitaryOrganization(data: militaryOrganization, locale: string) {
+export async function createMilitaryOrganization(data: MilitaryOrganizationCreateInput, locale: string) {
   try {
     const { name, acronym, color, logo, militaryOrganizationId } = data
 
-    if (!name || !acronym) {
-      return createError({
-        statusCode: 400,
-        message: await serverTByLocale(locale, 'errors.allFieldsRequired'),
-      })
-    }
-
-    // noinspection DuplicatedCode
     const { sanitizedName, sanitizedAcronym } = sanitizeMilitaryOrganizationData(name, acronym)
-
-    if (!sanitizedName || !sanitizedAcronym) {
-      return createError({
-        statusCode: 400,
-        message: await serverTByLocale(locale, 'errors.allFieldsRequired'),
-      })
-    }
-
-    if (color && !isValidColor(color)) {
-      return createError({
-        statusCode: 400,
-        message: await serverTByLocale(locale, 'errors.invalidDataProvided') || 'Invalid color format',
-      })
-    }
 
     const existingOrganization = await prisma.militaryOrganization.findFirst({
       where: {
@@ -156,13 +138,9 @@ export async function createMilitaryOrganization(data: militaryOrganization, loc
       }
     }
 
-    // Processar logo se for base64
     let logoPath = '/logos/default/default.png'
     if (logo && logo.startsWith('data:')) {
-      // Sanitizar acronym para uso em pasta/arquivo
       const folderName = sanitizeForFilename(sanitizedAcronym)
-      
-      // Usar método específico para logos com thumbnail
       const uploadResult = await imageUploadService.saveLogoWithThumb(logo, folderName)
 
       if (!uploadResult.success) {
@@ -210,7 +188,7 @@ export async function createMilitaryOrganization(data: militaryOrganization, loc
   }
 }
 
-export async function updateMilitaryOrganization(data: militaryOrganization, locale: string) {
+export async function updateMilitaryOrganization(data: MilitaryOrganizationUpdateInput, locale: string) {
   try {
     const { id, name, acronym, color, logo, militaryOrganizationId } = data
 
@@ -297,19 +275,14 @@ export async function updateMilitaryOrganization(data: militaryOrganization, loc
       }
     }
 
-    // Processar logo para update
     let logoPath = existingOrganization.logo
     if (logo !== undefined) {
       if (logo && logo.startsWith('data:')) {
-        // Deletar logo antigo se não for default
         if (existingOrganization.logo !== '/logos/default/default.png') {
           await imageUploadService.deleteImage(existingOrganization.logo)
         }
 
-        // Sanitizar acronym para uso em pasta/arquivo
         const folderName = sanitizeForFilename(sanitizedAcronym)
-        
-        // Usar método específico para logos com thumbnail
         const uploadResult = await imageUploadService.saveLogoWithThumb(logo, folderName)
 
         if (!uploadResult.success) {
@@ -321,7 +294,6 @@ export async function updateMilitaryOrganization(data: militaryOrganization, loc
 
         logoPath = uploadResult.publicUrl!
       } else if (logo === null) {
-        // Resetar para default
         if (existingOrganization.logo !== '/logos/default/default.png') {
           await imageUploadService.deleteImage(existingOrganization.logo)
         }
@@ -340,7 +312,7 @@ export async function updateMilitaryOrganization(data: militaryOrganization, loc
         acronym: sanitizedAcronym,
         color: color || existingOrganization.color,
         logo: logoPath,
-        militaryOrganizationId: militaryOrganizationId,
+        militaryOrganizationId: militaryOrganizationId || null,
       },
       include: {
         subOrganizations: {
@@ -404,29 +376,25 @@ export async function deleteMilitaryOrganization(id: string, locale: string) {
       })
     }
 
-    // Processar logo antes de deletar
     let logoToDelete = null
     if (existingOrganization.logo !== '/logos/default/default.png') {
       logoToDelete = existingOrganization.logo
     }
 
-    // Primeiro atualizar o logo para default e marcar como deleted
     await prisma.militaryOrganization.update({
       where: {
         id,
       },
       data: {
-        logo: '/logos/default/default.png', // Resetar para default antes de deletar
+        logo: '/logos/default/default.png',
         deleted: true,
         updatedAt: new Date(),
       },
     })
 
-    // Depois deletar a pasta da organização se havia logo customizado
     if (logoToDelete) {
-      // Extrair o acronym da URL do logo para deletar a pasta
-      const acronym = logoToDelete.split('/')[2] // /logos/ACRONYM/logo.png
-      
+      const acronym = logoToDelete.split('/')[2]
+
       if (acronym) {
         await imageUploadService.deleteOrganizationFolder(acronym)
       }
@@ -466,7 +434,6 @@ export async function deleteMilitaryOrganizationLogo(id: string, locale: string)
       })
     }
 
-    // Deletar arquivo de logo se não for default
     if (existingOrganization.logo !== '/logos/default/default.png') {
       await imageUploadService.deleteImage(existingOrganization.logo)
     }

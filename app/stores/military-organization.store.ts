@@ -22,10 +22,8 @@ export const useMilitaryOrganizationStore = defineStore('militaryOrganizationSto
         (militaryOrganization: militaryOrganization) => militaryOrganization.id === updatedDataMilitaryOrganization.id,
       )
       if (militaryOrganizationIndex !== -1) {
-        this.militaryOrganizations[militaryOrganizationIndex] = {
-          ...this.militaryOrganizations[militaryOrganizationIndex],
-          ...updatedDataMilitaryOrganization,
-        }
+        // Ensure reactivity by replacing the entire object
+        this.militaryOrganizations.splice(militaryOrganizationIndex, 1, updatedDataMilitaryOrganization)
       }
     },
 

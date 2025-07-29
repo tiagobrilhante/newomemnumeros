@@ -66,13 +66,15 @@
   "irreversibleAction": "Essa ação é irreversível.",
   "confirmDeleteMilitaryLogo": "Você tem certeza que deseja excluir o logo da Organização Militar?",
   "cancelBadgeChange": "Cancelar Alteração do Escudo da OM",
+  "militaryOrganizationBadge": "Escudo da Organização Militar",
+  "confirmDeleteMilitaryOrganization": "Você tem certeza que deseja excluir a Organização Militar:",
+  "consequenceDeleteMilitaryOrganization": "Contas vinculadas a essa Organização Militar, perderão acesso a algumas funcionalidades do sistema.",
 
   "imageEditor": {
     "zoomInstruction": "Use o scroll do mouse para ajustar o zoom da imagem.",
     "moveInstruction": "Com o botão direito do mouse, clique na imagem (mantendo pressionado) para movimentar a imagem.",
     "centerInstruction": "Centralize a imagem no retângulo exibido."
   },
-
   "leftMenu": {
     "mainMenu": "Menu Principal",
     "home": "Página Inicial",
@@ -112,7 +114,20 @@
     "status404Title": "Página Não Encontrada",
     "status500Title": "Erro Interno do Servidor",
     "operationFailed": "Erro ao realizar operação",
-    "deleteLogoFailed": "Erro ao excluir logo"
+    "deleteLogoFailed": "Erro ao excluir logo",
+    "technicalDetails": "Detalhes técnicos"
+  },
+  "validation": {
+    "nameRequired": "Nome não pode estar vazio",
+    "nameMaxLength": "Nome deve ter no máximo 255 caracteres",
+    "acronymRequired": "Sigla não pode estar vazia",
+    "acronymMaxLength": "Sigla deve ter no máximo 10 caracteres",
+    "invalidColorFormat": "Cor deve estar no formato hexadecimal (#RRGGBB ou #RGB)",
+    "invalidUUID": "ID da organização pai deve ser um UUID válido",
+    "invalidID": "ID deve ser um UUID válido",
+    "idRequired": "ID é obrigatório",
+    "unknownError": "Erro de validação desconhecido",
+    "invalidInputData": "Dados de entrada inválidos"
   },
   "success": {
     "userRegistered": "Usuário registrado com sucesso!",
