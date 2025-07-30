@@ -9,6 +9,7 @@ import type {
   SectionCreateInput,
   SectionUpdateInput
 } from '../schemas/section.schema'
+import type { SectionWithIncludes } from '../transformers/types'
 
 function sanitizeSectionData(name: string, acronym: string) {
   const sanitizedData = sanitizeData({ name, acronym })
@@ -70,7 +71,7 @@ export async function getSectionById(id: string, locale: string) {
 
     return {
       success: true,
-      data: SectionTransformer.transform(section),
+      data: SectionTransformer.transform(section as SectionWithIncludes),
       message: await serverTByLocale(locale, 'success.sectionRetrieved') || 'Section found',
       statusCode: 200,
     }
@@ -84,6 +85,13 @@ export async function createSection(data: SectionCreateInput, locale: string) {
     const { name, acronym, militaryOrganizationId } = data
 
     const { sanitizedName, sanitizedAcronym } = sanitizeSectionData(name, acronym)
+
+    if (!militaryOrganizationId) {
+      return createError({
+        statusCode: 400,
+        message: await serverTByLocale(locale, 'errors.allFieldsRequired') || 'Military organization ID is required',
+      })
+    }
 
     const existingSection = await prisma.section.findFirst({
       where: {
@@ -100,36 +108,35 @@ export async function createSection(data: SectionCreateInput, locale: string) {
       })
     }
 
-    if (militaryOrganizationId) {
-      const mo = await prisma.militaryOrganization.findFirst({
-        where: {
-          id: militaryOrganizationId,
-          deleted: false,
-        },
-      })
+    const mo = await prisma.militaryOrganization.findFirst({
+      where: {
+        id: militaryOrganizationId,
+        deleted: false,
+      },
+    })
 
-      if (!mo) {
-        return createError({
-          statusCode: 400,
-          message: await serverTByLocale(locale, 'errors.recordNotFound') || 'Military organization not found',
-        })
-      }
+    if (!mo) {
+      return createError({
+        statusCode: 400,
+        message: await serverTByLocale(locale, 'errors.recordNotFound') || 'Military organization not found',
+      })
     }
 
     const newSection = await prisma.section.create({
       data: {
         name: sanitizedName,
         acronym: sanitizedAcronym,
-        militaryOrganizationId,
+        militaryOrganizationId: militaryOrganizationId,
       },
       include: {
         militaryOrganization: true
       },
     })
 
+
     return {
       success: true,
-      data: SectionTransformer.transform(newSection),
+      data: SectionTransformer.transform(newSection as SectionWithIncludes),
       message: await serverTByLocale(locale, 'success.sectionCreated') || 'Section created successfully',
       statusCode: 201,
     }
@@ -228,7 +235,7 @@ export async function updateSection(data: SectionUpdateInput, locale: string) {
 
     return {
       success: true,
-      data: SectionTransformer.transform(updatedSection),
+      data: SectionTransformer.transform(updatedSection as SectionWithIncludes),
       message: await serverTByLocale(locale, 'success.sectionUpdated') || 'Section updated successfully',
       statusCode: 200,
     }

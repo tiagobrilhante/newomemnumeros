@@ -65,13 +65,11 @@
 
 
     if (formProps.formType === 'add') {
-      console.log('📝 FORM: Tentando criar seção com:', formData)
       await createSection(formData)
-      console.log('✅ FORM: Seção criada com sucesso')
       handleCancel()
     } else {
       if (!id.value) {
-        console.error('ID is required for update')
+        localErrors.value.push('ID é obrigatório para atualização')
         return
       }
       await updateSection({
