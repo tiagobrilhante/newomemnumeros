@@ -386,6 +386,10 @@ export const useMilitaryOrganizations = () => {
     store.addSectionToMilitaryOrganization(militaryOrganizationId, newSection)
   }
 
+  const removeSectionFromMilitaryOrganization = (militaryOrganizationId: string, sectionId: string): void => {
+    store.removeSectionFromMilitaryOrganization(militaryOrganizationId, sectionId)
+  }
+
   return {
     militaryOrganizations: readonly(militaryOrganizations),
     selectedMilitaryOrganization: readonly(selectedMilitaryOrganization),
@@ -413,6 +417,7 @@ export const useMilitaryOrganizations = () => {
     getMilitaryOrganizationById,
     getMilitaryOrganizationAcronym,
     addSectionToMilitaryOrganization,
+    removeSectionFromMilitaryOrganization,
   }
 }
 

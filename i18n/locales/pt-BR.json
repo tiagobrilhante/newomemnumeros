@@ -80,6 +80,8 @@
   "addNewSection": "Cadastrar nova Seção",
   "mo": "OM",
   "sectionFullName": "Nome completo da Seção",
+  "confirmDeleteSection": "Você tem certeza que deseja excluir a Seção:",
+  "consequenceDeleteSection": "Contas vinculadas a essa Seção, perderão acesso a algumas funcionalidades do sistema.",
 
   "imageEditor": {
     "zoomInstruction": "Use o scroll do mouse para ajustar o zoom da imagem.",

@@ -3,10 +3,6 @@
   import type { VDataTable } from 'vuetify/components'
   import Form from '~/components/section/Form.vue'
 
-  // ====================================
-  // CONFIGURAÇÃO E HEAD
-  // ====================================
-
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
 
@@ -14,11 +10,6 @@
     title: $t('leftMenu.sections') + ' - ' + appName,
   })
 
-  // ====================================
-  // COMPOSABLES (Nova arquitetura)
-  // ====================================
-
-  // Composable de seções (business logic centralizada)
   const {
     sections,
     selectedSection,
@@ -31,7 +22,6 @@
     clearSelection
   } = useSections()
 
-  // Composable de organizações militares (nova arquitetura)
   const {
     militaryOrganizations,
     loading: loadingOM,
@@ -93,10 +83,8 @@
 
     try {
       await deleteSectionComposable(id)
-      // Sucesso - composable já mostra toast
       dialog.value = false
     } catch (error) {
-      // Erro já tratado pelo composable com toast
       console.error('Delete error handled by composable')
     } finally {
       loadingBtn.value = false

@@ -221,6 +221,10 @@ export const useSections = () => {
       throw appError
     }
 
+    // Buscar a seção na store local ou usar a selectedMilitaryOrganization
+    const sectionToDelete = sections.value.find(s => s.id === id)
+    const selectedMO = militaryOrgComposable.selectedMilitaryOrganization?.value
+    
     loading.value = true
     error.value = ''
 
@@ -228,12 +232,26 @@ export const useSections = () => {
       const response = await sectionService.delete(id)
 
       if (response.success) {
+        // Remover da store de sections
+        store.clearDeletedSection(id)
+        
+        // Atualizar a militaryOrganization store
+        if (militaryOrgComposable.removeSectionFromMilitaryOrganization) {
+          // Primeiro tenta usar a seção encontrada na store local
+          if (sectionToDelete) {
+            militaryOrgComposable.removeSectionFromMilitaryOrganization(sectionToDelete.militaryOrganizationId, id)
+          } 
+          // Se não encontrou na store local, usa a selectedMilitaryOrganization
+          else if (selectedMO) {
+            militaryOrgComposable.removeSectionFromMilitaryOrganization(selectedMO.id, id)
+          }
+        }
+
         const successMessage = getTranslatedMessage(
           'success.sectionDeleted',
           'Seção excluída com sucesso!',
         )
         toast.success(successMessage)
-        store.clearDeletedSection(id)
       }
 
     } catch (error) {

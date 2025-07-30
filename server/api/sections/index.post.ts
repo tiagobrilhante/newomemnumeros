@@ -17,8 +17,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const result = await createSection(validation.data, locale)
-    return result
+    return await createSection(validation.data, locale)
   } catch (error: any) {
     console.error('Erro ao criar seção:', error)
     throw error

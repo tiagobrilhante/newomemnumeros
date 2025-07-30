@@ -80,6 +80,8 @@
   "addNewSection": "Add New Section",
   "mo": "MO",
   "sectionFullName": "Section Full Name",
+  "confirmDeleteSection": "Are you sure you want to delete the Section:",
+  "consequenceDeleteSection": "Accounts linked to this Section will lose access to some system functionalities.",
 
   "imageEditor": {
     "zoomInstruction": "Use mouse scroll to adjust image zoom.",

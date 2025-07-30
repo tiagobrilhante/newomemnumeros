@@ -1,30 +1,26 @@
-import prisma from '../../prisma'
+import { deleteSection } from '../../services/section.service'
+import { sectionParamsSchema } from '../../schemas/section.schema'
+import { getLocale } from '../../utils/i18n'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
-
-  if (!id ) {
-    throw createError({
-      statusCode: 400,
-      message: 'ID inválido',
-    })
-  }
-
   try {
-    await prisma.section.delete({
-      where: {
-        id,
-        deleted: false,
-      },
-    })
+    const id = getRouterParam(event, 'id')
+    const locale = getLocale(event) || 'pt-BR'
 
-    return { message: 'Seção excluída com sucesso' }
-  } catch (error) {
-    console.error(`Erro ao excluir Seção ${id}:`, error)
-    throw createError({
-      statusCode: 500,
-      message: 'Erro ao excluir Seção',
-    })
+    const validation = sectionParamsSchema.safeParse({ id })
+    if (!validation.success) {
+      return createError({
+        statusCode: 400,
+        message: 'ID inválido',
+        data: validation.error.issues,
+      })
+    }
+
+    const result = await deleteSection(validation.data.id, locale)
+    return result
+  } catch (error: any) {
+    console.error('Erro ao deletar seção:', error)
+    throw error
   }
 })

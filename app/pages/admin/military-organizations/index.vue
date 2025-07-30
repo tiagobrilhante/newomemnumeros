@@ -268,7 +268,7 @@
     <v-dialog
       v-if="dialog"
       v-model="dialog"
-      :max-width="CARD_PROPS.modalType === 'manageSections' ? '80%' : CARD_PROPS.modalType === 'add' || CARD_PROPS.modalType === 'edit' ? '50%' : '30%'"
+      :max-width="CARD_PROPS.modalType === 'manageSections' ? '50%' : CARD_PROPS.modalType === 'add' || CARD_PROPS.modalType === 'edit' ? '60%' : '30%'"
       persistent
     >
       <!-- for create and update -->

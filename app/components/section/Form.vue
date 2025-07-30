@@ -3,11 +3,8 @@
 
   const { selectedMilitaryOrganization, loading: moLoading } = useMilitaryOrganizations()
   const { createSection, updateSection, loading: sectionsLoading, error } = useSections()
-
   const loading = computed(() => moLoading.value || sectionsLoading.value)
   const localErrors = ref<string[]>([])
-
-
   const id = ref<string | undefined | null>(null)
   const name = ref('')
   const acronym = ref('')
@@ -18,7 +15,6 @@
     emit('change-state', 'list')
   }
 
-  // form validations
   const requiredRule = [(v: string) => !!v || `${$t('thisField')} ${$t('isRequired')}`]
 
   const { formProps } = defineProps<{
@@ -29,7 +25,6 @@
       btnIcon: string
     }
   }>()
-
 
   const proceedToAction = async () => {
     localErrors.value = []
@@ -63,7 +58,6 @@
       militaryOrganizationId: selectedMilitaryOrganization.value.id
     }
 
-
     if (formProps.formType === 'add') {
       await createSection(formData)
       handleCancel()
@@ -77,8 +71,6 @@
         ...formData,
       })
     }
-
-
   }
 
 </script>
@@ -95,7 +87,7 @@
       </v-col>
     </v-row>
 
-
+    <!-- form inputs -->
     <v-row>
       <v-col>
         <!-- error messages-->
@@ -143,6 +135,8 @@
     </v-row>
 
     <v-spacer />
+
+    <!-- actions-->
     <v-row>
       <v-col class="text-right">
         <v-btn
@@ -168,7 +162,6 @@
         />
       </v-col>
     </v-row>
-
 
   </v-form>
 

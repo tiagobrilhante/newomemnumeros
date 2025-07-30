@@ -258,9 +258,6 @@ export async function deleteSection(id: string, locale: string) {
         id,
         deleted: false,
       },
-      include: {
-        militaryOrganization: true
-      },
     })
 
     if (!existingSection) {

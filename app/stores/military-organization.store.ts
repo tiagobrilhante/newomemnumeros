@@ -85,6 +85,22 @@ export const useMilitaryOrganizationStore = defineStore('militaryOrganizationSto
       }
     },
 
+    removeSectionFromMilitaryOrganization(militaryOrganizationId: string, sectionId: string) {
+      // Atualizar no array militaryOrganizations
+      const moIndex = this.militaryOrganizations.findIndex(mo => mo.id === militaryOrganizationId)
+      if (moIndex !== -1) {
+        this.militaryOrganizations[moIndex] = {
+          ...this.militaryOrganizations[moIndex],
+          sections: (this.militaryOrganizations[moIndex].sections || []).filter(section => section.id !== sectionId)
+        }
+      }
+      
+      // Atualizar selectedMilitaryOrganization se for a mesma (usa a referência atualizada)
+      if (this.selectedMilitaryOrganization?.id === militaryOrganizationId) {
+        this.selectedMilitaryOrganization = this.militaryOrganizations[moIndex]
+      }
+    },
+
   },
 
   getters: {
