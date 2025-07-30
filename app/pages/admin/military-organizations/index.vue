@@ -36,7 +36,7 @@
     showCancelBtn: true,
   })
 
-  type ModalType = 'add' | 'edit' | 'delete' | 'logo' | 'sectionsDetails'
+  type ModalType = 'add' | 'edit' | 'delete' | 'logo' | 'sectionsDetails' | 'manageSections'
 
   const openModal = async (type: ModalType, militaryOrganization?: militaryOrganization) => {
     CARD_PROPS.modalType = type
@@ -68,6 +68,11 @@
         CARD_PROPS.modalTextButton = $t('delete')
         break
       case 'sectionsDetails':
+        if (!militaryOrganization?.id) return
+        CARD_PROPS.modalIcon = 'mdi-sitemap-outline'
+        CARD_PROPS.modalTextButton = $t('$vuetify.close')
+        break
+      case 'manageSections':
         if (!militaryOrganization?.id) return
         CARD_PROPS.modalIcon = 'mdi-sitemap-outline'
         CARD_PROPS.modalTextButton = $t('$vuetify.close')
@@ -191,7 +196,7 @@
 
                   <v-row>
                     <v-col class="pt-5">
-                      <v-card v-for="section in item.sections" density="compact" class="mb-3">
+                      <v-card v-for="section in item.sections" class="mb-3" density="compact">
                         <v-card-text>
                           {{ section.name }} <br>
                           <span class="text-caption">{{ section.acronym }}</span>
@@ -204,14 +209,16 @@
 
                 <v-tooltip :text="$t('sectionsDetails')" location="top">
                   <template v-slot:activator="{ props }">
-                    <v-icon class="mr-3" color="info" size="x-small" v-bind="props" @click="openModal('sectionsDetails', item)">
+                    <v-icon class="mr-3" color="info" size="x-small" v-bind="props"
+                            @click="openModal('sectionsDetails', item)">
                       mdi-magnify
                     </v-icon>
                   </template>
                 </v-tooltip>
                 <v-tooltip :text="$t('sectionsConfigurations')" location="top">
                   <template v-slot:activator="{ props }">
-                    <v-icon color="warning" size="x-small" v-bind="props" @click="console.log('config')">mdi-cog
+                    <v-icon color="warning" size="x-small" v-bind="props" @click="openModal('manageSections', item)">
+                      mdi-cog
                     </v-icon>
                   </template>
                 </v-tooltip>
@@ -261,9 +268,7 @@
     <v-dialog
       v-if="dialog"
       v-model="dialog"
-      :max-width="
-        CARD_PROPS.modalType === 'add' || CARD_PROPS.modalType === 'edit' ? '50%' : '30%'
-      "
+      :max-width="CARD_PROPS.modalType === 'manageSections' ? '80%' : CARD_PROPS.modalType === 'add' || CARD_PROPS.modalType === 'edit' ? '50%' : '30%'"
       persistent
     >
       <!-- for create and update -->
@@ -284,10 +289,13 @@
                                        :card-props="CARD_PROPS"
                                        @close-dialog="closeDialog" />
 
+      <!-- show sections details-->
       <section-sections-details v-else-if="CARD_PROPS.modalType === 'sectionsDetails' && selectedMilitaryOrganization"
-                                :card-props="CARD_PROPS"
-                                @close-dialog="closeDialog" />
+                                :card-props="CARD_PROPS" @close-dialog="closeDialog" />
 
+      <!-- manage sections -->
+      <section-manage-sections v-else-if="CARD_PROPS.modalType === 'manageSections' && selectedMilitaryOrganization"
+                               :card-props="CARD_PROPS" @close-dialog="closeDialog" />
     </v-dialog>
   </v-container>
 </template>

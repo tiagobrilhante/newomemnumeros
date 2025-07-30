@@ -1,33 +1,26 @@
-import prisma from '../../prisma'
+import { createSection } from '../../services/section.service'
+import { sectionCreateSchema } from '../../schemas/section.schema'
+import { getLocale } from '../../utils/i18n'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
+    const locale = getLocale(event) || 'pt-BR'
 
-    // Validação básica
-    if (!body.name || !body.acronym) {
+    const validation = sectionCreateSchema.safeParse(body)
+    if (!validation.success) {
       return createError({
         statusCode: 400,
-        message: 'Dados inválidos. Nome, sigla são obrigatórios.',
+        message: 'Dados inválidos',
+        data: validation.error.errors,
       })
     }
 
-    return await prisma.section.create({
-      data: {
-        name: body.name,
-        acronym: body.acronym,
-        militaryOrganizationId: body.militaryOrganizationId,
-      },
-      include: {
-        militaryOrganization: true,
-      },
-    })
-  } catch (error) {
-    console.error('Erro ao criar Organização Militar:', error)
-    throw createError({
-      statusCode: 500,
-      message: 'Erro ao criar Organização Militar',
-    })
+    const result = await createSection(validation.data, locale)
+    return result
+  } catch (error: any) {
+    console.error('Erro ao criar seção:', error)
+    throw error
   }
 })

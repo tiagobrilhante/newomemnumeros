@@ -210,7 +210,6 @@ export const useMilitaryOrganizations = () => {
         toast.success(successMessage)
         store.clearDeletedMilitaryOrganization(id)
       }
-      // todo tratar o erro em falha
 
     } catch (error) {
       const appError = createMilitaryOrganizationError(
@@ -383,6 +382,10 @@ export const useMilitaryOrganizations = () => {
     return militaryOrganization?.acronym || ''
   }
 
+  const addSectionToMilitaryOrganization = (militaryOrganizationId: string, newSection: section): void => {
+    store.addSectionToMilitaryOrganization(militaryOrganizationId, newSection)
+  }
+
   return {
     militaryOrganizations: readonly(militaryOrganizations),
     selectedMilitaryOrganization: readonly(selectedMilitaryOrganization),
@@ -409,6 +412,7 @@ export const useMilitaryOrganizations = () => {
     getMilitaryOrganizationStats,
     getMilitaryOrganizationById,
     getMilitaryOrganizationAcronym,
+    addSectionToMilitaryOrganization,
   }
 }
 

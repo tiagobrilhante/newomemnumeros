@@ -71,9 +71,15 @@
   "confirmDeleteMilitaryOrganization": "Are you sure you want to delete the Military Organization:",
   "consequenceDeleteMilitaryOrganization": "Accounts linked to this Military Organization will lose access to some system functionalities.",
   "sections": "Sections",
+  "section": "Section",
   "sectionsDetails": "Sections Detail",
   "sectionsConfigurations": "Sections Configurations",
   "noSectionsFound": "No sections have been registered yet",
+  "manageSections": "Sections Management",
+  "registeredSections": "Registered Sections",
+  "addNewSection": "Add New Section",
+  "mo": "MO",
+  "sectionFullName": "Section Full Name",
 
   "imageEditor": {
     "zoomInstruction": "Use mouse scroll to adjust image zoom.",

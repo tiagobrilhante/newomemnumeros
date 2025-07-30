@@ -22,8 +22,12 @@ export const useMilitaryOrganizationStore = defineStore('militaryOrganizationSto
         (militaryOrganization: militaryOrganization) => militaryOrganization.id === updatedDataMilitaryOrganization.id,
       )
       if (militaryOrganizationIndex !== -1) {
-        // Ensure reactivity by replacing the entire object
         this.militaryOrganizations.splice(militaryOrganizationIndex, 1, updatedDataMilitaryOrganization)
+      }
+      
+      // Atualiza também selectedMilitaryOrganization se for a mesma
+      if (this.selectedMilitaryOrganization?.id === updatedDataMilitaryOrganization.id) {
+        this.selectedMilitaryOrganization = updatedDataMilitaryOrganization
       }
     },
 
@@ -63,7 +67,22 @@ export const useMilitaryOrganizationStore = defineStore('militaryOrganizationSto
           logo: militaryOrganization.logo ?? '/logos/default/default.png',
         }
       }
+    },
 
+    addSectionToMilitaryOrganization(militaryOrganizationId: string, newSection: section) {
+      // Atualizar no array militaryOrganizations
+      const moIndex = this.militaryOrganizations.findIndex(mo => mo.id === militaryOrganizationId)
+      if (moIndex !== -1) {
+        this.militaryOrganizations[moIndex] = {
+          ...this.militaryOrganizations[moIndex],
+          sections: [...(this.militaryOrganizations[moIndex].sections || []), newSection]
+        }
+      }
+      
+      // Atualizar selectedMilitaryOrganization se for a mesma (usa a referência atualizada)
+      if (this.selectedMilitaryOrganization?.id === militaryOrganizationId) {
+        this.selectedMilitaryOrganization = this.militaryOrganizations[moIndex]
+      }
     },
 
   },

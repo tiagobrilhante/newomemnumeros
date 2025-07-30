@@ -1,5 +1,4 @@
 import { BaseTransformer } from './base.transformer'
-import { MilitaryOrganizationTransformer } from './militaryOrganization.transformer'
 import type { SectionWithIncludes } from './types'
 
 export class SectionTransformer extends BaseTransformer {
@@ -8,16 +7,13 @@ export class SectionTransformer extends BaseTransformer {
 
     return {
       ...cleanSection,
-      militaryOrganization: MilitaryOrganizationTransformer.transform(militaryOrganization)
-    }
-  }
-
-  static transformForAuth(section: SectionWithIncludes) {
-    const { createdAt, updatedAt, deleted, militaryOrganization, ...cleanSection } = section
-
-    return {
-      ...cleanSection,
-      militaryOrganization: MilitaryOrganizationTransformer.transformForAuth(militaryOrganization)
+      militaryOrganization: militaryOrganization ? {
+        id: militaryOrganization.id,
+        name: militaryOrganization.name,
+        acronym: militaryOrganization.acronym,
+        color: militaryOrganization.color,
+        logo: militaryOrganization.logo
+      } : null
     }
   }
 

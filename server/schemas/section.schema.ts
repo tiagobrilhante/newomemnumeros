@@ -1,9 +1,6 @@
 import { z } from 'zod'
 
-// Regex for hex color validation
-const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
-
-export async function createMilitaryOrganizationSchemas(locale: string = 'pt-BR') {
+export async function createSectionSchemas(locale: string = 'pt-BR') {
   const getMessage = async (key: string, fallback: string): Promise<string> => {
     try {
       return await serverTByLocale(locale, key) || fallback
@@ -12,7 +9,7 @@ export async function createMilitaryOrganizationSchemas(locale: string = 'pt-BR'
     }
   }
 
-  const baseMilitaryOrganizationSchema = z.object({
+  const baseSectionSchema = z.object({
     name: z
       .string()
       .min(1, await getMessage('validation.nameRequired', 'Nome não pode estar vazio'))
@@ -26,49 +23,36 @@ export async function createMilitaryOrganizationSchemas(locale: string = 'pt-BR'
       .trim()
       .transform(val => val.toUpperCase()),
 
-    color: z
-      .string()
-      .regex(hexColorRegex, await getMessage('validation.invalidColorFormat', 'Cor deve estar no formato hexadecimal (#RRGGBB ou #RGB)'))
-      .optional()
-      .or(z.literal('').transform(() => undefined)),
-
     militaryOrganizationId: z
-      .uuid(await getMessage('validation.invalidUUID', 'ID da organização pai deve ser um UUID válido'))
-      .optional()
-      .or(z.literal('').transform(() => undefined))
-      .or(z.null().transform(() => undefined)),
-
-    logo: z
-      .string()
+      .uuid(await getMessage('validation.invalidUUID', 'ID da organização militar deve ser um UUID válido'))
       .optional()
       .or(z.literal('').transform(() => undefined))
       .or(z.null().transform(() => undefined)),
   })
 
   // Schema for creation
-  const militaryOrganizationCreateSchema = baseMilitaryOrganizationSchema
+  const sectionCreateSchema = baseSectionSchema
 
   // Schema for updates (includes required ID)
-  const militaryOrganizationUpdateSchema = baseMilitaryOrganizationSchema.extend({
+  const sectionUpdateSchema = baseSectionSchema.extend({
     id: z
       .uuid(await getMessage('validation.invalidID', 'ID deve ser um UUID válido')),
   })
 
   // Schema for route parameters
-  const militaryOrganizationParamsSchema = z.object({
+  const sectionParamsSchema = z.object({
     id: z
       .uuid(await getMessage('validation.invalidID', 'ID deve ser um UUID válido')),
   })
 
   return {
-    militaryOrganizationCreateSchema,
-    militaryOrganizationUpdateSchema,
-    militaryOrganizationParamsSchema
+    sectionCreateSchema,
+    sectionUpdateSchema,
+    sectionParamsSchema
   }
 }
 
-// Synchronous schemas (for compatibility and simple cases)
-const baseMilitaryOrganizationSchema = z.object({
+const basesectionSchema = z.object({
   name: z
     .string()
     .min(1, 'Nome não pode estar vazio')
@@ -82,45 +66,33 @@ const baseMilitaryOrganizationSchema = z.object({
     .trim()
     .transform(val => val.toUpperCase()),
 
-  color: z
-    .string()
-    .regex(hexColorRegex, 'Cor deve estar no formato hexadecimal (#RRGGBB ou #RGB)')
-    .optional()
-    .or(z.literal('').transform(() => undefined)),
-
   militaryOrganizationId: z
     .uuid('ID da organização pai deve ser um UUID válido')
-    .optional()
-    .or(z.literal('').transform(() => undefined))
-    .or(z.null().transform(() => undefined)),
-
-  logo: z
-    .string()
     .optional()
     .or(z.literal('').transform(() => undefined))
     .or(z.null().transform(() => undefined)),
 })
 
 // Default schemas (synchronous)
-export const militaryOrganizationCreateSchema = baseMilitaryOrganizationSchema
+export const sectionCreateSchema = basesectionSchema
 
-export const militaryOrganizationUpdateSchema = baseMilitaryOrganizationSchema.extend({
+export const sectionUpdateSchema = basesectionSchema.extend({
   id: z
     .uuid('ID deve ser um UUID válido'),
 })
 
-export const militaryOrganizationParamsSchema = z.object({
+export const sectionParamsSchema = z.object({
   id: z
     .uuid('ID deve ser um UUID válido'),
 })
 
 // Types inferred from Zod
-export type MilitaryOrganizationCreateInput = z.infer<typeof militaryOrganizationCreateSchema>
-export type MilitaryOrganizationUpdateInput = z.infer<typeof militaryOrganizationUpdateSchema>
-export type MilitaryOrganizationParams = z.infer<typeof militaryOrganizationParamsSchema>
+export type SectionCreateInput = z.infer<typeof sectionCreateSchema>
+export type SectionUpdateInput = z.infer<typeof sectionUpdateSchema>
+export type SectionParams = z.infer<typeof sectionParamsSchema>
 
 // Helper function to validate data with error handling
-export async function validateMilitaryOrganizationData<T>(
+export async function validateSectionData<T>(
   schema: z.ZodSchema<T>,
   data: unknown,
   locale: string = 'pt-BR'
@@ -158,7 +130,7 @@ export async function createValidationError(errors: string[], locale: string = '
 }
 
 // Helper function for validation with asynchronous internationalization
-export async function validateMilitaryOrganizationDataI18n<T>(
+export async function validateSectionDataI18n<T>(
   schemaFactory: (locale: string) => Promise<z.ZodSchema<T>>,
   data: unknown,
   locale: string = 'pt-BR'

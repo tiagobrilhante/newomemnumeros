@@ -1,33 +1,22 @@
-import type { section } from '~/types/sections'
+import { toast } from 'vue3-toastify'
 import { useSectionStore } from '~/stores/section.store'
 import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
-import { toast } from 'vue3-toastify'
-
-// Tipos específicos para o composable
-interface CreateSectionData {
-  name: string
-  acronym: string
-  militaryOrganizationId: string
-}
-
-interface UpdateSectionData extends CreateSectionData {
-  id: string
-}
+import { sectionService } from '~/services/section.service'
 
 interface SectionFilters {
   militaryOrganizationId?: string
   search?: string
 }
 
-/**
- * Composable para gerenciamento de seções
- * Abstrai a complexidade do store e centraliza business logic
- */
+// noinspection JSUnusedGlobalSymbols
 export const useSections = () => {
   const store = useSectionStore()
+  const militaryOrgComposable = useMilitaryOrganizations()
   const { $i18n } = useNuxtApp()
 
-  // Helper para obter mensagens traduzidas
+  const loading = ref(false)
+  const error = ref('')
+
   const getTranslatedMessage = (key: string, fallback: string): string => {
     try {
       return $i18n?.t(key) || fallback
@@ -36,265 +25,282 @@ export const useSections = () => {
     }
   }
 
-  // Helper para criar erros padronizados
   const createSectionError = (messageKey: string, fallbackMessage: string, statusCode = 500) => {
     return createAppError(messageKey, {
       statusCode,
       statusMessageKey: 'errors.genericTitle',
       fallbackStatusMessage: 'Section Error',
-      fallbackMessage
+      fallbackMessage,
     } satisfies ErrorHandlerOptions)
   }
 
-  // =====================================
-  // COMPUTED PROPERTIES (Estado Reativo)
-  // =====================================
-
   const sections = computed(() => store.sections)
   const selectedSection = computed(() => store.selectedSection)
-  const loading = computed(() => store.loading)
-  const error = computed(() => store.error)
   const totalSections = computed(() => store.totalSections)
 
-  // Seções filtradas por organização militar
-  const sectionsByOM = computed(() => (militaryOrganizationId: string) => 
-    sections.value.filter(section => section.militaryOrganizationId === militaryOrganizationId)
+  const sectionsByOM = computed(() => (militaryOrganizationId: string) =>
+    sections.value.filter(section => section.militaryOrganizationId === militaryOrganizationId),
   )
 
-  // =====================================
-  // OPERAÇÕES CRUD (Business Logic)
-  // =====================================
-
-  /**
-   * Busca todas as seções
-   */
   const fetchSections = async (): Promise<section[]> => {
+    loading.value = true
+    error.value = ''
+
     try {
-      const result = await store.fetchSections()
-      return result || []
-    } catch (error) {
-      const appError = createSectionError(
-        'errors.serverCommunication',
-        'Erro ao carregar seções'
-      )
-      console.error('Fetch sections error:', appError.message)
-      throw appError
+      const response = await sectionService.findAll()
+
+      if (!response.success) {
+        throw createSectionError(
+          'errors.serverCommunication',
+          response.message || 'Erro ao carregar seções',
+          response.statusCode || 500,
+        )
+      }
+      store.setSections(response.data)
+      return response.data
+    } finally {
+      loading.value = false
     }
   }
 
-  /**
-   * Busca seções por organização militar
-   */
   const fetchSectionsByOM = async (militaryOrganizationId: string): Promise<section[]> => {
     if (!militaryOrganizationId) {
-      const appError = createSectionError(
+      throw createSectionError(
         'errors.invalidDataProvided',
         'ID da organização militar é obrigatório',
-        400
+        400,
       )
-      throw appError
     }
 
     try {
-      const result = await store.fetchSectionsByMilitaryOrganizationId(militaryOrganizationId)
-      return result || []
-    } catch (error) {
-      const appError = createSectionError(
-        'errors.serverCommunication',
-        'Erro ao carregar seções da organização'
-      )
-      console.error('Fetch sections by OM error:', appError.message)
-      throw appError
+      const response = await sectionService.findAllByMilitaryOrganizationId(militaryOrganizationId)
+
+      if (!response.success) {
+        throw createSectionError(
+          'errors.serverCommunication',
+          response.message || 'Erro ao carregar seções',
+          response.statusCode || 500,
+        )
+      }
+      store.setSections(response.data)
+      return response.data
+    } finally {
+      loading.value = false
     }
   }
 
-  /**
-   * Cria uma nova seção
-   */
-  const createSection = async (data: CreateSectionData): Promise<void> => {
-    // Validação de entrada
+  const createSection = async (data: section): Promise<void> => {
     if (!data.name?.trim() || !data.acronym?.trim() || !data.militaryOrganizationId) {
       const appError = createSectionError(
         'errors.allFieldsRequired',
         'Todos os campos são obrigatórios',
-        400
+        400,
       )
       toast.error(appError.message)
       throw appError
     }
 
-    // Validação de duplicação de sigla
     const existingSection = sections.value.find(
-      s => s.acronym.toLowerCase() === data.acronym.toLowerCase() 
-        && s.militaryOrganizationId === data.militaryOrganizationId
+      s => s.acronym.toLowerCase() === data.acronym.toLowerCase()
+        && s.militaryOrganizationId === data.militaryOrganizationId,
     )
 
     if (existingSection) {
       const appError = createSectionError(
         'errors.duplicateEntry',
         'Já existe uma seção com esta sigla nesta organização',
-        409
+        409,
       )
       toast.error(appError.message)
       throw appError
     }
 
+    loading.value = true
+    error.value = ''
+
     try {
-      // Preparar dados para o store
       const sectionData: section = {
         name: data.name.trim(),
         acronym: data.acronym.trim().toUpperCase(),
         militaryOrganizationId: data.militaryOrganizationId,
-        militaryOrganization: {} as any // O store/service deve lidar com isso
       }
 
-      await store.addSection(sectionData)
+      const response = await sectionService.create(sectionData)
 
-      // Feedback de sucesso
-      const successMessage = getTranslatedMessage(
-        'success.sectionCreated',
-        'Seção criada com sucesso!'
-      )
-      toast.success(successMessage)
+      if (response.success) {
+        // Adicionar ao store de sections
+        store.sections.push(response.data)
+        
+        // Atualizar a militaryOrganization store
+        if (militaryOrgComposable.addSectionToMilitaryOrganization) {
+          militaryOrgComposable.addSectionToMilitaryOrganization(data.militaryOrganizationId, response.data)
+        }
 
+        const successMessage = getTranslatedMessage(
+          'success.sectionCreated',
+          'Seção criada com sucesso!',
+        )
+        toast.success(successMessage)
+      }
     } catch (error) {
       const appError = createSectionError(
         'errors.serverCommunication',
-        'Erro ao criar seção'
+        'Erro ao criar seção',
       )
       toast.error(appError.message)
       throw appError
+    } finally {
+      loading.value = false
     }
   }
 
-  /**
-   * Atualiza uma seção existente
-   */
-  const updateSection = async (data: UpdateSectionData): Promise<void> => {
-    // Validação de entrada
+  const updateSection = async (data: section): Promise<void> => {
     if (!data.id || !data.name?.trim() || !data.acronym?.trim() || !data.militaryOrganizationId) {
       const appError = createSectionError(
         'errors.allFieldsRequired',
         'Todos os campos são obrigatórios',
-        400
+        400,
       )
       toast.error(appError.message)
       throw appError
     }
 
-    // Validação de duplicação de sigla (excluindo a seção atual)
     const existingSection = sections.value.find(
       s => s.id !== data.id
-        && s.acronym.toLowerCase() === data.acronym.toLowerCase() 
-        && s.militaryOrganizationId === data.militaryOrganizationId
+        && s.acronym.toLowerCase() === data.acronym.toLowerCase()
+        && s.militaryOrganizationId === data.militaryOrganizationId,
     )
 
     if (existingSection) {
       const appError = createSectionError(
         'errors.duplicateEntry',
         'Já existe uma seção com esta sigla nesta organização',
-        409
+        409,
       )
       toast.error(appError.message)
       throw appError
     }
 
+    loading.value = true
+    error.value = ''
+
     try {
-      // Preparar dados para o store
-      const sectionData: section = {
-        id: data.id,
-        name: data.name.trim(),
-        acronym: data.acronym.trim().toUpperCase(),
-        militaryOrganizationId: data.militaryOrganizationId,
-        militaryOrganization: {} as any // O store/service deve lidar com isso
+
+
+      const response = await sectionService.update(data)
+
+      if (response.success){
+        store.updateSection(response.data)
+        const successMessage = getTranslatedMessage(
+          'success.sectionUpdated',
+          'Seção atualizada com sucesso!',
+        )
+        toast.success(successMessage)
       }
 
-      await store.updateSection(sectionData)
-
-      // Feedback de sucesso
-      const successMessage = getTranslatedMessage(
-        'success.sectionUpdated',
-        'Seção atualizada com sucesso!'
+    } catch (error) {
+      const appError = createSectionError(
+        'errors.serverCommunication',
+        'Erro ao atualizar seção',
       )
-      toast.success(successMessage)
+      toast.error(appError.message)
+      throw appError
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const deleteSection = async (id: string): Promise<void> => {
+    if (!id) {
+      const appError = createSectionError(
+        'errors.invalidId',
+        'ID da seção é obrigatório',
+        400,
+      )
+      toast.error(appError.message)
+      throw appError
+    }
+
+    loading.value = true
+    error.value = ''
+
+    try {
+      const response = await sectionService.delete(id)
+
+      if (response.success) {
+        const successMessage = getTranslatedMessage(
+          'success.sectionDeleted',
+          'Seção excluída com sucesso!',
+        )
+        toast.success(successMessage)
+        store.clearDeletedSection(id)
+      }
 
     } catch (error) {
       const appError = createSectionError(
         'errors.serverCommunication',
-        'Erro ao atualizar seção'
+        'Erro ao excluir seção',
       )
       toast.error(appError.message)
       throw appError
+    } finally {
+      loading.value = false
     }
   }
 
-  /**
-   * Remove uma seção
-   */
-  const deleteSection = async (sectionId: string): Promise<void> => {
-    if (!sectionId) {
-      const appError = createSectionError(
+  const findSection = async (id: string): Promise<section> => {
+    if (!id) {
+      throw createSectionError(
         'errors.invalidId',
         'ID da seção é obrigatório',
-        400
+        400,
       )
-      toast.error(appError.message)
-      throw appError
     }
 
+    const cached = store.sections.find(section => section.id === id)
+
+    if (cached) {
+      store.setSelectedSection(cached)
+      return cached
+    }
+    loading.value = true
+    error.value = ''
+
     try {
-      await store.deleteSection(sectionId)
 
-      // Feedback de sucesso
-      const successMessage = getTranslatedMessage(
-        'success.sectionDeleted',
-        'Seção excluída com sucesso!'
-      )
-      toast.success(successMessage)
+      let resp: ApiResponse<section | null>
 
-    } catch (error) {
-      const appError = createSectionError(
-        'errors.serverCommunication',
-        'Erro ao excluir seção'
-      )
-      toast.error(appError.message)
-      throw appError
+      try {
+        resp = await sectionService.findById(id)
+      } catch (e: any) {
+        error.value = e.message ?? 'Falha de comunicação'
+        throw createSectionError(
+          'errors.serverCommunication',
+          'Erro ao comunicar com o servidor',
+        )
+      }
+
+      if (!resp.success || !resp.data) {
+        throw createSectionError(
+          'errors.recordNotFound',
+          resp.message || 'Seção militar não encontrada',
+          resp.statusCode || 404,
+        )
+      }
+
+      const data = resp.data
+      const idx = store.sections.findIndex(section => section.id === id)
+      idx >= 0
+        ? store.sections.splice(idx, 1, data)
+        : store.sections.push(data)
+
+      store.setSelectedSection(data)
+      return data
+    } finally {
+      loading.value = false
     }
   }
 
-  /**
-   * Busca uma seção específica por ID
-   */
-  const findSection = async (sectionId: string): Promise<section | null> => {
-    if (!sectionId) {
-      const appError = createSectionError(
-        'errors.invalidId',
-        'ID da seção é obrigatório',
-        400
-      )
-      throw appError
-    }
-
-    try {
-      await store.findSection(sectionId)
-      return selectedSection.value
-    } catch (error) {
-      const appError = createSectionError(
-        'errors.recordNotFound',
-        'Seção não encontrada'
-      )
-      console.error('Find section error:', appError.message)
-      throw appError
-    }
-  }
-
-  // =====================================
-  // OPERAÇÕES DE SELEÇÃO
-  // =====================================
-
-  /**
-   * Define a seção selecionada
-   */
   const selectSection = (section: section | null): void => {
     if (section) {
       store.setSelectedSection(section)
@@ -303,36 +309,29 @@ export const useSections = () => {
     }
   }
 
-  /**
-   * Limpa a seção selecionada
-   */
   const clearSelection = (): void => {
     store.clearSelectedSection()
   }
+  const clearState = (): void => {
+    store.clearSectionState()
+  }
 
-  // =====================================
-  // UTILITÁRIOS
-  // =====================================
-
-  /**
-   * Filtra seções com base em critérios
-   */
   const filterSections = (filters: SectionFilters) => {
     return computed(() => {
       let filtered = sections.value
 
       if (filters.militaryOrganizationId) {
         filtered = filtered.filter(
-          section => section.militaryOrganizationId === filters.militaryOrganizationId
+          section => section.militaryOrganizationId === filters.militaryOrganizationId,
         )
       }
 
       if (filters.search?.trim()) {
         const searchTerm = filters.search.toLowerCase()
         filtered = filtered.filter(
-          section => 
+          section =>
             section.name.toLowerCase().includes(searchTerm) ||
-            section.acronym.toLowerCase().includes(searchTerm)
+            section.acronym.toLowerCase().includes(searchTerm),
         )
       }
 
@@ -340,21 +339,15 @@ export const useSections = () => {
     })
   }
 
-  /**
-   * Verifica se uma sigla já existe para uma determinada OM
-   */
   const isAcronymTaken = (acronym: string, militaryOrganizationId: string, excludeId?: string): boolean => {
     return sections.value.some(
-      section => 
+      section =>
         section.id !== excludeId &&
         section.acronym.toLowerCase() === acronym.toLowerCase() &&
-        section.militaryOrganizationId === militaryOrganizationId
+        section.militaryOrganizationId === militaryOrganizationId,
     )
   }
 
-  /**
-   * Retorna estatísticas das seções
-   */
   const getSectionStats = () => {
     return computed(() => ({
       total: sections.value.length,
@@ -362,40 +355,37 @@ export const useSections = () => {
         const omId = section.militaryOrganizationId
         acc[omId] = (acc[omId] || 0) + 1
         return acc
-      }, {} as Record<string, number>)
+      }, {} as Record<string, number>),
     }))
   }
 
-  // =====================================
-  // INTERFACE PÚBLICA
-  // =====================================
+  const getSectionById = (id: string): section | undefined => {
+    return sections.value.find(section => section.id === id)
+  }
+
 
   return {
-    // Estado reativo
     sections: readonly(sections),
     selectedSection: readonly(selectedSection),
     loading: readonly(loading),
     error: readonly(error),
     totalSections: readonly(totalSections),
-    
-    // Computeds utilitários
-    sectionsByOM,
-    
-    // Operações CRUD
+    sectionsByOM: readonly(sectionsByOM),
+
+    selectSection,
+    clearState,
+    clearSelection,
+
     fetchSections,
     fetchSectionsByOM,
     createSection,
     updateSection,
     deleteSection,
     findSection,
-    
-    // Gerenciamento de seleção
-    selectSection,
-    clearSelection,
-    
-    // Utilitários
+
     filterSections,
     isAcronymTaken,
-    getSectionStats
+    getSectionStats,
+    getSectionById
   }
 }

@@ -71,9 +71,15 @@
   "confirmDeleteMilitaryOrganization": "Você tem certeza que deseja excluir a Organização Militar:",
   "consequenceDeleteMilitaryOrganization": "Contas vinculadas a essa Organização Militar, perderão acesso a algumas funcionalidades do sistema.",
   "sections": "Seções",
+  "section": "Seção",
   "sectionsDetails": "Detalhes das Seções",
   "sectionsConfigurations": "Configurações das Seções",
   "noSectionsFound": "Ainda não existem seções cadastradas",
+  "manageSections": "Gerenciamento de Seções",
+  "registeredSections": "Seções Cadastradas",
+  "addNewSection": "Cadastrar nova Seção",
+  "mo": "OM",
+  "sectionFullName": "Nome completo da Seção",
 
   "imageEditor": {
     "zoomInstruction": "Use o scroll do mouse para ajustar o zoom da imagem.",

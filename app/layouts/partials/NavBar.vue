@@ -1,12 +1,9 @@
 <script lang="ts" setup>
+  import { storeToRefs } from 'pinia'
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
-  import { storeToRefs } from 'pinia'
-
   const authStore = useAuthUserStore()
   const { user: currentUser } = storeToRefs(authStore)
-
-
 </script>
 
 <template>
@@ -19,15 +16,11 @@
     </template>
 
     <template #append>
-
       <LanguageSelector />
-
       <UserCard v-if="currentUser" />
-
     </template>
   </v-app-bar>
 </template>
-
 
 <style scoped>
   .navbar-top {
