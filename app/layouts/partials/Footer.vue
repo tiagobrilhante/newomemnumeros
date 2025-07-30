@@ -3,7 +3,7 @@
   const appCreator = config.public.APP_CREATOR
 </script>
 <template>
-  <v-footer app class="footer-layout" color="#222222" elevation="10">
+  <v-footer app class="footer-layout grey-thick-border-top" color="#222222" elevation="10">
     <v-row justify="center" no-gutters>
       <v-col class="text-center" cols="12">
         {{ new Date().getFullYear() }} — <strong>{{ appCreator }}</strong>

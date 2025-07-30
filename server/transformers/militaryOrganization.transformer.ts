@@ -1,9 +1,10 @@
-import type { MilitaryOrganization } from '@prisma/client'
+import type { MilitaryOrganization, Section } from '@prisma/client'
 import { BaseTransformer } from './base.transformer'
 
 type MilitaryOrganizationWithRelations = MilitaryOrganization & {
   subOrganizations?: MilitaryOrganization[]
   parentOrganization?: MilitaryOrganization | null
+  sections?: Section[] | null
 }
 
 export class MilitaryOrganizationTransformer extends BaseTransformer {
@@ -11,6 +12,7 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
     const {
       subOrganizations,
       parentOrganization,
+      sections,
       createdAt,
       updatedAt,
       deleted,
@@ -20,10 +22,10 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
     return {
       ...cleanOrganization,
       ...(subOrganizations && {
-        subOrganizations: this.removeAuditFieldsFromCollection(subOrganizations)
+        subOrganizations: this.removeAuditFieldsFromCollection(subOrganizations),
       }),
       ...(parentOrganization && {
-        parentOrganization: this.removeAuditFields(parentOrganization)
+        parentOrganization: this.removeAuditFields(parentOrganization),
       }),
     }
   }
@@ -35,7 +37,8 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
       acronym,
       color,
       logo,
-      parentOrganization
+      parentOrganization,
+      sections,
     } = militaryOrganization
 
     return {
@@ -48,13 +51,21 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
         parentOrganization: {
           id: parentOrganization.id,
           name: parentOrganization.name,
-          acronym: parentOrganization.acronym
-        }
-      })
+          acronym: parentOrganization.acronym,
+        },
+      }),
+      ...(sections && {
+        sections: sections.map(section => ({
+          id: section.id,
+          name: section.name,
+          acronym: section.acronym,
+        })),
+      }),
+
     }
   }
 
-    static transformForList(militaryOrganization: MilitaryOrganizationWithRelations) {
+  static transformForList(militaryOrganization: MilitaryOrganizationWithRelations) {
     const {
       createdAt,
       updatedAt,
@@ -70,15 +81,23 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
         parentOrganization: {
           id: militaryOrganization.parentOrganization.id,
           name: militaryOrganization.parentOrganization.name,
-          acronym: militaryOrganization.parentOrganization.acronym
-        }
-      })
+          acronym: militaryOrganization.parentOrganization.acronym,
+        },
+      }),
+      ...(militaryOrganization.sections && {
+        sections: militaryOrganization.sections.map(section => ({
+          id: section.id,
+          name: section.name,
+          acronym: section.acronym,
+        })),
+      }),
+
     }
   }
 
-    static collection(
+  static collection(
     militaryOrganizations: MilitaryOrganizationWithRelations[],
-    mode: 'full' | 'auth' | 'list' = 'list'
+    mode: 'full' | 'auth' | 'list' = 'list',
   ) {
     return militaryOrganizations.map(org => {
       switch (mode) {
@@ -103,13 +122,13 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
         .filter(org => org.militaryOrganizationId === parentId)
         .map(org => ({
           ...this.transform(org),
-          children: buildHierarchy(org.id)
+          children: buildHierarchy(org.id),
         }))
     }
 
     return rootOrganizations.map(rootOrg => ({
       ...this.transform(rootOrg),
-      children: buildHierarchy(rootOrg.id)
+      children: buildHierarchy(rootOrg.id),
     }))
   }
 
@@ -121,7 +140,7 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
       label: `${org.acronym} - ${org.name}`,
       value: org.id.toString(),
       isParent: !org.militaryOrganizationId,
-      parentId: org.militaryOrganizationId
+      parentId: org.militaryOrganizationId,
     }))
   }
 }

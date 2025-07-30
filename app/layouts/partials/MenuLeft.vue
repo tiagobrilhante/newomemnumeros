@@ -53,7 +53,7 @@
     :permanent="true"
     :rail="navigationStore.isMenuCollapsed || mobile"
     :rail-width="72"
-    class="menu-left"
+    class="menu-left grey-thick-border-right"
     width="280"
     elevation="2"
   >
@@ -63,6 +63,7 @@
       :prepend-icon="(navigationStore.isMenuCollapsed || mobile) ? 'mdi-menu' : 'mdi-menu-open'"
       :title="(navigationStore.isMenuCollapsed || mobile) ? '' : $t('leftMenu.mainMenu')"
       @click="toggleCollapse"
+      rounded="xl"
     />
 
     <v-divider />
@@ -108,7 +109,6 @@
 
 <style scoped>
 .menu-left {
-  border-right: thin solid rgba(255, 255, 255, 0.12);
   z-index: 1005 !important;
 }
 

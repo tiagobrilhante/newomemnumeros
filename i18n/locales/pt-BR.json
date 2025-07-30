@@ -44,6 +44,7 @@
   "logo": "Logo",
   "parentOrganization": "Om Pai",
   "actions": "Ações",
+  "actionsMO": "Ações (OM)",
   "create": "Criar",
   "update": "Alterar",
   "edit": "Editar",
@@ -69,6 +70,10 @@
   "militaryOrganizationBadge": "Escudo da Organização Militar",
   "confirmDeleteMilitaryOrganization": "Você tem certeza que deseja excluir a Organização Militar:",
   "consequenceDeleteMilitaryOrganization": "Contas vinculadas a essa Organização Militar, perderão acesso a algumas funcionalidades do sistema.",
+  "sections": "Seções",
+  "sectionsDetails": "Detalhes das Seções",
+  "sectionsConfigurations": "Configurações das Seções",
+  "noSectionsFound": "Ainda não existem seções cadastradas",
 
   "imageEditor": {
     "zoomInstruction": "Use o scroll do mouse para ajustar o zoom da imagem.",

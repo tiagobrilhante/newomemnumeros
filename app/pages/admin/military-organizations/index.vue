@@ -3,6 +3,7 @@
   import { retrieveMiniImage } from '~/utils/retrieve-mini-image'
   import type { VDataTable } from 'vuetify/components'
 
+
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
 
@@ -35,7 +36,7 @@
     showCancelBtn: true,
   })
 
-  type ModalType = 'add' | 'edit' | 'delete' | 'logo'
+  type ModalType = 'add' | 'edit' | 'delete' | 'logo' | 'sectionsDetails'
 
   const openModal = async (type: ModalType, militaryOrganization?: militaryOrganization) => {
     CARD_PROPS.modalType = type
@@ -66,6 +67,11 @@
         CARD_PROPS.btnIcon = 'mdi-delete'
         CARD_PROPS.modalTextButton = $t('delete')
         break
+      case 'sectionsDetails':
+        if (!militaryOrganization?.id) return
+        CARD_PROPS.modalIcon = 'mdi-sitemap-outline'
+        CARD_PROPS.modalTextButton = $t('$vuetify.close')
+        break
     }
 
     dialog.value = true
@@ -82,7 +88,8 @@
     { title: $t('acronym'), key: 'acronym' },
     { title: $t('logo'), key: 'logo', sortable: false, align: 'center' },
     { title: $t('parentOrganization'), key: 'parentOrganization' },
-    { title: $t('actions'), key: 'actions', sortable: false, align: 'center' },
+    { title: $t('sections'), key: 'sections', align: 'center' },
+    { title: $t('actionsMO'), key: 'actions', sortable: false, align: 'center' },
   ]
 
   onMounted(() => {
@@ -96,17 +103,19 @@
       <v-col>
         <BaseTitle :title-variables="{title: $t('militaryOrganizationsManagement'),icon: 'mdi-domain'}" />
 
-        <v-card class="border border-solid border-opacity-100" rounded="xl">
+        <v-card :loading class="border border-solid border-opacity-100" rounded="xl">
 
           <!-- card title e add MO btn-->
-          <v-card-title>
-            <v-row>
-              <v-col class="px-5 d-flex justify-space-between align-center">
-                <span>{{ $t('listedMilitaryOrganizations') }}</span>
+          <v-card-title class="bg-surface-light pt-3 grey-thick-border-bottom">
+            <v-row dense>
+              <v-col class="px-4 d-flex justify-space-between">
+                <div>
+                  <v-icon class="mr-3" size="small">mdi-list-box</v-icon>
+                  <span>{{ $t('listedMilitaryOrganizations') }}</span>
+                </div>
                 <v-btn
                   :loading="loading"
                   :text="$t('add') + ' ' + $t('leftMenu.militaryOrganization') "
-                  class="mt-2"
                   color="primary"
                   prepend-icon="mdi-plus-circle"
                   rounded="xl"
@@ -169,18 +178,57 @@
                 </v-row>
               </template>
 
+
+              <!-- sections-->
+              <template #[`item.sections`]="{ item }">
+                <v-tooltip interactive>
+                  <template v-slot:activator="{ props: activatorProps }">
+                    <v-chip :color="item.sections?.length === 0 ? 'error' : 'success'" class="mr-4"
+                            v-bind="activatorProps" variant="elevated">
+                      {{ item.sections?.length }}
+                    </v-chip>
+                  </template>
+
+                  <v-row>
+                    <v-col class="pt-5">
+                      <v-card v-for="section in item.sections" density="compact" class="mb-3">
+                        <v-card-text>
+                          {{ section.name }} <br>
+                          <span class="text-caption">{{ section.acronym }}</span>
+                        </v-card-text>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-tooltip>
+
+
+                <v-tooltip :text="$t('sectionsDetails')" location="top">
+                  <template v-slot:activator="{ props }">
+                    <v-icon class="mr-3" color="info" size="x-small" v-bind="props" @click="openModal('sectionsDetails', item)">
+                      mdi-magnify
+                    </v-icon>
+                  </template>
+                </v-tooltip>
+                <v-tooltip :text="$t('sectionsConfigurations')" location="top">
+                  <template v-slot:activator="{ props }">
+                    <v-icon color="warning" size="x-small" v-bind="props" @click="console.log('config')">mdi-cog
+                    </v-icon>
+                  </template>
+                </v-tooltip>
+              </template>
+
               <!-- actions-->
               <template #[`item.actions`]="{ item }">
 
                 <!-- edit -->
                 <v-tooltip :text="$t('edit')" location="top">
                   <template v-slot:activator="{ props }">
-                    <v-btn
+                    <v-icon-btn
                       :loading="loading"
                       class="mr-3"
                       color="primary"
                       icon="mdi-pencil"
-                      size="x-small"
+                      size="small"
                       v-bind="props"
                       variant="outlined"
                       @click="openModal('edit', item)"
@@ -191,11 +239,11 @@
                 <!-- delete-->
                 <v-tooltip :text="$t('delete')" location="top">
                   <template v-slot:activator="{ props }">
-                    <v-btn
+                    <v-icon-btn
                       :loading="loading"
                       color="error"
                       icon="mdi-delete"
-                      size="x-small"
+                      size="small"
                       v-bind="props"
                       variant="outlined"
                       @click="openModal('delete', item)"
@@ -232,9 +280,13 @@
         @close-dialog="closeDialog" />
 
       <!-- Show MO logo-->
-      <military-organization-show-logo v-else
+      <military-organization-show-logo v-else-if="CARD_PROPS.modalType === 'logo' && selectedMilitaryOrganization"
                                        :card-props="CARD_PROPS"
                                        @close-dialog="closeDialog" />
+
+      <section-sections-details v-else-if="CARD_PROPS.modalType === 'sectionsDetails' && selectedMilitaryOrganization"
+                                :card-props="CARD_PROPS"
+                                @close-dialog="closeDialog" />
 
     </v-dialog>
   </v-container>

@@ -10,7 +10,7 @@
 </script>
 
 <template>
-  <v-app-bar :elevation="10" app class="navbar-top">
+  <v-app-bar :elevation="10" app class="navbar-top grey-thick-border-bottom">
     <template #prepend>
       <v-app-bar-nav-icon>
         <v-icon icon="mdi-alpha-n-circle-outline" />

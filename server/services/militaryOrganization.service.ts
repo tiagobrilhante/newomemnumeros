@@ -38,9 +38,9 @@ export async function getAllMilitaryOrganizations(locale: string) {
             deleted: false,
           },
         },
+        sections: true
       },
       orderBy: [
-        { militaryOrganizationId: 'asc' },
         { name: 'asc' },
       ],
     })

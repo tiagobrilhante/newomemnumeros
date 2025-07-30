@@ -44,6 +44,7 @@
   "logo": "Logo",
   "parentOrganization": "Parent Organization",
   "actions": "Actions",
+  "actionsMO": "Actions (MO)",
   "create": "Create",
   "update": "Update",
   "edit": "Edit",
@@ -69,6 +70,10 @@
   "militaryOrganizationBadge": "Military Organization Badge",
   "confirmDeleteMilitaryOrganization": "Are you sure you want to delete the Military Organization:",
   "consequenceDeleteMilitaryOrganization": "Accounts linked to this Military Organization will lose access to some system functionalities.",
+  "sections": "Sections",
+  "sectionsDetails": "Sections Detail",
+  "sectionsConfigurations": "Sections Configurations",
+  "noSectionsFound": "No sections have been registered yet",
 
   "imageEditor": {
     "zoomInstruction": "Use mouse scroll to adjust image zoom.",
