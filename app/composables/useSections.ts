@@ -185,12 +185,17 @@ export const useSections = () => {
     error.value = ''
 
     try {
-
-
       const response = await sectionService.update(data)
 
       if (response.success){
+        // Atualizar a store de sections
         store.updateSection(response.data)
+        
+        // Atualizar a militaryOrganization store
+        if (militaryOrgComposable.updateSectionInMilitaryOrganization) {
+          militaryOrgComposable.updateSectionInMilitaryOrganization(data.militaryOrganizationId, response.data)
+        }
+
         const successMessage = getTranslatedMessage(
           'success.sectionUpdated',
           'Seção atualizada com sucesso!',

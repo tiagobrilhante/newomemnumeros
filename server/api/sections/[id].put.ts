@@ -1,34 +1,35 @@
-import prisma from '../../prisma'
+import { updateSection } from '../../services/section.service'
+import { sectionUpdateSchema } from '../../schemas/section.schema'
+import { getLocale } from '../../utils/i18n'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event) => {
-  const id = getRouterParam(event, 'id')
-
-  if (!id) {
-    throw createError({
-      statusCode: 400,
-      message: 'ID inválido',
-    })
-  }
-
   try {
+    const id = getRouterParam(event, 'id')
     const body = await readBody(event)
+    const locale = getLocale(event) || 'pt-BR'
 
-    return await prisma.section.update({
-      where: {
-        id,
-      },
-      include: {
-        militaryOrganization: true,
-      },
+    if (!id) {
+      throw createError({
+        statusCode: 400,
+        message: 'ID inválido',
+      })
+    }
 
-      data: body,
-    })
-  } catch (error) {
-    console.error(`Erro ao atualizar Seção ${id}:`, error)
-    throw createError({
-      statusCode: 500,
-      message: 'Erro ao atualizar Seção',
-    })
+    const dataWithId = { ...body, id }
+    
+    const validation = sectionUpdateSchema.safeParse(dataWithId)
+    if (!validation.success) {
+      throw createError({
+        statusCode: 400,
+        message: 'Dados inválidos',
+        data: validation.error.errors,
+      })
+    }
+
+    return await updateSection(validation.data, locale)
+  } catch (error: any) {
+    console.error('Erro ao atualizar seção:', error)
+    throw error
   }
 })

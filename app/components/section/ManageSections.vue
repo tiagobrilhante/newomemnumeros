@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import type { VDataTable } from 'vuetify/components'
 
-  const { selectedMilitaryOrganization, loading } = useMilitaryOrganizations()
+  const { selectedMilitaryOrganization, loading, findMilitaryOrganization } = useMilitaryOrganizations()
   const { selectSection } = useSections()
 
   type State = 'list' | 'add' | 'edit' | 'delete'
@@ -60,6 +60,17 @@
   const handleChildEvent = (newState: State) => {
     changeCurrentState(newState)
   }
+
+  // Atualizar dados da organização militar quando o componente é montado
+  onMounted(async () => {
+    if (selectedMilitaryOrganization.value?.id) {
+      try {
+        await findMilitaryOrganization(selectedMilitaryOrganization.value.id)
+      } catch (error) {
+        console.error('Erro ao atualizar dados da organização militar:', error)
+      }
+    }
+  })
 
 
 </script>

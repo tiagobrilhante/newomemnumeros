@@ -38,7 +38,11 @@ export async function getAllMilitaryOrganizations(locale: string) {
             deleted: false,
           },
         },
-        sections: true
+        sections: {
+          where: {
+            deleted: false,
+          },
+        }
       },
       orderBy: [
         { name: 'asc' },
@@ -77,6 +81,11 @@ export async function getMilitaryOrganizationById(id: string, locale: string) {
           },
         },
         parentOrganization: {
+          where: {
+            deleted: false,
+          },
+        },
+        sections: {
           where: {
             deleted: false,
           },
@@ -170,6 +179,11 @@ export async function createMilitaryOrganization(data: MilitaryOrganizationCreat
           },
         },
         parentOrganization: {
+          where: {
+            deleted: false,
+          },
+        },
+        sections: {
           where: {
             deleted: false,
           },
@@ -325,6 +339,11 @@ export async function updateMilitaryOrganization(data: MilitaryOrganizationUpdat
             deleted: false,
           },
         },
+        sections: {
+          where: {
+            deleted: false,
+          },
+        },
       },
     })
 
@@ -453,6 +472,11 @@ export async function deleteMilitaryOrganizationLogo(id: string, locale: string)
           },
         },
         parentOrganization: {
+          where: {
+            deleted: false,
+          },
+        },
+        sections: {
           where: {
             deleted: false,
           },
