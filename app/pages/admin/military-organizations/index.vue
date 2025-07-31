@@ -186,9 +186,10 @@
 
               <!-- sections-->
               <template #[`item.sections`]="{ item }">
+                <v-alert density="compact" class="grey-thick-border ma-0 pa-1 align-content-center align-center" rounded="xl" >
                 <v-tooltip interactive>
                   <template v-slot:activator="{ props: activatorProps }">
-                    <v-chip :color="item.sections?.length === 0 ? 'error' : 'success'" class="mr-4"
+                    <v-chip size="small" :color="item.sections?.length === 0 ? 'error' : 'success'" class="mr-4"
                             v-bind="activatorProps" variant="elevated">
                       {{ item.sections?.length }}
                     </v-chip>
@@ -196,12 +197,15 @@
 
                   <v-row>
                     <v-col class="pt-5">
+                      <template v-if="item.sections && item.sections.length > 0">
                       <v-card v-for="section in item.sections" class="mb-3" density="compact">
                         <v-card-text>
                           {{ section.name }} <br>
                           <span class="text-caption">{{ section.acronym }}</span>
                         </v-card-text>
                       </v-card>
+                      </template>
+                      <v-card density="compact" class="mb-3 pa-2" v-else> {{ $t('noSectionsFound') }}</v-card>
                     </v-col>
                   </v-row>
                 </v-tooltip>
@@ -222,6 +226,7 @@
                     </v-icon>
                   </template>
                 </v-tooltip>
+                </v-alert>
               </template>
 
               <!-- actions-->

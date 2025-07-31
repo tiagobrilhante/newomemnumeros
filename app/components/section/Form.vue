@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import type { VForm } from 'vuetify/components'
+  import { retrieveMiniImage } from '~/utils/retrieve-mini-image'
 
   const { selectedMilitaryOrganization, loading: moLoading } = useMilitaryOrganizations()
   const { createSection, selectedSection, updateSection, loading: sectionsLoading, error } = useSections()
@@ -112,32 +113,49 @@
           </ul>
         </v-alert>
 
-        <!-- name -->
-        <v-text-field
-          id="name"
-          v-model="name"
-          :label="$t('sectionFullName')"
-          :placeholder="$t('sectionFullName')"
-          :rules="requiredRule"
-          class="mb-5"
-          density="compact"
-          required
-          rounded="xl"
-          variant="outlined"
-        />
+        <v-row>
+          <v-col>
+            <v-img
+              :alt="selectedMilitaryOrganization?.logo === '/logos/default/default.png' ? 'Sem Logo cadastrado' : `Logo ${selectedMilitaryOrganization?.acronym}`"
+              :src="selectedMilitaryOrganization?.logo"
+              width="100%"
+              class="my-auto"
 
-        <!-- acronym -->
-        <v-text-field
-          id="acronym"
-          v-model="acronym"
-          :label="$t('acronym')"
-          :placeholder="$t('acronym')"
-          :rules="requiredRule"
-          density="compact"
-          required
-          rounded="xl"
-          variant="outlined"
-        />
+            />
+          </v-col>
+          <v-col cols="9">
+
+            <!-- name -->
+            <v-text-field
+              id="name"
+              v-model="name"
+              :label="$t('sectionFullName')"
+              :placeholder="$t('sectionFullName')"
+              :rules="requiredRule"
+              class="mb-5"
+              density="compact"
+              required
+              rounded="xl"
+              variant="outlined"
+            />
+
+            <!-- acronym -->
+            <v-text-field
+              id="acronym"
+              v-model="acronym"
+              :label="$t('acronym')"
+              :placeholder="$t('acronym')"
+              :rules="requiredRule"
+              density="compact"
+              required
+              rounded="xl"
+              variant="outlined"
+            />
+
+          </v-col>
+        </v-row>
+
+
       </v-col>
     </v-row>
 

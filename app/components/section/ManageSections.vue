@@ -1,5 +1,6 @@
 <script lang="ts" setup>
   import type { VDataTable } from 'vuetify/components'
+  import { retrieveMiniImage } from '~/utils/retrieve-mini-image'
 
   const { selectedMilitaryOrganization, loading, findMilitaryOrganization } = useMilitaryOrganizations()
   const { selectSection } = useSections()
@@ -96,8 +97,8 @@
     <v-card-text>
       <v-fade-transition mode="out-in">
         <v-alert v-if="currentState === 'list'" key="list">
-          <v-row>
-            <v-col>
+          <v-row dense>
+            <v-col >
               <h3>{{ $t('registeredSections') }} - {{ selectedMilitaryOrganization?.acronym }}</h3>
             </v-col>
             <v-col class="text-right" cols="4">
