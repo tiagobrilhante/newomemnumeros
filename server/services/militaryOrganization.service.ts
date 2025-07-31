@@ -400,13 +400,21 @@ export async function deleteMilitaryOrganization(id: string, locale: string) {
       logoToDelete = existingOrganization.logo
     }
 
-    await prisma.militaryOrganization.update({
+    // Usar delete() para ativar o interceptor do Prisma que faz a cascata
+    await prisma.militaryOrganization.delete({
       where: {
         id,
       },
+    })
+
+    // Atualizar logo para default após o soft delete
+    await prisma.militaryOrganization.updateMany({
+      where: {
+        id,
+        deleted: true,
+      },
       data: {
         logo: '/logos/default/default.png',
-        deleted: true,
         updatedAt: new Date(),
       },
     })

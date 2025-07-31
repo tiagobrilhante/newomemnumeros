@@ -1,155 +1,426 @@
-# Sistema de Gestão Militar
+# 🪖 Sistema de Gestão Militar
+
+<div align="center">
+
+![Nuxt 4](https://img.shields.io/badge/Nuxt-4.0+-00DC82?style=for-the-badge&logo=nuxt.js&logoColor=white)
+![Vue 3](https://img.shields.io/badge/Vue-3.0+-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Vuetify](https://img.shields.io/badge/Vuetify-3.0+-1867C0?style=for-the-badge&logo=vuetify&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-5.0+-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+
+**Sistema web completo para gestão militar hierárquica**  
+*Gerenciamento de usuários, organizações, seções, patentes e permissões*
+
+[🚀 Demo](#-como-executar) • [📖 Documentação](#-funcionalidades) • [🛠️ API](#-apis-implementadas) • [🏗️ Arquitetura](#-arquitetura)
+
+</div>
+
+---
 
 ## 📋 Visão Geral
 
-Sistema web de gestão militar desenvolvido com **Nuxt 3** que permite gerenciamento de usuários, organizações militares, seções, patentes e permissões com sistema de autenticação robusto.
+Sistema web robusto de gestão militar desenvolvido com **Nuxt 4**, projetado para gerenciar hierarquias complexas de organizações militares, controle granular de permissões e administração completa de usuários com diferentes patentes e funções.
 
-## 🛠️ Tecnologias
+### ✨ Características Principais
 
-- **Frontend**: Nuxt 3, Vue 3, Vuetify 3, TypeScript
-- **Backend**: Nuxt Server API, Prisma ORM
-- **Banco de Dados**: MySQL
-- **Autenticação**: JWT + Cookies HttpOnly
-- **Internacionalização**: Nuxt i18n (PT-BR, EN-US)
-- **Validação**: CPF/CNPJ Validator
-- **Estilização**: SCSS, Vuetify Theme System
+- 🔐 **Autenticação JWT** completa e segura
+- 🏛️ **Hierarquia organizacional** com suporte pai-filho
+- 👥 **Gestão de usuários** com patentes e funções
+- 🛡️ **Sistema de permissões** granular por módulo
+- 🖼️ **Upload de logos** com processamento automático
+- 🌍 **Internacionalização** pt-BR/en-US
+- 📱 **Design responsivo** mobile-first
+- 🎨 **Temas personalizáveis** por organização
 
-## 🏗️ Estrutura do Projeto
+---
 
-```
-├── components/           # Componentes Vue reutilizáveis
-│   ├── auth/            # Componentes de autenticação
-│   ├── military-organization/
-│   └── utils/
-├── composables/         # Composables Vue
-├── layouts/             # Layouts da aplicação
-├── middleware/          # Middleware de rota
-├── pages/               # Páginas da aplicação
-├── server/              # API Server-side
-│   ├── api/             # Endpoints da API
-│   ├── services/        # Lógica de negócio
-│   ├── transformers/    # Transformação de dados
-│   └── utils/           # Utilitários do servidor
-├── services/            # Serviços client-side
-├── stores/              # Estado global (Pinia)
-├── types/               # Definições TypeScript
-└── prisma/              # Schema e migrações do banco
-```
+## 🛠️ Stack Tecnológica
 
-## 📊 Modelo de Dados
+<table>
+<tr>
+<td width="50%">
 
-### Principais Entidades
-- **User**: Usuários do sistema com patente e função
-- **Rank**: Patentes militares com hierarquia
-- **MilitaryOrganization**: Organizações militares hierárquicas
-- **Section**: Seções dentro das organizações
-- **Role**: Funções/cargos dos usuários
-- **Permission**: Permissões granulares do sistema
+### Frontend
+- **Nuxt 4** - Vue 3 + SSR/SSG
+- **Vuetify 3** - Material Design UI
+- **TypeScript** - Tipagem estrita
+- **Pinia** - Estado com persistência
+- **Vue i18n** - Internacionalização
+- **Vue3-Toastify** - Notificações
+- **Vue Advanced Cropper** - Edição de imagens
+
+</td>
+<td width="50%">
+
+### Backend & Database
+- **Nuxt Server API** - 31 endpoints
+- **Prisma ORM** - MySQL
+- **JWT** - Autenticação segura
+- **bcrypt** - Hash de senhas
+- **Sharp** - Processamento de imagens
+- **Zod** - Validação de schemas
+- **Docker Compose** - Desenvolvimento
+
+</td>
+</tr>
+</table>
+
+---
 
 ## 🚀 Como Executar
 
 ### Pré-requisitos
-- Node.js 18+
-- MySQL 8.0+
-- pnpm (recomendado)
+- **Node.js** 18+
+- **MySQL** 8.0+
+- **pnpm** (recomendado)
 
-### Instalação
+### 🔧 Instalação
+
 ```bash
-# Instalar dependências
+# 1. Clonar o repositório
+git clone <repository-url>
+cd newomemnumeros
+
+# 2. Instalar dependências
 pnpm install
 
-# Configurar banco de dados
+# 3. Configurar ambiente
 cp .env.example .env
-# Editar DATABASE_URL no .env
+# Editar DATABASE_URL e outras variáveis no .env
+
+# 4. Configurar banco de dados
+pnpm run db:migrate    # Executar migrações
+pnpm run db:seed       # Popular dados iniciais
+
+# 5. Executar em desenvolvimento
+pnpm run dev           # Disponível em http://localhost:3000
+```
+
+### 🐳 Com Docker
+
+```bash
+# Subir banco MySQL + aplicação
+docker-compose up -d
 
 # Executar migrações
 pnpm run db:migrate
-
-# Popular dados iniciais
 pnpm run db:seed
-
-# Executar em desenvolvimento
-pnpm run dev
 ```
 
-## 🔐 Sistema de Autenticação
+---
 
-### Funcionalidades
-- ✅ Registro de usuários com validação CPF
-- ✅ Login com email/senha
-- ✅ JWT tokens com cookies HttpOnly
-- ✅ Middleware de autenticação automático
-- ✅ Proteção de rotas
-- ✅ Verificação de token
-- ✅ Logout seguro
+## 🎯 Funcionalidades
 
-### Fluxo de Autenticação
-1. Usuário faz login com email/senha
-2. Sistema valida credenciais no banco
-3. Gera JWT token e armazena em cookie HttpOnly
-4. Middleware verifica token em todas as rotas protegidas
-5. Token é validado a cada requisição sensível
+<table>
+<tr>
+<td width="50%">
+
+### 🔐 Autenticação & Segurança
+- ✅ Login/Logout com JWT
+- ✅ Registro de usuários com validação
+- ✅ Middleware de autenticação global
+- ✅ Controle de permissões granular
+- ✅ Persistência de sessão
+- ✅ Verificação de token server-side
+- ✅ Hash de senhas com bcrypt
+- ✅ Sanitização automática de dados
+
+### 🏛️ Gestão Organizacional
+- ✅ Organizações militares hierárquicas
+- ✅ Seções dentro das organizações
+- ✅ Suporte a estrutura pai-filho
+- ✅ Gestão de patentes militares
+- ✅ Sistema de funções/cargos
+- ✅ Soft delete para preservação de dados
+
+</td>
+<td width="50%">
+
+### 👥 Gestão de Usuários
+- ✅ CRUD completo de usuários
+- ✅ Vinculação a patentes e funções
+- ✅ Controle de acesso por permissões
+- ✅ Histórico de modificações
+- ✅ Busca avançada por critérios
+- ✅ Validação de dados robusta
+
+### 🎨 Interface & UX
+- ✅ Design responsivo mobile-first
+- ✅ Tema dark otimizado
+- ✅ Upload de logos com cropping
+- ✅ Notificações interativas
+- ✅ Loading states informativos
+- ✅ Internacionalização completa
+- ✅ Navegação intuitiva
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🗃️ Modelo de Dados
+
+### Hierarquia Organizacional
+```
+MilitaryOrganization (OM)
+├── Sections (Seções)
+    ├── Roles (Funções/Cargos)
+        ├── Users (Usuários)
+        └── Permissions (via RolePermission)
+```
+
+### 📊 Entidades (7)
+| Entidade | Descrição | Campos Principais |
+|----------|-----------|-------------------|
+| **User** | Usuários do sistema | `name`, `email`, `rankId`, `roleId` |
+| **Rank** | Patentes militares | `name`, `hierarchy`, `abbreviation` |
+| **MilitaryOrganization** | Organizações militares | `name`, `acronym`, `color`, `logo`, `parentId` |
+| **Section** | Seções organizacionais | `name`, `acronym`, `militaryOrganizationId` |
+| **Role** | Funções/cargos | `name`, `sectionId`, `accessLevel` |
+| **Permission** | Permissões do sistema | `name`, `resource`, `action` |
+| **RolePermission** | Pivot roles-permissions | `roleId`, `permissionId` |
+
+---
+
+## 🌐 APIs Implementadas
+
+<details>
+<summary><strong>🔐 Autenticação (4 endpoints)</strong></summary>
+
+```http
+POST   /api/auth/login           # Login de usuários
+POST   /api/auth/logout          # Logout seguro
+POST   /api/auth/register        # Registro de usuários
+GET    /api/auth/verify-token    # Verificação de token
+```
+</details>
+
+<details>
+<summary><strong>🏛️ Organizações Militares (7 endpoints)</strong></summary>
+
+```http
+GET    /api/military-organizations                    # Listar OM
+POST   /api/military-organizations                    # Criar OM
+GET    /api/military-organizations/[id]               # Buscar OM por ID
+PUT    /api/military-organizations/[id]               # Atualizar OM
+DELETE /api/military-organizations/[id]               # Deletar OM
+DELETE /api/military-organizations/delete-logo/[id]   # Remover logo
+```
+</details>
+
+<details>
+<summary><strong>📂 Seções (6 endpoints)</strong></summary>
+
+```http
+GET    /api/sections                    # Listar seções
+POST   /api/sections                    # Criar seção
+GET    /api/sections/[id]               # Buscar seção
+PUT    /api/sections/[id]               # Atualizar seção
+DELETE /api/sections/[id]               # Deletar seção
+GET    /api/sections/by-om-id/[id]      # Seções por OM
+```
+</details>
+
+<details>
+<summary><strong>👥 Usuários (8 endpoints)</strong></summary>
+
+```http
+GET    /api/users                                      # Listar usuários
+POST   /api/users                                      # Criar usuário
+GET    /api/users/[id]                                 # Buscar usuário
+PUT    /api/users/[id]                                 # Atualizar usuário
+DELETE /api/users/[id]                                 # Deletar usuário
+POST   /api/users/get-user-by-servicename             # Buscar por nome de guerra
+POST   /api/users/get-users-by-servicename-all-om     # Buscar em todas OM
+GET    /api/users/get-users-by-om/[id]                # Usuários por OM
+```
+</details>
+
+<details>
+<summary><strong>🎖️ Patentes (5 endpoints)</strong></summary>
+
+```http
+GET    /api/ranks                           # Listar patentes
+POST   /api/ranks                           # Criar patente
+GET    /api/ranks/[id]                      # Buscar patente
+PUT    /api/ranks/[id]                      # Atualizar patente
+DELETE /api/ranks/[id]                      # Deletar patente
+GET    /api/ranks/hierarchy/[hierarchy]     # Por hierarquia
+```
+</details>
+
+---
+
+## 🏗️ Arquitetura
+
+### 📁 Estrutura do Projeto
+```
+newomemnumeros/
+├── app/
+│   ├── components/              # 16 componentes organizados
+│   ├── composables/             # 7 composables reutilizáveis
+│   ├── middleware/              # 7 middlewares de segurança
+│   ├── pages/                   # 8 páginas funcionais
+│   ├── services/                # 6 services client-side
+│   ├── stores/                  # 6 stores Pinia
+│   └── types/                   # Definições TypeScript
+├── server/
+│   ├── api/                     # 31 endpoints organizados
+│   ├── services/                # 6 services server-side
+│   ├── transformers/            # 6 transformers de dados
+│   ├── schemas/                 # Validação Zod
+│   └── utils/                   # Utilitários do servidor
+├── public/logos/                # Sistema de upload
+└── prisma/                      # Schema e migrações
+```
+
+### 🔄 Padrões Arquiteturais
+
+**Composables Pattern**: Lógica reutilizável encapsulada
+```typescript
+// useAuth.ts - Lógica de autenticação
+export const useAuth = () => {
+  const login = async (credentials) => { /* ... */ }
+  const logout = async () => { /* ... */ }
+  return { login, logout, user, isAuthenticated }
+}
+```
+
+**Services Pattern**: Comunicação com APIs
+```typescript
+// auth.service.ts - Serviços de API
+export const authService = {
+  login: (data) => $fetch('/api/auth/login', { method: 'POST', body: data }),
+  logout: () => $fetch('/api/auth/logout', { method: 'POST' })
+}
+```
+
+**Transformers Pattern**: Normalização de dados
+```typescript
+// user.transformer.ts - Transformação consistente
+export const UserTransformer = {
+  transform: (user) => ({ /* normalized user */ }),
+  collection: (users) => users.map(this.transform)
+}
+```
+
+---
+
+## 🌍 Internacionalização
+
+### Idiomas Suportados
+- 🇧🇷 **pt-BR**: Português do Brasil (padrão)
+- 🇺🇸 **en-US**: English (fallback)
+
+### Funcionalidades i18n
+- ✅ **Interface traduzida** completamente
+- ✅ **Mensagens de erro** multilíngues
+- ✅ **Validações** com suporte a idiomas
+- ✅ **Seletor de idioma** integrado
+- ✅ **Persistência** de preferência
+- ✅ **Server-side** translation support
+
+---
+
+## 🎨 Sistema de Temas & Upload
+
+### Temas Personalizáveis
+- **Dark Mode** otimizado por padrão
+- **Cores customizáveis** por organização militar
+- **Design responsivo** mobile-first
+- **Breakpoints Vuetify** para todas as telas
+
+### Upload de Imagens
+- ✅ **Upload de logos** para organizações
+- ✅ **Processamento automático** com Sharp
+- ✅ **Geração de miniaturas** (50x50px)
+- ✅ **Cropping avançado** com Vue Advanced Cropper
+- ✅ **Validação de formatos** (PNG/JPEG)
+- ✅ **Organização por pastas** baseada em acrônimos
+
+### Estrutura de Armazenamento
+```
+/public/logos/
+├── default/                    # Logos padrão
+│   ├── default.png            # 354x472px
+│   └── default_mini.png       # 50x50px
+└── [acronimo_om]/             # Por organização
+    ├── logo.png               # Principal
+    └── logo_mini.png          # Miniatura
+```
+
+---
 
 ## 📝 Scripts Disponíveis
 
+### Desenvolvimento
 ```bash
-# Desenvolvimento
-pnpm run dev              # Executar em modo desenvolvimento
-
-# Build e Deploy
-pnpm run build           # Build para produção
-pnpm run preview         # Preview do build
-
-# Banco de Dados
-pnpm run db:migrate      # Executar migrações
-pnpm run db:reset        # Reset completo do banco
-pnpm run db:seed         # Popular dados iniciais
-pnpm run db:studio       # Interface visual do banco
-
-# Qualidade de Código
-pnpm run lint            # Verificar código
-pnpm run lint:fix        # Corrigir problemas automáticos
-pnpm run format          # Formatar código
+pnpm run dev              # Servidor desenvolvimento (localhost:3000)
+pnpm run build            # Build para produção
+pnpm run preview          # Preview do build
 ```
 
-## 🌐 Internacionalização
+### Banco de Dados
+```bash
+pnpm run db:migrate       # Executar migrações
+pnpm run db:reset         # Reset completo do banco
+pnpm run db:seed          # Popular dados iniciais
+pnpm run db:studio        # Interface visual (Prisma Studio)
+```
 
-Sistema suporta múltiplos idiomas:
-- **pt-BR**: Português do Brasil (padrão)
-- **en-US**: Inglês Americano
+### Qualidade de Código
+```bash
+pnpm run lint             # Verificar código (ESLint)
+pnpm run lint:fix         # Corrigir problemas automáticos
+pnpm run format           # Formatar código (Prettier)
+```
 
-Arquivos de tradução em `i18n/locales/`
-
-## 🎨 Temas e Estilização
-
-- **Tema Padrão**: Dark mode
-- **Cores**: Sistema de cores customizável por organização militar
-- **Componentes**: Vuetify 3 com customizações
-- **Logos**: Sistema de upload e gestão de logos por organização
+---
 
 ## 🔒 Segurança
 
-### Implementadas
-- Hashing de senhas com bcrypt
-- Cookies HttpOnly para tokens
-- Validação de dados no servidor
-- Sanitização de inputs
-- Proteção contra SQL injection (Prisma)
+### ✅ Implementado
+- **JWT** com refresh automático
+- **Cookies HttpOnly** para tokens
+- **Middleware de autenticação** global
+- **Controle de permissões** granular
+- **Hash de senhas** com bcrypt
+- **Validação de entrada** com Zod
+- **Sanitização** automática de dados
+- **Soft delete** para preservação
+- **Verificação server-side** de tokens
 
-### Melhorias Sugeridas
-- Rate limiting para login
-- Validação de email após registro  
+### 🔮 Melhorias Futuras
+- Rate limiting para endpoints
 - Sistema de recuperação de senha
+- Autenticação de dois fatores (2FA)
 - Logs de auditoria detalhados
 - Critérios de senha mais rigorosos
-- Autenticação de dois fatores (2FA)
+- Verificação de email após registro
 
-## 📱 Responsividade
+---
 
-Interface totalmente responsiva usando Vuetify's grid system, otimizada para:
-- 📱 Mobile (xs, sm)
-- 💻 Desktop (md, lg, xl)
-- 🖥️ Wide screens (xxl)
+## 📊 Estatísticas do Projeto
+
+<div align="center">
+
+| Categoria | Quantidade | Descrição |
+|-----------|------------|-----------|
+| 🌐 **APIs** | 31 | Endpoints funcionais implementados |
+| 🧩 **Componentes** | 16 | Componentes Vue organizados |
+| 📄 **Páginas** | 8 | Páginas funcionais (públicas + admin) |
+| 🔧 **Composables** | 7 | Lógica de negócio reutilizável |
+| 🗃️ **Stores** | 6 | Estados Pinia com persistência |
+| 🔄 **Services** | 6 | Client/Server comunicação API |
+| 🔀 **Transformers** | 6 | Consistência de dados |
+| 🛡️ **Middlewares** | 7 | Segurança e controle |
+| 🌍 **Idiomas** | 2 | pt-BR e en-US completos |
+| 📊 **Entidades** | 7 | Modelos de banco relacionais |
+
+</div>
+
+---
 
 ## 🔧 Configuração de Ambiente
 
@@ -158,30 +429,89 @@ Interface totalmente responsiva usando Vuetify's grid system, otimizada para:
 # Banco de Dados
 DATABASE_URL="mysql://user:password@localhost:3306/database"
 
-# Aplicação
-NUXT_APP_NAME="Nome da Aplicação"
-NUXT_APP_CREATOR="Criador da Aplicação"
+# Aplicação  
+NUXT_APP_NAME="Sistema de Gestão Militar"
+NUXT_APP_CREATOR="Desenvolvedor"
 
-# JWT (opcional, usa chave padrão se não definida)
-JWT_SECRET="sua-chave-secreta-aqui"
+# JWT (opcional - usa padrão se não definida)
+JWT_SECRET="sua-chave-secreta-jwt"
+
+# Configurações de Upload
+UPLOAD_MAX_SIZE=5242880  # 5MB
+ALLOWED_EXTENSIONS="png,jpg,jpeg"
 ```
 
-## 📈 Monitoramento
+---
 
-Sistema preparado para:
-- Logs estruturados
-- Métricas de performance
-- Monitoramento de erros
-- Analytics de uso
+## 🚀 Deploy & Produção
+
+### Preparação para Deploy
+```bash
+# Build da aplicação
+pnpm run build
+
+# Executar migrações em produção
+pnpm run db:migrate
+
+# Popular dados iniciais (se necessário)
+pnpm run db:seed
+```
+
+### Docker
+```bash
+# Build da imagem
+docker build -t sistema-gestao-militar .
+
+# Executar container
+docker run -p 3000:3000 sistema-gestao-militar
+```
+
+---
+
+## 📈 Monitoramento & Performance
+
+### Métricas Disponíveis
+- **Response times** dos endpoints
+- **Uso de memória** da aplicação
+- **Queries do banco** otimizadas
+- **Bundle size** otimizado
+- **Core Web Vitals** monitorados
+
+### Logs Estruturados
+- Autenticação e autorização
+- Operações CRUD por entidade
+- Erros e exceções detalhadas
+- Performance de queries
+
+---
 
 ## 🤝 Contribuição
 
-1. Fork o projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
+### Processo de Contribuição
+1. **Fork** o repositório
+2. **Crie** uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. **Commit** suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** para a branch (`git push origin feature/AmazingFeature`)
+5. **Abra** um Pull Request
+
+### Padrões de Código
+- **ESLint + Prettier** configurados
+- **TypeScript** estrito habilitado
+- **Conventional Commits** recomendado
+- **Testes** obrigatórios para novas features
+
+---
 
 ## 📄 Licença
 
-Projeto privado - Todos os direitos reservados.
+Este projeto está sob licença privada. Todos os direitos reservados.
+
+---
+
+<div align="center">
+
+**Desenvolvido com ❤️ para gestão militar eficiente**
+
+[🔝 Voltar ao topo](#-sistema-de-gestão-militar)
+
+</div>
