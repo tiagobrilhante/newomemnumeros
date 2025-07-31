@@ -1,21 +1,14 @@
-import prisma from '../../prisma'
+import { getAllSections } from '../../services/section.service'
+import { handleError } from '../../utils/errorHandler'
+import { getLocale } from '../../utils/i18n'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (_event) => {
+export default defineEventHandler(async (event) => {
+  const locale = getLocale(event) || 'pt-BR'
+
   try {
-    return await prisma.section.findMany({
-      where: {
-        deleted: false,
-      },
-      include: {
-        militaryOrganization: true,
-      },
-    })
+    return await getAllSections(locale)
   } catch (error) {
-    console.error('Erro ao buscar Seções:', error)
-    throw createError({
-      statusCode: 500,
-      message: 'Erro ao buscar Seções',
-    })
+    throw await handleError(error, locale)
   }
 })

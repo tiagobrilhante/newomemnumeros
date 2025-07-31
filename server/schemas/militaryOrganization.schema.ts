@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { serverTByLocale } from '../utils/i18n'
 
 // Regex for hex color validation
 const hexColorRegex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/
@@ -23,8 +24,7 @@ export async function createMilitaryOrganizationSchemas(locale: string = 'pt-BR'
       .string()
       .min(1, await getMessage('validation.acronymRequired', 'Sigla não pode estar vazia'))
       .max(10, await getMessage('validation.acronymMaxLength', 'Sigla deve ter no máximo 10 caracteres'))
-      .trim()
-      .transform(val => val.toUpperCase()),
+      .trim(),
 
     color: z
       .string()
@@ -79,8 +79,7 @@ const baseMilitaryOrganizationSchema = z.object({
     .string()
     .min(1, 'Sigla não pode estar vazia')
     .max(10, 'Sigla deve ter no máximo 10 caracteres')
-    .trim()
-    .transform(val => val.toUpperCase()),
+    .trim(),
 
   color: z
     .string()

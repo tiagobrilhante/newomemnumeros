@@ -97,7 +97,7 @@ export const useSections = () => {
         400,
       )
       toast.error(appError.message)
-      throw appError
+      return
     }
 
     const existingSection = sections.value.find(
@@ -112,7 +112,7 @@ export const useSections = () => {
         409,
       )
       toast.error(appError.message)
-      throw appError
+      return
     }
 
     loading.value = true
@@ -121,7 +121,7 @@ export const useSections = () => {
     try {
       const sectionData: section = {
         name: data.name.trim(),
-        acronym: data.acronym.trim().toUpperCase(),
+        acronym: data.acronym.trim(),  // Manter case original
         militaryOrganizationId: data.militaryOrganizationId,
       }
 
@@ -142,13 +142,28 @@ export const useSections = () => {
         )
         toast.success(successMessage)
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Erro ao criar seção:', error)
+      
+      // Se for erro 409 (duplicata), usar mensagem específica
+      if (error?.statusCode === 409) {
+        const appError = createSectionError(
+          'errors.duplicateEntry',
+          error.message || 'Já existe uma seção com esta sigla nesta organização',
+          409
+        )
+        toast.error(appError.message)
+        return
+      }
+      
+      // Para outros erros, usar mensagem genérica
       const appError = createSectionError(
         'errors.serverCommunication',
-        'Erro ao criar seção',
+        error.message || 'Erro ao criar seção',
+        error?.statusCode || 500
       )
       toast.error(appError.message)
-      throw appError
+      return
     } finally {
       loading.value = false
     }
@@ -162,7 +177,7 @@ export const useSections = () => {
         400,
       )
       toast.error(appError.message)
-      throw appError
+      return
     }
 
     const existingSection = sections.value.find(
@@ -178,7 +193,7 @@ export const useSections = () => {
         409,
       )
       toast.error(appError.message)
-      throw appError
+      return
     }
 
     loading.value = true
@@ -203,13 +218,28 @@ export const useSections = () => {
         toast.success(successMessage)
       }
 
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Erro ao atualizar seção:', error)
+      
+      // Se for erro 409 (duplicata), usar mensagem específica
+      if (error?.statusCode === 409) {
+        const appError = createSectionError(
+          'errors.duplicateEntry',
+          error.message || 'Já existe uma seção com esta sigla nesta organização',
+          409
+        )
+        toast.error(appError.message)
+        return
+      }
+      
+      // Para outros erros, usar mensagem genérica
       const appError = createSectionError(
         'errors.serverCommunication',
-        'Erro ao atualizar seção',
+        error.message || 'Erro ao atualizar seção',
+        error?.statusCode || 500
       )
       toast.error(appError.message)
-      throw appError
+      return
     } finally {
       loading.value = false
     }

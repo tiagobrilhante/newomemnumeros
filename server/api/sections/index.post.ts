@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
       return createError({
         statusCode: 400,
         message: 'Dados inválidos',
-        data: validation.error.errors,
+        data: validation.error,
       })
     }
 

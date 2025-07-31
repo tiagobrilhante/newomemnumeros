@@ -17,7 +17,7 @@ function isValidColor(color: string): boolean {
 function sanitizeMilitaryOrganizationData(name: string, acronym: string) {
   const sanitizedData = sanitizeData({ name, acronym })
   const sanitizedName = sanitizedData.name
-  const sanitizedAcronym = sanitizedData.acronym.toUpperCase()
+  const sanitizedAcronym = sanitizedData.acronym  // Manter case original
   return { sanitizedName, sanitizedAcronym }
 }
 
@@ -400,21 +400,26 @@ export async function deleteMilitaryOrganization(id: string, locale: string) {
       logoToDelete = existingOrganization.logo
     }
 
-    // Usar delete() para ativar o interceptor do Prisma que faz a cascata
-    await prisma.militaryOrganization.delete({
+    // Cascata manual: primeiro marcar seções como deletadas
+    await prisma.section.updateMany({
       where: {
-        id,
+        militaryOrganizationId: id,
+        deleted: false,
+      },
+      data: {
+        deleted: true,
+        updatedAt: new Date(),
       },
     })
 
-    // Atualizar logo para default após o soft delete
-    await prisma.militaryOrganization.updateMany({
+    // Depois marcar a organização militar como deletada
+    await prisma.militaryOrganization.update({
       where: {
         id,
-        deleted: true,
       },
       data: {
         logo: '/logos/default/default.png',
+        deleted: true,
         updatedAt: new Date(),
       },
     })

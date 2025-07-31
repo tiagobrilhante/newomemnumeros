@@ -14,7 +14,7 @@ import type { SectionWithIncludes } from '../transformers/types'
 function sanitizeSectionData(name: string, acronym: string) {
   const sanitizedData = sanitizeData({ name, acronym })
   const sanitizedName = sanitizedData.name
-  const sanitizedAcronym = sanitizedData.acronym.toUpperCase()
+  const sanitizedAcronym = sanitizedData.acronym  // Manter case original
   return { sanitizedName, sanitizedAcronym }
 }
 
@@ -93,13 +93,22 @@ export async function createSection(data: SectionCreateInput, locale: string) {
       })
     }
 
-    const existingSection = await prisma.section.findFirst({
+    // Buscar todas as seções da OM para comparar em lowercase
+    const existingSections = await prisma.section.findMany({
       where: {
-        acronym: sanitizedAcronym,
         militaryOrganizationId: militaryOrganizationId,
         deleted: false,
       },
+      select: {
+        id: true,
+        acronym: true,
+      },
     })
+
+    // Verificar duplicata comparando em lowercase
+    const existingSection = existingSections.find(
+      section => section.acronym.toLowerCase() === sanitizedAcronym.toLowerCase()
+    )
 
     if (existingSection) {
       return createError({
@@ -187,14 +196,23 @@ export async function updateSection(data: SectionUpdateInput, locale: string) {
       })
     }
 
-    const duplicateSection = await prisma.section.findFirst({
+    // Buscar todas as seções da OM para comparar em lowercase
+    const allSections = await prisma.section.findMany({
       where: {
         NOT: { id },
         militaryOrganizationId: militaryOrganizationId,
-        acronym: sanitizedAcronym,
         deleted: false,
       },
+      select: {
+        id: true,
+        acronym: true,
+      },
     })
+
+    // Verificar duplicata comparando em lowercase
+    const duplicateSection = allSections.find(
+      section => section.acronym.toLowerCase() === sanitizedAcronym.toLowerCase()
+    )
 
     if (duplicateSection) {
       return createError({
@@ -267,6 +285,19 @@ export async function deleteSection(id: string, locale: string) {
       })
     }
 
+    // Cascata manual: primeiro marcar roles relacionadas como deletadas
+    await prisma.role.updateMany({
+      where: {
+        sectionId: id,
+        deleted: false,
+      },
+      data: {
+        deleted: true,
+        updatedAt: new Date(),
+      },
+    })
+
+    // Depois marcar a seção como deletada
     await prisma.section.update({
       where: {
         id,

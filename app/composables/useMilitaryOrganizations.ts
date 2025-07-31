@@ -99,7 +99,7 @@ export const useMilitaryOrganizations = () => {
     try {
       const organizationData: militaryOrganization = {
         name: data.name.trim() as string,
-        acronym: data.acronym.trim().toUpperCase() as string,
+        acronym: data.acronym.trim() as string,
         color: data.color,
         logo: data.logo === null ? '/logos/default/default.png' : data.logo,
         militaryOrganizationId: data.militaryOrganizationId || null,

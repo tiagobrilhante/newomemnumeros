@@ -65,19 +65,26 @@
       militaryOrganizationId: selectedMilitaryOrganization.value.id,
     }
 
-    if (formProps.formType === 'add') {
-      await createSection(formData)
-      handleCancel()
-    } else {
-      if (!id.value) {
-        localErrors.value.push($t('validSectionRequiredToEdit'))
-        return
+    try {
+      if (formProps.formType === 'add') {
+        await createSection(formData)
+      } else {
+        if (!id.value) {
+          localErrors.value.push($t('validSectionRequiredToEdit'))
+          return
+        }
+        await updateSection({
+          id: id.value!,
+          ...formData,
+        })
       }
-      await updateSection({
-        id: id.value!,
-        ...formData,
-      })
+      
+      // Se chegou até aqui, foi sucesso - fechar modal
       handleCancel()
+    } catch (error: any) {
+      // Capturar erro e mostrar na interface sem deixar "unhandled"
+      console.error('Erro no formulário de seção:', error)
+      localErrors.value.push(error?.message || $t('errors.genericError'))
     }
   }
 

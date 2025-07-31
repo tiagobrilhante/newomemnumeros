@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import type { VDataTable } from 'vuetify/components'
-  import { retrieveMiniImage } from '~/utils/retrieve-mini-image'
 
   const { selectedMilitaryOrganization, loading, findMilitaryOrganization } = useMilitaryOrganizations()
   const { selectSection } = useSections()
@@ -62,7 +61,6 @@
     changeCurrentState(newState)
   }
 
-  // Atualizar dados da organização militar quando o componente é montado
   onMounted(async () => {
     if (selectedMilitaryOrganization.value?.id) {
       try {
@@ -95,6 +93,7 @@
     </v-card-title>
 
     <v-card-text>
+
       <v-fade-transition mode="out-in">
         <v-alert v-if="currentState === 'list'" key="list">
           <v-row dense>
@@ -163,7 +162,6 @@
         <section-delete-section v-else-if="currentState === 'delete'" key="delete" :form-props="FORM_PROPS"
                                 @change-state="handleChildEvent" />
       </v-fade-transition>
-
 
     </v-card-text>
 

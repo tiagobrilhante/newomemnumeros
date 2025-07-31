@@ -21,8 +21,7 @@ export async function createSectionSchemas(locale: string = 'pt-BR') {
       .string()
       .min(1, await getMessage('validation.acronymRequired', 'Sigla não pode estar vazia'))
       .max(10, await getMessage('validation.acronymMaxLength', 'Sigla deve ter no máximo 10 caracteres'))
-      .trim()
-      .transform(val => val.toUpperCase()),
+      .trim(),
 
     militaryOrganizationId: z
       .uuid(await getMessage('validation.invalidUUID', 'ID da organização militar deve ser um UUID válido'))
@@ -61,8 +60,7 @@ const baseSectionSchema = z.object({
     .string()
     .min(1, 'Sigla não pode estar vazia')
     .max(10, 'Sigla deve ter no máximo 10 caracteres')
-    .trim()
-    .transform(val => val.toUpperCase()),
+    .trim(),
 
   militaryOrganizationId: z
     .uuid('ID da organização pai deve ser um UUID válido')
