@@ -7,7 +7,6 @@ export const useAuthUserStore = defineStore( 'auth',
     state: () => ({
       user: null as user | null,
       loading: false,
-      isLoggingOut: false,
     }),
 
     getters: {
@@ -31,16 +30,6 @@ export const useAuthUserStore = defineStore( 'auth',
 
       setLoading(value: boolean) {
         this.loading = value
-      },
-
-      setLoggingOut(value: boolean) {
-        this.isLoggingOut = value
-      },
-
-      $reset() {
-        this.user = null
-        this.loading = false
-        this.isLoggingOut = false
       }
     },
     persist: true,

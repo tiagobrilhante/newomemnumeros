@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-  import { storeToRefs } from 'pinia'
   const { logout } = useAuth()
 
   const useAuthStore = useAuthUserStore()
-  const { isLoggingOut } = storeToRefs(useAuthStore)
+
 
   const serviceName = computed(() => {
     if (!useAuthStore.user) return null
@@ -52,24 +51,17 @@
             </v-container>
             <!-- TODO: Corrigir o @click para a funcionalidade correta -->
             <v-list-item prepend-icon="mdi-account" :title="$t('editData')" />
-            <v-list-item 
-              :prepend-icon="isLoggingOut ? 'mdi-loading mdi-spin' : 'mdi-logout'" 
-              :title="isLoggingOut ? $t('loggingOut') : $t('logout')" 
-              :disabled="isLoggingOut"
-              @click="handleLogout" 
-            />
+            <v-list-item prepend-icon="mdi-logout" :title="$t('logout')" @click="handleLogout" />
           </v-list>
         </v-menu>
         <br >
 
         <v-btn
           flat
-          :prepend-icon="isLoggingOut ? '' : 'mdi-logout'"
+          prepend-icon="mdi-logout"
           size="small"
-          :text="isLoggingOut ? $t('loggingOut') : $t('logout')"
+          :text="$t('logout')"
           variant="plain"
-          :disabled="isLoggingOut"
-          :loading="isLoggingOut"
           @click="handleLogout"
         />
       </v-col>

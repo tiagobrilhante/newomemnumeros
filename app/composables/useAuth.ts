@@ -46,9 +46,6 @@ export const useAuth = () => {
   }
 
   const logout = async () => {
-    // Definir estado de logout antes de começar
-    authStore.setLoggingOut(true)
-    
     try {
       await authService.logout()
     } catch (err) {
@@ -59,11 +56,8 @@ export const useAuth = () => {
         fallbackMessage: 'Erro ao fazer logout',
       } satisfies ErrorHandlerOptions)
     } finally {
-      // Pequeno delay para evitar flickering visual
-      setTimeout(async () => {
-        authStore.$reset()
-        await navigateTo('/', { external: true })
-      }, 500)
+      authStore.$reset()
+      await navigateTo('/', { external: true })
     }
   }
 
