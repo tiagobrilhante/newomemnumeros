@@ -27,6 +27,9 @@ export class MilitaryOrganizationTransformer extends BaseTransformer {
       ...(parentOrganization && {
         parentOrganization: this.removeAuditFields(parentOrganization),
       }),
+      ...(sections && {
+        sections: this.removeAuditFieldsFromCollection(sections),
+      }),
     }
   }
 

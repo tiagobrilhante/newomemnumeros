@@ -35,6 +35,7 @@ class MilitaryOrganizationService {
           include: {
             parentOrganization: true,
             subOrganizations: true,
+            sections: true
           },
         },
       })

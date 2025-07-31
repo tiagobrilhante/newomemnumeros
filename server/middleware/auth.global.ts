@@ -1,4 +1,5 @@
 import type { H3Event } from 'h3'
+import { getHeader, getCookie, deleteCookie, createError, defineEventHandler } from 'h3'
 import jwt from 'jsonwebtoken'
 import type { JwtPayload } from 'jsonwebtoken'
 import prisma from '../prisma'
@@ -48,9 +49,24 @@ export default defineEventHandler(async (event: H3Event) => {
       }
 
       const userRecord = await prisma.user.findUnique({
-        where: { id: decoded.userId },
+        where: { id: decoded.userId, deleted: false },
         include: {
           rank: true,
+          role: {
+            include: {
+              militaryOrganization: true,
+              permissions: {
+                include: {
+                  permission: true
+                }
+              },
+            },
+          },
+          section: {
+            include: {
+              militaryOrganization: true
+            }
+          },
         },
       })
 
@@ -73,11 +89,9 @@ export default defineEventHandler(async (event: H3Event) => {
     } catch (error) {
       if (error instanceof jwt.JsonWebTokenError) {
         console.log(`[AUTH] JWT verification error: ${error.message}`)
-        
-        // Limpar cookies de autenticação
+
         deleteCookie(event, 'auth-token')
-        
-        // Retornar erro 401 para forçar logout no frontend
+
         throw createError({
           statusCode: 401,
           statusMessage: 'Token expired or invalid'

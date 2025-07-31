@@ -1,15 +1,22 @@
 import { BaseTransformer } from './base.transformer'
-import { SectionTransformer } from './section.transformer'
 import { PermissionTransformer } from './permission.transformer'
 import type { RoleWithIncludes } from './types'
 
 export class RoleTransformer extends BaseTransformer {
   static transform(role: RoleWithIncludes) {
-    const { createdAt, updatedAt, deleted, section, permissions, ...cleanRole } = role
+    const { createdAt, updatedAt, deleted, militaryOrganization, permissions, ...cleanRole } = role
 
     return {
       ...cleanRole,
-      ...(section && { section: SectionTransformer.transform(section) }),
+      ...(militaryOrganization && { 
+        militaryOrganization: {
+          id: militaryOrganization.id,
+          name: militaryOrganization.name,
+          acronym: militaryOrganization.acronym,
+          color: militaryOrganization.color,
+          logo: militaryOrganization.logo
+        }
+      }),
       permissions: permissions.map(rolePermission =>
         PermissionTransformer.transform(rolePermission.permission)
       )
@@ -17,11 +24,19 @@ export class RoleTransformer extends BaseTransformer {
   }
 
   static transformForAuth(role: RoleWithIncludes) {
-    const { createdAt, updatedAt, deleted, section, permissions, ...cleanRole } = role
+    const { createdAt, updatedAt, deleted, militaryOrganization, permissions, ...cleanRole } = role
 
     return {
       ...cleanRole,
-      ...(section && { section: SectionTransformer.transformForAuth(section) }),
+      ...(militaryOrganization && { 
+        militaryOrganization: {
+          id: militaryOrganization.id,
+          name: militaryOrganization.name,
+          acronym: militaryOrganization.acronym,
+          color: militaryOrganization.color,
+          logo: militaryOrganization.logo
+        }
+      }),
       permissions: permissions.map(rolePermission =>
         PermissionTransformer.toSlug(rolePermission.permission)
       )

@@ -10,18 +10,19 @@ datasource db {
 }
 
 model User {
-  id          String  @id @default(uuid())
-  name        String  @db.VarChar(255)
-  serviceName String  @db.VarChar(100)
-  email       String  @unique @db.VarChar(255)
-  cpf         String  @unique @db.VarChar(11)
-  password    String  @db.VarChar(255)
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(255)
+  serviceName String   @db.VarChar(100)
+  email       String   @unique @db.VarChar(255)
+  cpf         String   @unique @db.VarChar(11)
+  password    String   @db.VarChar(255)
   rankId      String
   roleId      String?
-
+  sectionId   String?
   // Relacionamentos
-  rank Rank  @relation(fields: [rankId], references: [id])
-  role Role? @relation(fields: [roleId], references: [id])
+  rank        Rank     @relation(fields: [rankId], references: [id])
+  role        Role?    @relation(fields: [roleId], references: [id])
+  section     Section? @relation(fields: [sectionId], references: [id])
 
   // Auditoria
   createdAt DateTime @default(now())
@@ -70,6 +71,7 @@ model MilitaryOrganization {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deleted   Boolean  @default(false)
+  Role      Role[]
 
   @@index([militaryOrganizationId])
   @@index([deleted])
@@ -84,12 +86,13 @@ model Section {
 
   // Relacionamentos
   militaryOrganization MilitaryOrganization @relation(fields: [militaryOrganizationId], references: [id], onDelete: Cascade)
-  roles                Role[]
 
   // Auditoria
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deleted   Boolean  @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deleted     Boolean       @default(false)
+  User        User[]
+  RoleSection RoleSection[]
 
   @@unique([acronym, militaryOrganizationId])
   @@index([militaryOrganizationId])
@@ -98,23 +101,24 @@ model Section {
 }
 
 model Role {
-  id        String  @id @default(uuid())
-  name      String  @db.VarChar(255)
-  acronym   String  @db.VarChar(50)
-  sectionId String?
+  id                     String  @id @default(uuid())
+  name                   String  @db.VarChar(255)
+  acronym                String  @db.VarChar(50)
+  militaryOrganizationId String?
 
   // Relacionamentos
-  section     Section?         @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  users       User[]
-  permissions RolePermission[]
+  users                User[]
+  permissions          RolePermission[]
+  militaryOrganization MilitaryOrganization? @relation(fields: [militaryOrganizationId], references: [id], onDelete: Cascade)
 
   // Auditoria
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deleted   Boolean  @default(false)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deleted     Boolean       @default(false)
+  RoleSection RoleSection[]
 
-  @@unique([acronym, sectionId])
-  @@index([sectionId])
+  @@unique([acronym, militaryOrganizationId])
+  @@index([militaryOrganizationId])
   @@index([deleted])
   @@map("roles")
 }
@@ -155,4 +159,21 @@ model RolePermission {
   @@index([permissionId])
   @@index([roleId])
   @@map("role_permissions")
+}
+
+model RoleSection {
+  id        String   @id @default(uuid())
+  roleId    String
+  sectionId String
+  //relacionamentos
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  // Auditoria
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
+
+  @@index([sectionId])
+  @@index([roleId])
+  @@map("role_section")
 }

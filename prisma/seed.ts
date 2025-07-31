@@ -100,12 +100,12 @@ async function seed() {
 
   console.log('Seções criadas')
 
-  // Criar roles (antigas sectionFunctions)
+  // Criar roles
   const stiChCma = await prisma.role.create({
     data: {
       name: 'Chefe da Seção de Tecnologia da Informação',
       acronym: 'Ch STI',
-      sectionId: stiCma.id,
+      militaryOrganizationId: cma.id,
     },
   })
 
@@ -114,54 +114,52 @@ async function seed() {
       {
         name: 'Chefe da Seção de Pessoal',
         acronym: 'Ch E1',
-        sectionId: e1Cma.id,
+        militaryOrganizationId: cma.id,
       },
       {
         name: 'Chefe da Seção de Inteligência',
         acronym: 'Ch E2',
-        sectionId: e2Cma.id,
+        militaryOrganizationId: cma.id,
       },
       {
         name: 'Chefe Seção de Operações',
         acronym: 'Ch E3',
-        sectionId: e3Cma.id,
+        militaryOrganizationId: cma.id,
       },
       {
         name: 'Adjunto da Seção de Operações',
         acronym: 'Adj E3',
-        sectionId: e3Cma.id,
+        militaryOrganizationId: cma.id,
       },
       {
         name: 'Chefe Seção de Logística',
         acronym: 'Ch E4',
-        sectionId: e4Cma.id,
+        militaryOrganizationId: cma.id,
       },
       {
         name: 'Chefe da Seção de Planejamento Estratégico Institucional',
         acronym: 'Ch SPEI',
-        sectionId: speiCma.id,
+        militaryOrganizationId: cma.id,
       },
       {
         name: 'Chefe da Seção de Pessoal',
         acronym: 'Ch E1',
-        sectionId: e1BdaInfSl1.id,
+        militaryOrganizationId: bdaInfSl1.id,
       },
     ],
   })
 
-  const adminRole = await prisma.role.create({
+  const adminGeralRole = await prisma.role.create({
     data: {
-      name: 'Administrador do Sistema',
-      acronym: 'Admin',
-      sectionId: null,
+      name: 'Administrador Geral',
+      acronym: 'Admin Geral',
     },
   })
 
-  const userRole = await prisma.role.create({
+  const adminRole = await prisma.role.create({
     data: {
-      name: 'Usuário Padrão',
-      acronym: 'User',
-      sectionId: null,
+      name: 'Administrador OM',
+      acronym: 'Admin OM',
     },
   })
 
@@ -169,66 +167,23 @@ async function seed() {
 
   await prisma.permission.createMany({
     data: [
+
+      //users
       {
-        slug: 'users.create',
-        description: 'Criar usuários',
-        category: 'users',
-      },
-      {
-        slug: 'users.read',
-        description: 'Visualizar usuários',
-        category: 'users',
-      },
-      {
-        slug: 'users.update',
-        description: 'Atualizar usuários',
-        category: 'users',
-      },
-      {
-        slug: 'users.delete',
-        description: 'Deletar usuários',
+        slug: 'users.management',
+        description: 'Gerir usuários',
         category: 'users',
       },
       // Permissões de seções
       {
-        slug: 'sections.create',
-        description: 'Criar seções',
-        category: 'sections',
-      },
-      {
-        slug: 'sections.read',
-        description: 'Visualizar seções',
-        category: 'sections',
-      },
-      {
-        slug: 'sections.update',
-        description: 'Atualizar seções',
-        category: 'sections',
-      },
-      {
-        slug: 'sections.delete',
-        description: 'Deletar seções',
+        slug: 'sections.management',
+        description: 'Gerir seções',
         category: 'sections',
       },
       // Permissões de roles
       {
-        slug: 'roles.create',
-        description: 'Criar roles',
-        category: 'roles',
-      },
-      {
-        slug: 'roles.read',
-        description: 'Visualizar roles',
-        category: 'roles',
-      },
-      {
-        slug: 'roles.update',
-        description: 'Atualizar roles',
-        category: 'roles',
-      },
-      {
-        slug: 'roles.delete',
-        description: 'Deletar roles',
+        slug: 'roles.management',
+        description: 'Gerir roles',
         category: 'roles',
       },
       {
@@ -241,43 +196,63 @@ async function seed() {
         description: 'Exportar relatórios',
         category: 'reports',
       },
+
       {
-        slug: 'system.admin',
-        description: 'Administrador do sistema',
-        category: 'system',
+        slug: 'militaryOrganization.management',
+        description: 'Gerir OM',
+        category: 'militaryOrganization',
       },
       {
-        slug: 'system.settings',
-        description: 'Configurações do sistema',
-        category: 'system',
+        slug: 'linkUser.management',
+        description: 'Linkar Usuários',
+        category: 'linkUser',
       },
     ],
+  })
+  const adminPermissionGlobal = await prisma.permission.create({
+    data: {
+      slug: 'system.admin',
+      description: 'Administrador do sistema',
+      category: 'system',
+    },
+  })
+
+  const adminPermissionOM = await prisma.permission.create({
+    data: {
+      slug: 'mo.admin',
+      description: 'Administrador OM',
+      category: 'system',
+    },
   })
 
   console.log('Permissões criadas')
 
+  //continue a partir daqui
+
   const allPermissions = await prisma.permission.findMany()
 
-  await prisma.rolePermission.createMany({
-    data: allPermissions.map(permission => ({
-      permissionId: permission.id,
+  // Atribuir apenas a permissão global ao Admin Geral
+  await prisma.rolePermission.create({
+    data: {
+      permissionId: adminPermissionGlobal.id,
+      roleId: adminGeralRole.id,
+    }
+  })
+
+  // Atribuir apenas a permissão OM ao Admin OM
+  await prisma.rolePermission.create({
+    data: {
+      permissionId: adminPermissionOM.id,
       roleId: adminRole.id,
-    }))
+    }
   })
 
-  const basicPermissions = allPermissions.filter(p =>
-    p.slug.includes('.read') || p.slug === 'reports.generate'
-  )
-
-  await prisma.rolePermission.createMany({
-    data: basicPermissions.map(permission => ({
-      permissionId: permission.id,
-      roleId: userRole.id,
-    }))
-  })
-
+  // Atribuir permissões técnicas ao Chefe STI
   const stiPermissions = allPermissions.filter(p =>
-    p.category === 'users' || p.category === 'system' || p.slug.includes('.read')
+    p.category === 'users' ||
+    p.category === 'system' ||
+    p.category === 'sections' ||
+    p.slug.includes('.management')
   )
 
   await prisma.rolePermission.createMany({
@@ -287,13 +262,36 @@ async function seed() {
     }))
   })
 
+
+
   console.log('Permissões atribuídas aos roles')
 
+  // Criar relacionamentos RoleSection para vincular roles às seções apropriadas
+  await prisma.roleSection.createMany({
+    data: [
+      // Chefe STI vinculado à seção STI
+      {
+        roleId: stiChCma.id,
+        sectionId: stiCma.id,
+      },
+      // Outros chefes podem ser vinculados às suas respectivas seções
+      // Exemplo: Ch E1 vinculado à seção E1, etc.
+    ]
+  })
+
+  console.log('Relacionamentos Role-Section criados')
+
   const allRoles = await prisma.role.findMany()
+  const allSections = await prisma.section.findMany()
 
   const getRandomRole = () => {
     const randomIndex = Math.floor(Math.random() * allRoles.length)
     return allRoles[randomIndex].id
+  }
+
+  const getRandomSection = () => {
+    const randomIndex = Math.floor(Math.random() * allSections.length)
+    return allSections[randomIndex].id
   }
 
   await prisma.rank.createMany({
@@ -404,6 +402,7 @@ async function seed() {
         password: hashedPassword,
         rankId: ranks[4].id,
         roleId: stiChCma.id,
+        sectionId: stiCma.id, // Ch STI vinculado à seção STI
       },
       {
         name: 'Administrador',
@@ -412,7 +411,8 @@ async function seed() {
         cpf: '12345678901',
         password: hashedPassword,
         rankId: ranks[0].id,
-        roleId: adminRole.id,
+        roleId: adminGeralRole.id,
+        // Admin não tem seção específica
       },
       {
         name: 'Juca Bala',
@@ -422,6 +422,7 @@ async function seed() {
         cpf: '18606623075',
         rankId: ranks[5].id,
         roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
       {
         name: 'Carlos Alberto Santos',
@@ -431,6 +432,7 @@ async function seed() {
         cpf: '73105846005',
         rankId: ranks[2].id,
         roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
       {
         name: 'Fernanda Lima Oliveira',
@@ -440,6 +442,7 @@ async function seed() {
         cpf: '63548472005',
         rankId: ranks[3].id,
         roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
       {
         name: 'Roberto Pereira Silva',
@@ -449,6 +452,7 @@ async function seed() {
         cpf: '04215639070',
         rankId: ranks[1].id,
         roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
       {
         name: 'Ana Maria Costa',
@@ -458,6 +462,7 @@ async function seed() {
         cpf: '35817496023',
         rankId: ranks[4].id,
         roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
       {
         name: 'Paulo Ricardo Souza',
@@ -467,6 +472,7 @@ async function seed() {
         cpf: '94725863091',
         rankId: ranks[0].id,
         roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
       {
         name: 'Mariana Torres Almeida',
@@ -476,6 +482,7 @@ async function seed() {
         cpf: '15634987044',
         rankId: ranks[2].id,
         roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
       {
         name: 'Ricardo Mendes Ferreira',
@@ -485,6 +492,7 @@ async function seed() {
         cpf: '58496713088',
         rankId: ranks[3].id,
         roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
       {
         name: 'Juliana Castro Ribeiro',
@@ -494,6 +502,7 @@ async function seed() {
         cpf: '26974581037',
         rankId: ranks[4].id,
         roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
       {
         name: 'André Luiz Carvalho',
@@ -503,6 +512,7 @@ async function seed() {
         cpf: '82746351090',
         rankId: ranks[1].id,
         roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
       {
         name: 'Luciana Martins Rodrigues',
@@ -511,7 +521,8 @@ async function seed() {
         password: hashedPassword,
         cpf: '49318276056',
         rankId: ranks[0].id,
-        roleId: userRole.id,
+        roleId: getRandomRole(),
+        sectionId: getRandomSection(),
       },
     ],
   })
@@ -520,11 +531,12 @@ async function seed() {
   console.log('Seed concluído com sucesso!')
 }
 
-try {
-  await seed()
-  await prisma.$disconnect()
-} catch (e) {
-  console.error(e)
-  await prisma.$disconnect()
-  process.exit(1)
-}
+seed()
+  .then(async () => {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) => {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })

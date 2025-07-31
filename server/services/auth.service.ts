@@ -4,6 +4,9 @@ import { createError } from 'h3'
 import { UserTransformer } from '../transformers/user.transformer'
 
 export async function authenticateUser(email: string, password: string) {
+  console.log('no service')
+  console.log(email, password)
+
   if (!email || !password) {
     throw createError({
       statusCode: 400,
@@ -17,11 +20,7 @@ export async function authenticateUser(email: string, password: string) {
       rank: true,
       role: {
         include: {
-          section: {
-            include: {
-              militaryOrganization: true
-            }
-          },
+          militaryOrganization: true,
           permissions: {
             include: {
               permission: true
@@ -29,8 +28,17 @@ export async function authenticateUser(email: string, password: string) {
           },
         },
       },
+      section: {
+        include: {
+          militaryOrganization: true
+        }
+      },
     },
   })
+
+  console.log('resultado de user service')
+  console.log(user)
+  console.log('resultado de user service')
 
   if (!user) {
     throw createError({

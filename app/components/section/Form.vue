@@ -78,7 +78,7 @@
           ...formData,
         })
       }
-      
+
       // Se chegou até aqui, foi sucesso - fechar modal
       handleCancel()
     } catch (error: any) {
@@ -125,8 +125,8 @@
             <v-img
               :alt="selectedMilitaryOrganization?.logo === '/logos/default/default.png' ? 'Sem Logo cadastrado' : `Logo ${selectedMilitaryOrganization?.acronym}`"
               :src="selectedMilitaryOrganization?.logo"
-              width="100%"
-              class="my-auto"
+              width="60%"
+              class="ma-auto"
 
             />
           </v-col>
