@@ -3,7 +3,7 @@
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
   const authStore = useAuthUserStore()
-  const { user: currentUser } = storeToRefs(authStore)
+  const { user: currentUser, isLoggingOut } = storeToRefs(authStore)
 </script>
 
 <template>
@@ -17,7 +17,7 @@
 
     <template #append>
       <LanguageSelector />
-      <UserCard v-if="currentUser" />
+      <UserCard v-if="currentUser || isLoggingOut" />
     </template>
   </v-app-bar>
 </template>

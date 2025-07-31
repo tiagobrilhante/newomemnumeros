@@ -128,10 +128,8 @@ export const useSections = () => {
       const response = await sectionService.create(sectionData)
 
       if (response.success) {
-        // Adicionar ao store de sections
         store.sections.push(response.data)
-        
-        // Atualizar a militaryOrganization store
+
         if (militaryOrgComposable.addSectionToMilitaryOrganization) {
           militaryOrgComposable.addSectionToMilitaryOrganization(data.militaryOrganizationId, response.data)
         }
@@ -144,8 +142,7 @@ export const useSections = () => {
       }
     } catch (error: any) {
       console.error('Erro ao criar seção:', error)
-      
-      // Se for erro 409 (duplicata), usar mensagem específica
+
       if (error?.statusCode === 409) {
         const appError = createSectionError(
           'errors.duplicateEntry',
@@ -155,8 +152,7 @@ export const useSections = () => {
         toast.error(appError.message)
         return
       }
-      
-      // Para outros erros, usar mensagem genérica
+
       const appError = createSectionError(
         'errors.serverCommunication',
         error.message || 'Erro ao criar seção',
@@ -205,7 +201,7 @@ export const useSections = () => {
       if (response.success){
         // Atualizar a store de sections
         store.updateSection(response.data)
-        
+
         // Atualizar a militaryOrganization store
         if (militaryOrgComposable.updateSectionInMilitaryOrganization) {
           militaryOrgComposable.updateSectionInMilitaryOrganization(data.militaryOrganizationId, response.data)
@@ -220,7 +216,7 @@ export const useSections = () => {
 
     } catch (error: any) {
       console.error('Erro ao atualizar seção:', error)
-      
+
       // Se for erro 409 (duplicata), usar mensagem específica
       if (error?.statusCode === 409) {
         const appError = createSectionError(
@@ -231,8 +227,7 @@ export const useSections = () => {
         toast.error(appError.message)
         return
       }
-      
-      // Para outros erros, usar mensagem genérica
+
       const appError = createSectionError(
         'errors.serverCommunication',
         error.message || 'Erro ao atualizar seção',
@@ -259,7 +254,7 @@ export const useSections = () => {
     // Buscar a seção na store local ou usar a selectedMilitaryOrganization
     const sectionToDelete = sections.value.find(s => s.id === id)
     const selectedMO = militaryOrgComposable.selectedMilitaryOrganization?.value
-    
+
     loading.value = true
     error.value = ''
 
@@ -267,17 +262,13 @@ export const useSections = () => {
       const response = await sectionService.delete(id)
 
       if (response.success) {
-        // Remover da store de sections
         store.clearDeletedSection(id)
-        
-        // Atualizar a militaryOrganization store
+
         if (militaryOrgComposable.removeSectionFromMilitaryOrganization) {
-          // Primeiro tenta usar a seção encontrada na store local
           if (sectionToDelete) {
             militaryOrgComposable.removeSectionFromMilitaryOrganization(sectionToDelete.militaryOrganizationId, id)
-          } 
-          // Se não encontrou na store local, usa a selectedMilitaryOrganization
-          else if (selectedMO) {
+          }
+          else if (selectedMO && selectedMO.id) {
             militaryOrgComposable.removeSectionFromMilitaryOrganization(selectedMO.id, id)
           }
         }

@@ -10,14 +10,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const { email, password } = await readBody(event)
-
-    console.log(email, password)
-
     const user = await authenticateUser(email, password)
-
-    console.log('user')
-    console.log(user)
-    console.log('user')
     const token = generateJwtToken(user.id)
     setAuthCookie(event, token)
     return {

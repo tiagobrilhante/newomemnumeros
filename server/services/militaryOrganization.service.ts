@@ -400,7 +400,6 @@ export async function deleteMilitaryOrganization(id: string, locale: string) {
       logoToDelete = existingOrganization.logo
     }
 
-    // Cascata manual: primeiro marcar seções como deletadas
     await prisma.section.updateMany({
       where: {
         militaryOrganizationId: id,
@@ -412,7 +411,6 @@ export async function deleteMilitaryOrganization(id: string, locale: string) {
       },
     })
 
-    // Depois marcar a organização militar como deletada
     await prisma.militaryOrganization.update({
       where: {
         id,

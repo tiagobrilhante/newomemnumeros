@@ -60,7 +60,7 @@
 docs/
 ├── README.md                    # Este arquivo (índice geral)
 ├── changelog/                   # Histórico de mudanças
-│   ├── 2025-07-31-major-updates.md
+│   ├── 2025-07-31-schema-updates-ux-improvements.md
 │   ├── 2025-07-30-store-sync.md
 │   └── template.md
 ├── api/                         # Documentação da API
@@ -96,7 +96,7 @@ docs/
 
 A documentação é atualizada continuamente junto com o desenvolvimento. Principais marcos:
 
-- **2025-07-31**: Documentação completa criada
+- **2025-07-31**: Schema RoleSection, UX logout, renderização condicional layout
 - **2025-07-30**: Melhorias na sincronização de stores
 - **2025-07-16**: Versão inicial do sistema
 

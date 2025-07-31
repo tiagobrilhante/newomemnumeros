@@ -93,7 +93,6 @@ export async function createSection(data: SectionCreateInput, locale: string) {
       })
     }
 
-    // Buscar todas as seções da OM para comparar em lowercase
     const existingSections = await prisma.section.findMany({
       where: {
         militaryOrganizationId: militaryOrganizationId,
@@ -105,7 +104,6 @@ export async function createSection(data: SectionCreateInput, locale: string) {
       },
     })
 
-    // Verificar duplicata comparando em lowercase
     const existingSection = existingSections.find(
       section => section.acronym.toLowerCase() === sanitizedAcronym.toLowerCase()
     )
@@ -196,7 +194,6 @@ export async function updateSection(data: SectionUpdateInput, locale: string) {
       })
     }
 
-    // Buscar todas as seções da OM para comparar em lowercase
     const allSections = await prisma.section.findMany({
       where: {
         NOT: { id },
@@ -209,7 +206,6 @@ export async function updateSection(data: SectionUpdateInput, locale: string) {
       },
     })
 
-    // Verificar duplicata comparando em lowercase
     const duplicateSection = allSections.find(
       section => section.acronym.toLowerCase() === sanitizedAcronym.toLowerCase()
     )
@@ -285,8 +281,7 @@ export async function deleteSection(id: string, locale: string) {
       })
     }
 
-    // Cascata manual: primeiro marcar roles relacionadas como deletadas
-    await prisma.role.updateMany({
+    await prisma.roleSection.updateMany({
       where: {
         sectionId: id,
         deleted: false,
@@ -297,7 +292,17 @@ export async function deleteSection(id: string, locale: string) {
       },
     })
 
-    // Depois marcar a seção como deletada
+    await prisma.user.updateMany({
+      where: {
+        sectionId: id,
+        deleted: false,
+      },
+      data: {
+        sectionId: null,
+        updatedAt: new Date(),
+      },
+    })
+
     await prisma.section.update({
       where: {
         id,

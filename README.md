@@ -165,21 +165,25 @@ pnpm run db:seed
 ```
 MilitaryOrganization (OM)
 ├── Sections (Seções)
-    ├── Roles (Funções/Cargos)
-        ├── Users (Usuários)
-        └── Permissions (via RolePermission)
+├── Roles (Funções/Cargos) → vinculadas à OM
+└── Users (Usuários) → vinculados a Rank, Role e Section
+
+RoleSection (Many-to-Many)
+├── Role ↔ Section (relacionamento flexível)
+└── Permissions via RolePermission
 ```
 
-### 📊 Entidades (7)
+### 📊 Entidades (8)
 | Entidade | Descrição | Campos Principais |
 |----------|-----------|-------------------|
-| **User** | Usuários do sistema | `name`, `email`, `rankId`, `roleId` |
-| **Rank** | Patentes militares | `name`, `hierarchy`, `abbreviation` |
+| **User** | Usuários do sistema | `name`, `email`, `rankId`, `roleId`, `sectionId` |
+| **Rank** | Patentes militares | `name`, `hierarchy`, `acronym` |
 | **MilitaryOrganization** | Organizações militares | `name`, `acronym`, `color`, `logo`, `parentId` |
 | **Section** | Seções organizacionais | `name`, `acronym`, `militaryOrganizationId` |
-| **Role** | Funções/cargos | `name`, `sectionId`, `accessLevel` |
-| **Permission** | Permissões do sistema | `name`, `resource`, `action` |
+| **Role** | Funções/cargos | `name`, `acronym`, `militaryOrganizationId` |
+| **Permission** | Permissões do sistema | `slug`, `description`, `category` |
 | **RolePermission** | Pivot roles-permissions | `roleId`, `permissionId` |
+| **RoleSection** | Pivot roles-sections | `roleId`, `sectionId` |
 
 ---
 
@@ -384,12 +388,14 @@ pnpm run format           # Formatar código (Prettier)
 - **JWT** com refresh automático
 - **Cookies HttpOnly** para tokens
 - **Middleware de autenticação** global
-- **Controle de permissões** granular
+- **Controle de permissões** granular com categorização
 - **Hash de senhas** com bcrypt
-- **Validação de entrada** com Zod
+- **Validação de entrada** com Zod schemas
 - **Sanitização** automática de dados
-- **Soft delete** para preservação
+- **Soft delete** com cascata manual
 - **Verificação server-side** de tokens
+- **Preservação de case** em acrônimos
+- **Relacionamentos many-to-many** flexíveis
 
 ### 🔮 Melhorias Futuras
 - Rate limiting para endpoints

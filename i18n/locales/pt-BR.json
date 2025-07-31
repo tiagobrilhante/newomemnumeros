@@ -4,6 +4,7 @@
   "goBack": "Voltar",
   "login": "Entrar",
   "logout": "Sair",
+  "loggingOut": "Saindo...",
   "register": "Cadastro",
   "registerAction": "Cadastrar",
   "signUp": "Cadastre-se",
@@ -130,7 +131,8 @@
     "status500Title": "Erro Interno do Servidor",
     "operationFailed": "Erro ao realizar operação",
     "deleteLogoFailed": "Erro ao excluir logo",
-    "technicalDetails": "Detalhes técnicos"
+    "technicalDetails": "Detalhes técnicos",
+    "updateDataMO": "Erro ao atualizar dados da organização militar"
   },
   "validation": {
     "nameRequired": "Nome não pode estar vazio",

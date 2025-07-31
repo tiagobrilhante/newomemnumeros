@@ -4,8 +4,6 @@ import { createError } from 'h3'
 import { UserTransformer } from '../transformers/user.transformer'
 
 export async function authenticateUser(email: string, password: string) {
-  console.log('no service')
-  console.log(email, password)
 
   if (!email || !password) {
     throw createError({
@@ -36,10 +34,6 @@ export async function authenticateUser(email: string, password: string) {
     },
   })
 
-  console.log('resultado de user service')
-  console.log(user)
-  console.log('resultado de user service')
-
   if (!user) {
     throw createError({
       statusCode: 401,
@@ -55,6 +49,5 @@ export async function authenticateUser(email: string, password: string) {
     })
   }
 
-  // Usar método otimizado para autenticação
   return UserTransformer.transformForAuth(user)
 }

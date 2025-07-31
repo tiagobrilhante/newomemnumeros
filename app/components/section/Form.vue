@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import type { VForm } from 'vuetify/components'
-  import { retrieveMiniImage } from '~/utils/retrieve-mini-image'
 
   const { selectedMilitaryOrganization, loading: moLoading } = useMilitaryOrganizations()
   const { createSection, selectedSection, updateSection, loading: sectionsLoading, error } = useSections()
@@ -79,10 +78,8 @@
         })
       }
 
-      // Se chegou até aqui, foi sucesso - fechar modal
       handleCancel()
     } catch (error: any) {
-      // Capturar erro e mostrar na interface sem deixar "unhandled"
       console.error('Erro no formulário de seção:', error)
       localErrors.value.push(error?.message || $t('errors.genericError'))
     }

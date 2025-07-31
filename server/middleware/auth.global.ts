@@ -20,7 +20,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
   try {
     const authHeader = getHeader(event, 'authorization')
-    const cookieToken = getCookie(event, 'auth-token') // Usar o nome correto do cookie
+    const cookieToken = getCookie(event, 'auth-token')
 
     let token = null
 

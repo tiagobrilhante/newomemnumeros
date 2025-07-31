@@ -1,10 +1,13 @@
 <script lang="ts" setup>
   import { computed, ref, watch, onMounted, nextTick } from 'vue'
+  import { storeToRefs } from 'pinia'
   import { useNavigationStore } from '~/stores/navigation.store'
   import { useDisplay } from 'vuetify'
   import { routesConfig } from '~/config/routes'
 
   const navigationStore = useNavigationStore()
+  const authStore = useAuthUserStore()
+  const { isLoggingOut } = storeToRefs(authStore)
   const { hasPermission } = usePermissions()
   const localePath = useLocalePath()
   const route = useRoute()
@@ -31,6 +34,11 @@
     }
   }, { immediate: true })
 
+  // Expor isMenuReady para o layout parent
+  defineExpose({
+    isMenuReady
+  })
+
   const toggleCollapse = () => {
     navigationStore.toggleCollapsedMenu()
   }
@@ -49,7 +57,7 @@
 
 <template>
   <v-navigation-drawer
-    v-if="isMenuReady"
+    v-if="isMenuReady || isLoggingOut"
     :permanent="true"
     :rail="navigationStore.isMenuCollapsed || mobile"
     :rail-width="72"

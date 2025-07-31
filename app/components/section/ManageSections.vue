@@ -66,7 +66,7 @@
       try {
         await findMilitaryOrganization(selectedMilitaryOrganization.value.id)
       } catch (error) {
-        console.error('Erro ao atualizar dados da organização militar:', error)
+        console.error($t('errors.updateDataMO'), error)
       }
     }
   })

@@ -4,6 +4,7 @@
   "goBack": "Go back",
   "login": "Login",
   "logout": "Logout",
+  "loggingOut": "Logging out...",
   "register": "Register",
   "registerAction": "Sign up",
   "signUp": "Sign up",
@@ -132,7 +133,8 @@
     "status500Title": "Internal Server Error",
     "operationFailed": "Operation failed",
     "deleteLogoFailed": "Failed to delete logo",
-    "technicalDetails": "Technical Details"
+    "technicalDetails": "Technical Details",
+    "updateDataMO": "Error updating military organization data"
   },
   "validation": {
     "nameRequired": "Name cannot be empty",
