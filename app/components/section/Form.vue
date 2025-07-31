@@ -2,7 +2,7 @@
   import type { VForm } from 'vuetify/components'
 
   const { selectedMilitaryOrganization, loading: moLoading } = useMilitaryOrganizations()
-  const { createSection, updateSection, loading: sectionsLoading, error } = useSections()
+  const { createSection, selectedSection, updateSection, loading: sectionsLoading, error } = useSections()
   const loading = computed(() => moLoading.value || sectionsLoading.value)
   const localErrors = ref<string[]>([])
   const id = ref<string | undefined | null>(null)
@@ -26,26 +26,32 @@
     }
   }>()
 
+  if (formProps.formType === 'edit' && selectedSection && selectedSection.value) {
+    id.value = selectedSection.value.id
+    name.value = selectedSection.value.name
+    acronym.value = selectedSection.value.acronym
+  }
+
   const proceedToAction = async () => {
     localErrors.value = []
 
     const { valid } = (await form.value?.validate()) || { valid: false }
     if (!valid) {
-      localErrors.value.push('Preencha todos os campos obrigatórios')
+      localErrors.value.push($t('validation.fillRequiredFields'))
       return
     }
 
-    if (!selectedMilitaryOrganization.value || !selectedMilitaryOrganization.value.id){
-      localErrors.value.push('Nenhuma organização militar selecionada')
+    if (!selectedMilitaryOrganization.value || !selectedMilitaryOrganization.value.id) {
+      localErrors.value.push($t('validation.noMilitaryOrganizationSelected'))
       return
     }
 
     if (name.value.trim().length < 3) {
-      localErrors.value.push('Nome deve ter pelo menos 3 caracteres')
+      localErrors.value.push($t('name') + ' ' + $t('mustContain')+ ' ' + $t('atLeast') + ' 3 ' +$t('characters'))
     }
 
     if (acronym.value.trim().length < 2) {
-      localErrors.value.push('Sigla deve ter pelo menos 2 caracteres')
+      localErrors.value.push($t('acronym') + ' ' + $t('mustContain')+ ' ' + $t('atLeast') + ' 2 ' +$t('characters'))
     }
 
     if (localErrors.value.length > 0) {
@@ -55,7 +61,7 @@
     const formData = {
       name: name.value,
       acronym: acronym.value,
-      militaryOrganizationId: selectedMilitaryOrganization.value.id
+      militaryOrganizationId: selectedMilitaryOrganization.value.id,
     }
 
     if (formProps.formType === 'add') {
@@ -63,13 +69,14 @@
       handleCancel()
     } else {
       if (!id.value) {
-        localErrors.value.push('ID é obrigatório para atualização')
+        localErrors.value.push($t('validSectionRequiredToEdit'))
         return
       }
       await updateSection({
         id: id.value!,
         ...formData,
       })
+      handleCancel()
     }
   }
 
@@ -98,11 +105,11 @@
           rounded="xl"
           type="error"
         >
-        <p class="pb-3 text-uppercase font-weight-bold">{{ $t('error') }}</p>
-        <ul>
-          <li v-if="error">{{ error }}</li>
-          <li v-for="localError in localErrors" :key="localError">{{ localError }}</li>
-        </ul>
+          <p class="pb-3 text-uppercase font-weight-bold">{{ $t('error') }}</p>
+          <ul>
+            <li v-if="error">{{ error }}</li>
+            <li v-for="localError in localErrors" :key="localError">{{ localError }}</li>
+          </ul>
         </v-alert>
 
         <!-- name -->
@@ -144,7 +151,7 @@
           :text="formProps.formTextButton"
           class="mr-4 px-5"
           color="primary"
-          prepend-icon="mdi-check"
+          :prepend-icon="formProps.btnIcon"
           rounded="xl"
           type="submit"
           variant="tonal"

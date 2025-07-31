@@ -43,10 +43,11 @@
       FORM_PROPS.formIcon = 'mdi-plus-circle'
       FORM_PROPS.btnIcon = 'mdi-check'
     } else if (state === 'edit') {
+      selectSection(section!)
       FORM_PROPS.formType = 'edit'
       FORM_PROPS.formTextButton = $t('edit')
       FORM_PROPS.formIcon = 'mdi-pencil'
-      FORM_PROPS.btnIcon = 'mdi-check'
+      FORM_PROPS.btnIcon = 'mdi-content-save-check-outline'
     } else if (state === 'delete') {
       selectSection(section!)
       FORM_PROPS.formType = 'delete'
@@ -117,6 +118,7 @@
                     size="small"
                     v-bind="props"
                     variant="outlined"
+                    @click="changeCurrentState('edit', item)"
 
                   />
                 </template>

@@ -15,6 +15,7 @@
   "thisField": "Este campo",
   "isRequired": "é obrigatório(a)",
   "mustContain": "deve conter",
+  "atLeast": "ao menos",
   "errorInvalidEmailOrPassword": "E-mail ou senha inválidos. Tente novamente.",
   "errorUnexpected": "Ocorreu um erro inesperado. Por favor, tente mais tarde.",
   "signIn": "Entre com sua conta",
@@ -82,6 +83,7 @@
   "sectionFullName": "Nome completo da Seção",
   "confirmDeleteSection": "Você tem certeza que deseja excluir a Seção:",
   "consequenceDeleteSection": "Contas vinculadas a essa Seção, perderão acesso a algumas funcionalidades do sistema.",
+  "error": "Erro",
 
   "imageEditor": {
     "zoomInstruction": "Use o scroll do mouse para ajustar o zoom da imagem.",
@@ -140,7 +142,10 @@
     "invalidID": "ID deve ser um UUID válido",
     "idRequired": "ID é obrigatório",
     "unknownError": "Erro de validação desconhecido",
-    "invalidInputData": "Dados de entrada inválidos"
+    "invalidInputData": "Dados de entrada inválidos",
+    "fillRequiredFields": "Preencha todos os campos obrigatórios",
+    "noMilitaryOrganizationSelected": "Nenhuma organização militar selecionada",
+    "validSectionRequiredToEdit": "É necessária uma Seção válida para prosseguir na edição"
   },
   "success": {
     "userRegistered": "Usuário registrado com sucesso!",

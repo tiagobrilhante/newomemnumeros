@@ -15,6 +15,7 @@
   "thisField": "This field",
   "isRequired": "is required",
   "mustContain": "must contain",
+  "atLeast": "at least",
   "errorInvalidEmailOrPassword": "Invalid email or password. Please try again.",
   "errorUnexpected":"An unexpected error occurred. Please try again later.",
   "signIn": "Sign in to your account",
@@ -82,6 +83,7 @@
   "sectionFullName": "Section Full Name",
   "confirmDeleteSection": "Are you sure you want to delete the Section:",
   "consequenceDeleteSection": "Accounts linked to this Section will lose access to some system functionalities.",
+  "error": "Error",
 
   "imageEditor": {
     "zoomInstruction": "Use mouse scroll to adjust image zoom.",
@@ -142,7 +144,10 @@
     "invalidID": "ID must be a valid UUID",
     "idRequired": "ID is required",
     "unknownError": "Unknown validation error",
-    "invalidInputData": "Invalid input data"
+    "invalidInputData": "Invalid input data",
+    "fillRequiredFields": "Fill in all required fields",
+    "noMilitaryOrganizationSelected": "No military organization selected",
+    "validSectionRequiredToEdit": "A valid section is required to proceed with editing"
   },
   "success": {
     "userRegistered": "User registered successfully!",
