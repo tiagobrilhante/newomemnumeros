@@ -1,6 +1,6 @@
 services:
   database:
-    container_name: "sisgevvom-dev"
+    container_name: "basicom-dev"
     image: "mysql"
     env_file:
       - ../.env.development

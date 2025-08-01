@@ -8,8 +8,8 @@
   import type { permissionSetup } from '~/types/permissions/permission-setup'
   import { toast } from 'vue3-toastify'
   import ShowUserPermissionSetup from '~/components/permissions/ShowUserPermissionSetup.vue'
-  import { retrieveMilitaryOrganizationAcronym } from '~/utils/retrieve-military-organization-acronym'
-  import { retrieveMilitaryOrganizationLogo } from '~/utils/retrieve-military-organization-logo'
+  import { retrieveMilitaryOrganizationAcronym } from '#shared/utils/retrieve-military-organization-acronym'
+  import { retrieveMilitaryOrganizationLogo } from '#shared/utils/retrieve-military-organization-logo'
 
   useHead({
     title: 'Gerenciamento de Usuários',

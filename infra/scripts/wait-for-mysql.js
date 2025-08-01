@@ -3,7 +3,7 @@
 import { exec } from 'node:child_process'
 
 function checkMysql() {
-  exec('docker exec sisgevvom-dev mysqladmin ping -h localhost -u root -proot', handleReturn)
+  exec('docker exec basicom-dev mysqladmin ping -h localhost -u root -proot', handleReturn)
 
   function handleReturn(error, stdout) {
     if (error) {

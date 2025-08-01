@@ -1,4 +1,4 @@
-import { PERMISSION_CATEGORIES } from '~/constants/permissions'
+import { PERMISSION_CATEGORIES } from '#shared/constants/permissions'
 
 export const retrievePermissionInfo = (permission: string) => {
   for (const category of PERMISSION_CATEGORIES) {

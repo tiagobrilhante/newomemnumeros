@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
-  import { retrieveMiniImage } from '~/utils/retrieve-mini-image'
   import type { VDataTable } from 'vuetify/components'
+  import { retrieveMiniImage } from '#shared/utils/retrieve-mini-image'
 
 
   const config = useRuntimeConfig()

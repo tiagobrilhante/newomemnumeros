@@ -20,8 +20,8 @@
     link: [
       {
         rel: 'icon',
-        type: 'image/png',
-        href: '/favicon.png',
+        type: 'image/x-icon',
+        href: '/favicon.ico',
       },
     ],
   })
@@ -37,19 +37,17 @@
       <MenuLeft ref="menuLeftRef" />
     </KeepAlive>
     <v-main class="main-content">
-      <template v-if="isContentReady">
-        <slot />
-      </template>
-      <template v-else>
-        <div class="loading-container">
-          <v-progress-circular
-            indeterminate
-            color="primary"
-            size="64"
-          />
-          <p class="text-body-1 mt-4">{{ $t('loading') }}</p>
-        </div>
-      </template>
+      <div v-show="!isContentReady" class="loading-container">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+          size="64"
+        />
+        <p class="text-body-1 mt-4">{{ $t('loading') }}</p>
+      </div>
+      <div v-show="isContentReady">
+        <NuxtPage />
+      </div>
     </v-main>
     <KeepAlive>
       <Footer />

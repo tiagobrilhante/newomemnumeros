@@ -12,8 +12,8 @@
     link: [
       {
         rel: 'icon',
-        type: 'image/png',
-        href: '/favicon.png',
+        type: 'image/x-icon',
+        href: '/favicon.ico',
       },
     ],
   })
@@ -27,7 +27,7 @@
 
       <v-main class="login-background my-space">
         <v-container class="my-container" fluid>
-          <slot />
+          <NuxtPage />
         </v-container>
       </v-main>
 
