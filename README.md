@@ -59,6 +59,7 @@ Sistema web robusto de gestão militar desenvolvido com **Nuxt 4**, projetado pa
 - **bcrypt** - Hash de senhas
 - **Sharp** - Processamento de imagens
 - **Zod** - Validação de schemas
+- **ApiResponse System** - Error handling unificado
 - **Docker Compose** - Desenvolvimento
 
 </td>
@@ -124,6 +125,7 @@ pnpm run db:seed
 - ✅ Verificação de token server-side
 - ✅ Hash de senhas com bcrypt
 - ✅ Sanitização automática de dados
+- ✅ Sistema de error handling unificado
 
 ### 🏛️ Gestão Organizacional
 - ✅ Organizações militares hierárquicas
@@ -277,9 +279,13 @@ newomemnumeros/
 │   ├── transformers/            # 8 transformers de dados
 │   ├── schemas/                 # Validação Zod
 │   └── utils/                   # Utilitários do servidor
+│       ├── errorHandler.ts      # Sistema unificado de error handling
+│       ├── responseWrapper.ts   # Utilitários de resposta API
+│       └── clientErrorHandler.ts # Error handling client-side
 ├── shared/                      # Módulos compartilhados
 │   ├── constants/               # Constantes (permissions, defaults)
 │   ├── types/                   # Tipos compartilhados
+│   │   └── api-response.ts      # ApiResponse + ErrorCode sistema
 │   ├── utils/                   # Utilitários consolidados
 │   └── config/                  # Configurações
 ├── docs/                        # Documentação e changelogs
@@ -404,14 +410,21 @@ pnpm run format           # Formatar código (Prettier)
 - **Verificação server-side** de tokens
 - **Preservação de case** em acrônimos
 - **Relacionamentos many-to-many** flexíveis
+- **Sistema de error handling unificado** com ApiResponse pattern
+- **Error categorization** automática (database, validation, auth, etc.)
+- **Retry logic** para erros transientes
+- **Graceful degradation** com error boundaries
+- **Tradução automática** de mensagens de erro (i18n)
 
 ### 🔮 Melhorias Futuras
-- Rate limiting para endpoints
-- Sistema de recuperação de senha
-- Autenticação de dois fatores (2FA)
-- Logs de auditoria detalhados
-- Critérios de senha mais rigorosos
-- Verificação de email após registro
+- **Monitoring** de erros com Sentry/LogRocket
+- **Rate limiting** para endpoints
+- **Sistema de recuperação** de senha
+- **Autenticação 2FA** (dois fatores)
+- **Logs de auditoria** detalhados
+- **Critérios de senha** mais rigorosos
+- **Verificação de email** após registro
+- **Error analytics** e dashboards de métricas
 
 ---
 
@@ -429,6 +442,7 @@ pnpm run format           # Formatar código (Prettier)
 | 🔄 **Services** | 13 | Client/Server comunicação API (7+6) |
 | 🔀 **Transformers** | 8 | Consistência de dados |
 | 🛡️ **Middlewares** | 4+ | Segurança e controle |
+| 🚨 **Error System** | 1 | Sistema unificado de tratamento de erro |
 | 🌍 **Idiomas** | 2 | pt-BR e en-US completos |
 | 📊 **Entidades** | 8 | Modelos de banco relacionais |
 
@@ -482,20 +496,50 @@ docker run -p 3000:3000 sistema-gestao-militar
 
 ---
 
+## 🚨 Sistema de Error Handling Unificado
+
+### Arquitetura de Tratamento de Erros
+Implementação do padrão **"Handler Unified with Specialized Layers"** garantindo consistência total no tratamento de erros:
+
+#### 🎯 Componentes Principais
+- **ApiResponse Interface**: Padronização de todas as respostas da API
+- **ErrorCode Enum**: Categorização inteligente de tipos de erro
+- **Unified Error Handler**: Processamento centralizado server-side
+- **Client Error Handler**: Interceptação e tratamento frontend
+- **useErrorHandler Composable**: Composable reativo para Vue
+- **Error Enhancement**: Contextualização automática de erros
+- **Retry Logic**: Tentativas automáticas para erros transientes
+
+#### 🔄 Fluxo de Error Handling
+1. **Server**: Erro capturado → `handleError()` → Mapeamento + Tradução → `ApiResponse`
+2. **API**: `createError()` com status HTTP + dados da ApiResponse
+3. **Frontend**: Interceptação → `clientErrorHandler` → Toast + Log
+4. **Vue**: `useErrorHandler` → Tratamento específico + UX otimizada
+
+#### ✅ Padronização Total Implementada
+- **31 endpoints** padronizados para `Promise<ApiResponse<T>>`
+- **Eliminação completa** de suporte legacy
+- **Mapeamento automático** de erros Prisma (P2002, P2025, P2003)
+- **Tradução multilíngue** de mensagens de erro
+- **Toast notifications** automáticas para usuário
+- **Error boundaries** para graceful degradation
+
 ## 📈 Monitoramento & Performance
 
 ### Métricas Disponíveis
 - **Response times** dos endpoints
+- **Error rates** por categoria e endpoint
 - **Uso de memória** da aplicação
 - **Queries do banco** otimizadas
 - **Bundle size** otimizado
 - **Core Web Vitals** monitorados
 
 ### Logs Estruturados
-- Autenticação e autorização
-- Operações CRUD por entidade
-- Erros e exceções detalhadas
-- Performance de queries
+- **Error logging** com contexto completo
+- **Autenticação e autorização** 
+- **Operações CRUD** por entidade
+- **Performance de queries**
+- **Error patterns** e análise de tendências
 
 ---
 
