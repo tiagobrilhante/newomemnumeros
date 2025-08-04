@@ -1,14 +1,18 @@
+import { defineEventHandler, getRouterParam, readBody, createError } from 'h3'
 import { updateMilitaryOrganization } from '../../services/militaryOrganization.service'
 import { handleError } from '../../utils/errorHandler'
+import { createSuccessResponse } from '../../utils/responseWrapper'
+import { getLocale } from '../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 import {
   militaryOrganizationUpdateSchema,
   militaryOrganizationParamsSchema,
-  validateMilitaryOrganizationData,
-  createValidationError
+  validateMilitaryOrganizationData
 } from '../../schemas/militaryOrganization.schema'
+import { createValidationError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
   const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 
@@ -36,8 +40,14 @@ export default defineEventHandler(async (event) => {
       throw await createValidationError(validation.errors, locale)
     }
 
-    return await updateMilitaryOrganization(validation.data, locale)
+    const updatedMilitaryOrganization = await updateMilitaryOrganization(validation.data, locale)
+    return createSuccessResponse(updatedMilitaryOrganization)
   } catch (error) {
-    throw await handleError(error, locale)
+    const errorResponse = await handleError(error, locale, 'UPDATE_MILITARY_ORGANIZATION')
+    throw createError({
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
+    })
   }
 })

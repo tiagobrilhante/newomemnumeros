@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import { serverTByLocale } from './i18n'
-import { createError } from 'h3'
 
 export interface ValidationResult<T> {
   success: true
@@ -39,19 +38,3 @@ export async function validateData<T>(
   }
 }
 
-/**
- * Cria um erro HTTP padronizado a partir de erros de validação
- */
-export async function createValidationError(errors: string[], locale: string = 'pt-BR') {
-  const message = await serverTByLocale(locale, 'validation.invalidInputData') || 'Dados de entrada inválidos'
-
-  return createError({
-    statusCode: 400,
-    statusMessage: 'Validation Error',
-    message,
-    data: {
-      errors,
-      type: 'validation_error'
-    }
-  })
-}

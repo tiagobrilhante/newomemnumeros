@@ -3,6 +3,9 @@ import { handleError } from '../utils/errorHandler'
 import { MilitaryOrganizationTransformer } from '../transformers/militaryOrganization.transformer'
 import { DEFAULT_MO_COLOR } from '#shared/constants/defaults'
 import { imageUploadService } from './imageUpload.service'
+import { sanitizeData, sanitizeForFilename } from '#shared/utils'
+import { serverTByLocale } from '../utils/i18n'
+import { createError } from 'h3'
 import type {
   MilitaryOrganizationCreateInput,
   MilitaryOrganizationUpdateInput
@@ -48,12 +51,7 @@ export async function getAllMilitaryOrganizations(locale: string) {
       ],
     })
 
-    return {
-      success: true,
-      data: MilitaryOrganizationTransformer.collection(militaryOrganizations),
-      message: await serverTByLocale(locale, 'success.militaryOrganizationRetrieved') || 'Military organizations retrieved successfully',
-      statusCode: 200,
-    }
+    return MilitaryOrganizationTransformer.collection(militaryOrganizations)
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -99,12 +97,7 @@ export async function getMilitaryOrganizationById(id: string, locale: string) {
       })
     }
 
-    return {
-      success: true,
-      data: MilitaryOrganizationTransformer.transform(militaryOrganization),
-      message: await serverTByLocale(locale, 'success.militaryOrganizationRetrieved') || 'Military organization found',
-      statusCode: 200,
-    }
+    return MilitaryOrganizationTransformer.transform(militaryOrganization)
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -190,12 +183,7 @@ export async function createMilitaryOrganization(data: MilitaryOrganizationCreat
       },
     })
 
-    return {
-      success: true,
-      data: MilitaryOrganizationTransformer.transform(newMilitaryOrganization),
-      message: await serverTByLocale(locale, 'success.militaryOrganizationCreated'),
-      statusCode: 201,
-    }
+    return MilitaryOrganizationTransformer.transform(newMilitaryOrganization)
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -346,12 +334,7 @@ export async function updateMilitaryOrganization(data: MilitaryOrganizationUpdat
       },
     })
 
-    return {
-      success: true,
-      data: MilitaryOrganizationTransformer.transform(updatedMilitaryOrganization),
-      message: await serverTByLocale(locale, 'success.militaryOrganizationUpdated'),
-      statusCode: 200,
-    }
+    return MilitaryOrganizationTransformer.transform(updatedMilitaryOrganization)
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -429,12 +412,7 @@ export async function deleteMilitaryOrganization(id: string, locale: string) {
       }
     }
 
-    return {
-      success: true,
-      data: null,
-      message: await serverTByLocale(locale, 'success.militaryOrganizationDeleted'),
-      statusCode: 200,
-    }
+    return null
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -494,12 +472,7 @@ export async function deleteMilitaryOrganizationLogo(id: string, locale: string)
       },
     })
 
-    return {
-      success: true,
-      data: MilitaryOrganizationTransformer.transform(updatedOrganization),
-      message: await serverTByLocale(locale, 'success.militaryOrganizationLogoDeleted'),
-      statusCode: 200,
-    }
+    return MilitaryOrganizationTransformer.transform(updatedOrganization)
   } catch (error) {
     throw await handleError(error, locale)
   }

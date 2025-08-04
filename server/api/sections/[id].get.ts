@@ -1,7 +1,13 @@
+import { defineEventHandler, getRouterParam, createError } from 'h3'
 import prisma from '../../prisma'
+import { handleError } from '../../utils/errorHandler'
+import { createSuccessResponse } from '../../utils/responseWrapper'
+import { getLocale } from '../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+  const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 
   if (!id) {
@@ -23,18 +29,19 @@ export default defineEventHandler(async (event) => {
     })
 
     if (!section) {
-      return createError({
+      throw createError({
         statusCode: 404,
         message: 'Seção não encontrada',
       })
     }
 
-    return section
+    return createSuccessResponse(section)
   } catch (error) {
-    console.error(`Erro ao buscar Seção ${id}:`, error)
+    const errorResponse = await handleError(error, locale, 'GET_SECTION_BY_ID')
     throw createError({
-      statusCode: 500,
-      message: 'Erro ao buscar Seção',
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
     })
   }
 })

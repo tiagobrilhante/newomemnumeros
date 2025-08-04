@@ -8,8 +8,7 @@
   import type { permissionSetup } from '~/types/permissions/permission-setup'
   import { toast } from 'vue3-toastify'
   import ShowUserPermissionSetup from '~/components/permissions/ShowUserPermissionSetup.vue'
-  import { retrieveMilitaryOrganizationAcronym } from '#shared/utils/retrieve-military-organization-acronym'
-  import { retrieveMilitaryOrganizationLogo } from '#shared/utils/retrieve-military-organization-logo'
+  // As funções foram consolidadas no módulo principal
 
   useHead({
     title: 'Gerenciamento de Usuários',

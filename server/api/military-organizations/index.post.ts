@@ -1,13 +1,17 @@
+import { defineEventHandler, readBody, createError } from 'h3'
 import { createMilitaryOrganization } from '../../services/militaryOrganization.service'
 import { handleError } from '../../utils/errorHandler'
+import { createSuccessResponse } from '../../utils/responseWrapper'
+import { getLocale } from '../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 import {
   militaryOrganizationCreateSchema,
-  validateMilitaryOrganizationData,
-  createValidationError
+  validateMilitaryOrganizationData
 } from '../../schemas/militaryOrganization.schema'
+import { createValidationError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
   const locale = getLocale(event)
 
   try {
@@ -23,8 +27,14 @@ export default defineEventHandler(async (event) => {
       throw await createValidationError(validation.errors, locale)
     }
 
-    return await createMilitaryOrganization(validation.data, locale)
+    const militaryOrganization = await createMilitaryOrganization(validation.data, locale)
+    return createSuccessResponse(militaryOrganization)
   } catch (error) {
-    throw await handleError(error, locale)
+    const errorResponse = await handleError(error, locale, 'CREATE_MILITARY_ORGANIZATION')
+    throw createError({
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
+    })
   }
 })

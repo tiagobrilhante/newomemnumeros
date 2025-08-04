@@ -1,7 +1,13 @@
+import { defineEventHandler, getRouterParam, createError } from 'h3'
 import prisma from '../../../prisma'
+import { handleError } from '../../../utils/errorHandler'
+import { createSuccessResponse } from '../../../utils/responseWrapper'
+import { getLocale } from '../../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+  const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 
   if (!id) {
@@ -10,8 +16,9 @@ export default defineEventHandler(async (event) => {
       message: 'ID inválido',
     })
   }
+
   try {
-    return await prisma.section.findMany({
+    const sections = await prisma.section.findMany({
       where: {
         militaryOrganizationId: id,
         deleted: false,
@@ -20,11 +27,14 @@ export default defineEventHandler(async (event) => {
         militaryOrganization: true,
       },
     })
+
+    return createSuccessResponse(sections)
   } catch (error) {
-    console.error('Erro ao buscar Seções por Id de Om:', error)
+    const errorResponse = await handleError(error, locale, 'GET_SECTIONS_BY_OM_ID')
     throw createError({
-      statusCode: 500,
-      message: 'Erro ao buscar Seções por Id de Om',
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
     })
   }
 })

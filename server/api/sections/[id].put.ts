@@ -1,13 +1,18 @@
+import { defineEventHandler, getRouterParam, readBody, createError } from 'h3'
 import { updateSection } from '../../services/section.service'
 import { sectionUpdateSchema } from '../../schemas/section.schema'
+import { handleError } from '../../utils/errorHandler'
+import { createSuccessResponse } from '../../utils/responseWrapper'
 import { getLocale } from '../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+  const locale = getLocale(event)
+
   try {
     const id = getRouterParam(event, 'id')
     const body = await readBody(event)
-    const locale = getLocale(event) || 'pt-BR'
 
     if (!id) {
       throw createError({
@@ -27,9 +32,14 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    return await updateSection(validation.data, locale)
-  } catch (error: any) {
-    console.error('Erro ao atualizar seção:', error)
-    throw error
+    const section = await updateSection(validation.data, locale)
+    return createSuccessResponse(section)
+  } catch (error) {
+    const errorResponse = await handleError(error, locale, 'UPDATE_SECTION')
+    throw createError({
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
+    })
   }
 })

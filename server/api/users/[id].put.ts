@@ -1,7 +1,13 @@
+import { defineEventHandler, getRouterParam, readBody, createError } from 'h3'
 import prisma from '../../prisma'
+import { handleError } from '../../utils/errorHandler'
+import { createSuccessResponse } from '../../utils/responseWrapper'
+import { getLocale } from '../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+  const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 
   if (!id ) {
@@ -14,17 +20,20 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
 
-    return await prisma.user.update({
+    const user = await prisma.user.update({
       where: {
         id,
       },
       data: body,
     })
+
+    return createSuccessResponse(user)
   } catch (error) {
-    console.error(`Erro ao atualizar Usuário ${id}:`, error)
+    const errorResponse = await handleError(error, locale, 'UPDATE_USER')
     throw createError({
-      statusCode: 500,
-      message: 'Erro ao atualizar Usuário',
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
     })
   }
 })

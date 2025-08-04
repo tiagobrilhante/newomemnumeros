@@ -1,115 +1,117 @@
 import { authService } from '~/services/auth.service'
 import { useAuthUserStore } from '~/stores/auth.store'
 import type { loginCredentials } from '~/types/auth'
-import type { ErrorHandlerOptions } from '~/utils/clientErrorHandler'
-import { createAppError } from '~/utils/clientErrorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export const useAuth = () => {
   const authStore = useAuthUserStore()
-  const { $i18n } = useNuxtApp()
-  const loading = ref(false)
-  const error = ref<string | null>(null)
+  const isLoggingOut = ref(false)
 
-  const getTranslatedMessage = (key: string, fallback: string): string => {
-    try {
-      return $i18n?.t(key) || fallback
-    } catch {
-      return fallback
-    }
-  }
-
+  /**
+   * Login com tratamento de erro aprimorado
+   */
   const login = async (credentials: loginCredentials) => {
-    loading.value = true
-    error.value = null
-
     try {
-      const response = await authService.login(credentials)
-
-      if (response?.user) {
-        authStore.setUser(response.user)
-        return { success: true }
-      } else {
-        const message = getTranslatedMessage('errors.invalidDataProvided', 'Dados de login inválidos ou incompletos')
-        error.value = message
-        return { success: false, error: message }
+      const result = await authService.login(credentials)
+      if (result?.user) {
+        authStore.setUser(result.user)
+        return { success: true, user: result.user }
       }
-    } catch (err) {
-      const message = err instanceof Error
-        ? err.message
-        : getTranslatedMessage('errorUnexpected', 'Erro inesperado na autenticação')
-      error.value = message
-      return { success: false, error: message }
-    } finally {
-      loading.value = false
+      return { success: false, error: 'Login failed' }
+    } catch (error) {
+      // Log específico para erros de login
+      console.error('Login failed:', {
+        email: credentials.email,
+        error: error instanceof Error ? error.message : 'Unknown error'
+      })
+      
+      const errorMessage = error instanceof Error ? error.message : 'Credenciais inválidas'
+      return { success: false, error: errorMessage }
     }
   }
 
+  /**
+   * Logout com delay para UX suave
+   */
   const logout = async () => {
+    isLoggingOut.value = true
+    
     try {
       await authService.logout()
     } catch (err) {
-      createAppError('errors.serverCommunication', {
-        statusCode: 500,
-        statusMessageKey: 'errors.serverCommunication',
-        fallbackStatusMessage: 'Logout Error',
-        fallbackMessage: 'Erro ao fazer logout',
-      } satisfies ErrorHandlerOptions)
+      // Em caso de erro no logout, ainda limpa a sessão
+      console.warn('Logout API failed, but clearing session anyway:', err)
     } finally {
-      authStore.$reset()
-      await navigateTo('/', { external: true })
+      // Delay para UX suave
+      setTimeout(() => {
+        authStore.$reset()
+        isLoggingOut.value = false
+        navigateTo('/')
+      }, 500)
     }
   }
 
+  /**
+   * Verificação de token com tratamento específico
+   */
   const verifyToken = async () => {
-    loading.value = true
-    error.value = null
-
     try {
-      const response = await authService.verifyToken()
-      if (response?.user) {
-        authStore.setUser(response.user)
+      const result = await authService.verifyToken()
+      if (result?.user) {
+        authStore.setUser(result.user)
         return true
       }
       return false
-    } catch (err) {
-      error.value = err instanceof Error
-        ? err.message
-        : getTranslatedMessage('errors.invalidToken', 'Token inválido')
+    } catch (error) {
       authStore.$reset()
       return false
-    } finally {
-      loading.value = false
     }
   }
 
+  /**
+   * Verificação de acesso com tratamento específico
+   */
   const checkAccess = async () => {
     try {
-      const response = await authService.checkAccess()
-      if (!response.hasAccess) {
+      const result = await authService.checkAccess()
+      if (!result?.hasAccess) {
         authStore.$reset()
+        return false
       }
-      return response.hasAccess
-    } catch (err) {
-      error.value = err instanceof Error
-        ? err.message
-        : getTranslatedMessage('errors.accessDenied', 'Erro ao verificar acesso')
+      return result.hasAccess
+    } catch (error) {
       authStore.$reset()
       return false
     }
   }
 
+  /**
+   * Inicialização de autenticação
+   */
   const initializeAuth = async () => {
     return await verifyToken()
   }
 
+  /**
+   * Limpa sessão local
+   */
   const clearSession = () => {
     authStore.$reset()
   }
 
+  // Computed properties para estado de autenticação
+  const isAuthenticated = computed(() => authStore.isAuthenticated)
+  const user = computed(() => authStore.user)
+  const permissions = computed(() => authStore.permissions)
+
   return {
-    loading: readonly(loading),
-    error: readonly(error),
+    // State
+    isAuthenticated,
+    user,
+    permissions,
+    isLoggingOut: readonly(isLoggingOut),
+    
+    // Actions
     login,
     logout,
     verifyToken,

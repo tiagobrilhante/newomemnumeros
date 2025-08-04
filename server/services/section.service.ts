@@ -3,6 +3,7 @@ import { handleError } from '../utils/errorHandler'
 import { SectionTransformer } from '../transformers/section.transformer'
 import { serverTByLocale } from '../utils/i18n'
 import { createError } from 'h3'
+import { sanitizeData } from '#shared/utils'
 
 import type {
   SectionCreateInput,
@@ -31,12 +32,7 @@ export async function getAllSections(locale: string) {
       ],
     })
 
-    return {
-      success: true,
-      data: SectionTransformer.collection(sections),
-      message: await serverTByLocale(locale, 'success.sectionsRetrieved') || 'Sections retrieved successfully',
-      statusCode: 200,
-    }
+    return SectionTransformer.collection(sections)
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -68,12 +64,7 @@ export async function getSectionById(id: string, locale: string) {
       })
     }
 
-    return {
-      success: true,
-      data: SectionTransformer.transform(section as SectionWithIncludes),
-      message: await serverTByLocale(locale, 'success.sectionRetrieved') || 'Section found',
-      statusCode: 200,
-    }
+    return SectionTransformer.transform(section as SectionWithIncludes)
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -140,12 +131,7 @@ export async function createSection(data: SectionCreateInput, locale: string) {
     })
 
 
-    return {
-      success: true,
-      data: SectionTransformer.transform(newSection as SectionWithIncludes),
-      message: await serverTByLocale(locale, 'success.sectionCreated') || 'Section created successfully',
-      statusCode: 201,
-    }
+    return SectionTransformer.transform(newSection as SectionWithIncludes)
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -246,12 +232,7 @@ export async function updateSection(data: SectionUpdateInput, locale: string) {
       },
     })
 
-    return {
-      success: true,
-      data: SectionTransformer.transform(updatedSection as SectionWithIncludes),
-      message: await serverTByLocale(locale, 'success.sectionUpdated') || 'Section updated successfully',
-      statusCode: 200,
-    }
+    return SectionTransformer.transform(updatedSection as SectionWithIncludes)
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -312,12 +293,7 @@ export async function deleteSection(id: string, locale: string) {
       },
     })
 
-    return {
-      success: true,
-      data: null,
-      message: await serverTByLocale(locale, 'success.sectionDeleted') || 'Section deleted successfully',
-      statusCode: 200,
-    }
+    return null
   } catch (error) {
     throw await handleError(error, locale)
   }

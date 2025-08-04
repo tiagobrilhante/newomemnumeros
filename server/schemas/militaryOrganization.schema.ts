@@ -119,4 +119,4 @@ export type MilitaryOrganizationUpdateInput = z.infer<typeof militaryOrganizatio
 export type MilitaryOrganizationParams = z.infer<typeof militaryOrganizationParamsSchema>
 
 // Re-export das funções utilitárias genéricas
-export { validateData as validateMilitaryOrganizationData, createValidationError } from '../utils/validation'
+export { validateData as validateMilitaryOrganizationData } from '../utils/validation'

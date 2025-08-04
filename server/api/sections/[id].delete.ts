@@ -1,16 +1,21 @@
+import { defineEventHandler, getRouterParam, createError } from 'h3'
 import { deleteSection } from '../../services/section.service'
 import { sectionParamsSchema } from '../../schemas/section.schema'
+import { handleError } from '../../utils/errorHandler'
+import { createSuccessResponse } from '../../utils/responseWrapper'
 import { getLocale } from '../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+  const locale = getLocale(event)
+
   try {
     const id = getRouterParam(event, 'id')
-    const locale = getLocale(event) || 'pt-BR'
 
     const validation = sectionParamsSchema.safeParse({ id })
     if (!validation.success) {
-      return createError({
+      throw createError({
         statusCode: 400,
         message: 'ID inválido',
         data: validation.error.issues,
@@ -18,9 +23,13 @@ export default defineEventHandler(async (event) => {
     }
 
     const result = await deleteSection(validation.data.id, locale)
-    return result
-  } catch (error: any) {
-    console.error('Erro ao deletar seção:', error)
-    throw error
+    return createSuccessResponse(result)
+  } catch (error) {
+    const errorResponse = await handleError(error, locale, 'DELETE_SECTION')
+    throw createError({
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
+    })
   }
 })

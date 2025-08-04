@@ -1,7 +1,14 @@
+import { defineEventHandler, createError } from 'h3'
 import prisma from '../../prisma'
+import { handleError } from '../../utils/errorHandler'
+import { createSuccessResponse } from '../../utils/responseWrapper'
+import { getLocale } from '../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (_event): Promise<userWithoutPassword[]> => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+  const locale = getLocale(event)
+
   try {
     const users = await prisma.user.findMany({
       where: {
@@ -12,15 +19,18 @@ export default defineEventHandler(async (_event): Promise<userWithoutPassword[]>
       },
     })
 
-    return users.map((user) => {
+    const usersWithoutPassword = users.map((user) => {
       const { password, ...userWithoutPassword } = user
       return userWithoutPassword
-    }) as userWithoutPassword[]
+    })
+
+    return createSuccessResponse(usersWithoutPassword)
   } catch (error) {
-    console.error('Erro ao buscar usuários:', error)
+    const errorResponse = await handleError(error, locale, 'GET_USERS')
     throw createError({
-      statusCode: 500,
-      message: 'Erro ao buscar usuários',
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
     })
   }
 })

@@ -1,5 +1,7 @@
 import prisma from '../prisma'
 import { handleError } from '../utils/errorHandler'
+import { serverTByLocale } from '../utils/i18n'
+import { createError } from 'h3'
 
 export async function getAllRanks(locale: string) {
   try {
@@ -15,12 +17,7 @@ export async function getAllRanks(locale: string) {
       },
     })
 
-    return {
-      success: true,
-      data: ranks,
-      message: await serverTByLocale(locale, 'success.ranksRetrieved'),
-      statusCode: 200
-    }
+    return ranks
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -52,12 +49,7 @@ export async function getRankById(id: string, locale: string) {
       })
     }
 
-    return {
-      success: true,
-      data: rank,
-      message: await serverTByLocale(locale, 'success.rankRetrieved'),
-      statusCode: 200
-    }
+    return rank
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -80,12 +72,7 @@ export async function createRank(data: { name: string; acronym: string; hierarch
       },
     })
 
-    return {
-      success: true,
-      data: newRank,
-      message: await serverTByLocale(locale, 'success.rankCreated'),
-      statusCode: 201
-    }
+    return newRank
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -116,12 +103,7 @@ export async function updateRank(id: string, data: Partial<{ name: string; acron
       data: data,
     })
 
-    return {
-      success: true,
-      data: updatedRank,
-      message: await serverTByLocale(locale, 'success.rankUpdated'),
-      statusCode: 200
-    }
+    return updatedRank
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -152,11 +134,7 @@ export async function deleteRank(id: string, locale: string) {
       where: { id },
     })
 
-    return {
-      success: true,
-      message: await serverTByLocale(locale, 'success.rankDeleted'),
-      statusCode: 200
-    }
+    return null
   } catch (error) {
     throw await handleError(error, locale)
   }
@@ -187,12 +165,7 @@ export async function getRanksByHierarchy(hierarchy: number, locale: string) {
       },
     })
 
-    return {
-      success: true,
-      data: ranks,
-      message: await serverTByLocale(locale, 'success.ranksByHierarchyRetrieved'),
-      statusCode: 200
-    }
+    return ranks
   } catch (error) {
     throw await handleError(error, locale)
   }

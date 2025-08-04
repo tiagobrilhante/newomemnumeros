@@ -1,29 +1,30 @@
 import type { userWithoutPassword } from '~/types/user'
+import type { ApiResponse } from '#shared/types/api-response'
 
 class UserService {
   private baseURL = '/api/users'
 
-  async getAllUsers(): Promise<userWithoutPassword[]> {
+  async getAllUsers(): Promise<ApiResponse<userWithoutPassword[]>> {
     try {
-      return await $fetch<userWithoutPassword[]>(this.baseURL)
+      return await $fetch<ApiResponse<userWithoutPassword[]>>(this.baseURL)
     } catch (error) {
       console.error('Erro ao buscar usuários:', error)
       throw error
     }
   }
 
-  async findUserById(id: string): Promise<userWithoutPassword | null> {
+  async findUserById(id: string): Promise<ApiResponse<userWithoutPassword | null>> {
     try {
-      return await $fetch<userWithoutPassword>(`${this.baseURL}/${id}`)
+      return await $fetch<ApiResponse<userWithoutPassword>>(`${this.baseURL}/${id}`)
     } catch (error) {
       console.error(`Erro ao buscar usuário ${id}:`, error)
       throw error
     }
   }
 
-  async findUserByServiceName(serviceName: string): Promise<userWithoutPassword[]> {
+  async findUserByServiceName(serviceName: string): Promise<ApiResponse<userWithoutPassword[]>> {
     try {
-      return await $fetch<userWithoutPassword[]>(`${this.baseURL}/get-user-by-servicename`, {
+      return await $fetch<ApiResponse<userWithoutPassword[]>>(`${this.baseURL}/get-user-by-servicename`, {
         method: 'POST',
         body: { serviceName },
       })
@@ -33,9 +34,9 @@ class UserService {
     }
   }
 
-  async findUserByServiceNameAll(serviceName: string): Promise<userWithoutPassword[]> {
+  async findUserByServiceNameAll(serviceName: string): Promise<ApiResponse<userWithoutPassword[]>> {
     try {
-      return await $fetch<userWithoutPassword[]>(
+      return await $fetch<ApiResponse<userWithoutPassword[]>>(
         `${this.baseURL}/get-users-by-servicename-all-om`,
         {
           method: 'POST',
@@ -48,9 +49,9 @@ class UserService {
     }
   }
 
-  async deleteUser(id: string): Promise<void> {
+  async deleteUser(id: string): Promise<ApiResponse<{ message: string }>> {
     try {
-      await $fetch(`${this.baseURL}/${id}`, {
+      return await $fetch<ApiResponse<{ message: string }>>(`${this.baseURL}/${id}`, {
         method: 'DELETE',
       })
     } catch (error) {

@@ -1,12 +1,19 @@
+import { defineEventHandler, readBody, createError } from 'h3'
 import prisma from '../../prisma'
+import { handleError } from '../../utils/errorHandler'
+import { createSuccessResponse } from '../../utils/responseWrapper'
+import { getLocale } from '../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+  const locale = getLocale(event)
+
   try {
     const body = await readBody(event)
 
     if (!body || !body.serviceName) {
-      return createError({
+      throw createError({
         statusCode: 400,
         message: 'A busca deve conter alguma informação.',
       })
@@ -16,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
     const searchTerm = seviceName.toLowerCase()
 
-    return await prisma.user.findMany({
+    const users = await prisma.user.findMany({
       where: {
         serviceName: {
           contains: searchTerm,
@@ -30,11 +37,14 @@ export default defineEventHandler(async (event) => {
         password: false,
       },
     })
+
+    return createSuccessResponse(users)
   } catch (error) {
-    console.error('Erro ao pesquisar usuário:', error)
+    const errorResponse = await handleError(error, locale, 'GET_USER_BY_SERVICENAME')
     throw createError({
-      statusCode: 500,
-      message: 'Erro ao pesquisar usuário',
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
     })
   }
 })

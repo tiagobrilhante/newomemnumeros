@@ -1,7 +1,13 @@
+import { defineEventHandler, getRouterParam, createError } from 'h3'
 import prisma from '../../../prisma'
+import { handleError } from '../../../utils/errorHandler'
+import { createSuccessResponse } from '../../../utils/responseWrapper'
+import { getLocale } from '../../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+  const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 
   if (!id) {
@@ -12,7 +18,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    return await prisma.user.findMany({
+    const users = await prisma.user.findMany({
       where: {
         deleted: false,
       },
@@ -20,11 +26,14 @@ export default defineEventHandler(async (event) => {
         rank: true,
       },
     })
+
+    return createSuccessResponse(users)
   } catch (error) {
-    console.error(`Erro ao buscar Usuários na om: ${id}:`, error)
+    const errorResponse = await handleError(error, locale, 'GET_USERS_BY_OM')
     throw createError({
-      statusCode: 500,
-      message: 'Erro ao buscar Usuários na OM',
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
     })
   }
 })

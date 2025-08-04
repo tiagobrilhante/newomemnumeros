@@ -1,13 +1,17 @@
+import { defineEventHandler, getRouterParam, createError } from 'h3'
 import { deleteMilitaryOrganization } from '../../services/militaryOrganization.service'
 import { handleError } from '../../utils/errorHandler'
+import { createSuccessResponse } from '../../utils/responseWrapper'
+import { getLocale } from '../../utils/i18n'
+import type { ApiResponse } from '#shared/types/api-response'
 import {
   militaryOrganizationParamsSchema,
-  validateMilitaryOrganizationData,
-  createValidationError
+  validateMilitaryOrganizationData
 } from '../../schemas/militaryOrganization.schema'
+import { createValidationError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
   const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 
@@ -22,8 +26,14 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    return await deleteMilitaryOrganization(paramValidation.data.id, locale)
+    const result = await deleteMilitaryOrganization(paramValidation.data.id, locale)
+    return createSuccessResponse(result)
   } catch (error) {
-    throw await handleError(error, locale)
+    const errorResponse = await handleError(error, locale, 'DELETE_MILITARY_ORGANIZATION')
+    throw createError({
+      statusCode: errorResponse.error.statusCode,
+      statusMessage: errorResponse.error.message,
+      data: errorResponse
+    })
   }
 })
