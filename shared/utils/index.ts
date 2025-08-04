@@ -63,9 +63,15 @@ export function convertForPickers(input: string): Date {
 
 
 export const retrieveMiniImage = (imagePath: string): string => {
-  const lastDotIndex = imagePath.lastIndexOf('.')
-  const pathWithoutExtension = imagePath.substring(0, lastDotIndex)
-  const extension = imagePath.substring(lastDotIndex)
+  const cleanPath = imagePath.includes('?') ? imagePath.split('?')[0] : imagePath
+
+  if (!cleanPath) return imagePath
+
+  const lastDotIndex = cleanPath.lastIndexOf('.')
+  if (lastDotIndex === -1) return cleanPath + '_mini'
+
+  const pathWithoutExtension = cleanPath.substring(0, lastDotIndex)
+  const extension = cleanPath.substring(lastDotIndex)
   return `${pathWithoutExtension}_mini${extension}`
 }
 
@@ -75,7 +81,7 @@ export function sanitizeData<T extends object>(data: T): T {
       ...acc,
       [key]: typeof value === 'string' ? value.trim() : value,
     }),
-    {} as T
+    {} as T,
   )
 }
 

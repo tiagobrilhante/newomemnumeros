@@ -41,11 +41,13 @@
         <h3>Selecione a OM</h3>
       </v-col>
       <v-col v-if="selectedMilitaryOrganization && selectedMilitaryOrganization.logo" align-self="center" class="text-right" cols="2">
+
         <nuxt-img
           :src="retrieveMiniImage(selectedMilitaryOrganization.logo)"
           class="text-right pt-auto pb-auto my-auto align-content-center"
           width="35"
         />
+
       </v-col>
     </v-row>
   </v-card>
