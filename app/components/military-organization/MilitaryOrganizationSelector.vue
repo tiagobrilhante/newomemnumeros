@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import { retrieveMiniImage } from '#shared/utils/retrieve-mini-image'
+  import { retrieveMiniImage } from '#shared/utils'
 
   const {fetchMilitaryOrganizations, selectMilitaryOrganization, selectedMilitaryOrganization, militaryOrganizations} = useMilitaryOrganizations()
 

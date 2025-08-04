@@ -173,17 +173,19 @@ RoleSection (Many-to-Many)
 └── Permissions via RolePermission
 ```
 
-### 📊 Entidades (8)
+### 📊 Entidades (8) - Arquitetura v1.2.0
 | Entidade | Descrição | Campos Principais |
 |----------|-----------|-------------------|
 | **User** | Usuários do sistema | `name`, `email`, `rankId`, `roleId`, `sectionId` |
 | **Rank** | Patentes militares | `name`, `hierarchy`, `acronym` |
 | **MilitaryOrganization** | Organizações militares | `name`, `acronym`, `color`, `logo`, `parentId` |
 | **Section** | Seções organizacionais | `name`, `acronym`, `militaryOrganizationId` |
-| **Role** | Funções/cargos | `name`, `acronym`, `militaryOrganizationId` |
+| **Role** | Funções/cargos | `name`, `acronym`, `militaryOrganizationId` (opcional) |
 | **Permission** | Permissões do sistema | `slug`, `description`, `category` |
 | **RolePermission** | Pivot roles-permissions | `roleId`, `permissionId` |
 | **RoleSection** | Pivot roles-sections | `roleId`, `sectionId` |
+
+> **Nova Arquitetura**: Role.militaryOrganizationId é opcional, permitindo roles globais. User agora tem vinculação direta com Section.
 
 ---
 
@@ -262,19 +264,25 @@ GET    /api/ranks/hierarchy/[hierarchy]     # Por hierarquia
 ```
 newomemnumeros/
 ├── app/
-│   ├── components/              # 16 componentes organizados
+│   ├── components/              # 17 componentes organizados
 │   ├── composables/             # 7 composables reutilizáveis
-│   ├── middleware/              # 7 middlewares de segurança
-│   ├── pages/                   # 8 páginas funcionais
-│   ├── services/                # 6 services client-side
-│   ├── stores/                  # 6 stores Pinia
+│   ├── middleware/              # 4+ middlewares de segurança
+│   ├── pages/                   # 7 páginas funcionais
+│   ├── services/                # 7 services client-side
+│   ├── stores/                  # 8 stores Pinia (6 core + 2 admin)
 │   └── types/                   # Definições TypeScript
 ├── server/
 │   ├── api/                     # 31 endpoints organizados
 │   ├── services/                # 6 services server-side
-│   ├── transformers/            # 6 transformers de dados
+│   ├── transformers/            # 8 transformers de dados
 │   ├── schemas/                 # Validação Zod
 │   └── utils/                   # Utilitários do servidor
+├── shared/                      # Módulos compartilhados
+│   ├── constants/               # Constantes (permissions, defaults)
+│   ├── types/                   # Tipos compartilhados
+│   ├── utils/                   # Utilitários consolidados
+│   └── config/                  # Configurações
+├── docs/                        # Documentação e changelogs
 ├── public/logos/                # Sistema de upload
 └── prisma/                      # Schema e migrações
 ```
@@ -414,15 +422,15 @@ pnpm run format           # Formatar código (Prettier)
 | Categoria | Quantidade | Descrição |
 |-----------|------------|-----------|
 | 🌐 **APIs** | 31 | Endpoints funcionais implementados |
-| 🧩 **Componentes** | 16 | Componentes Vue organizados |
-| 📄 **Páginas** | 8 | Páginas funcionais (públicas + admin) |
+| 🧩 **Componentes** | 17 | Componentes Vue organizados por funcionalidade |
+| 📄 **Páginas** | 7 | Páginas funcionais (públicas + admin) |
 | 🔧 **Composables** | 7 | Lógica de negócio reutilizável |
-| 🗃️ **Stores** | 6 | Estados Pinia com persistência |
-| 🔄 **Services** | 6 | Client/Server comunicação API |
-| 🔀 **Transformers** | 6 | Consistência de dados |
-| 🛡️ **Middlewares** | 7 | Segurança e controle |
+| 🗃️ **Stores** | 8 | Estados Pinia com persistência (6 core + 2 admin) |
+| 🔄 **Services** | 13 | Client/Server comunicação API (7+6) |
+| 🔀 **Transformers** | 8 | Consistência de dados |
+| 🛡️ **Middlewares** | 4+ | Segurança e controle |
 | 🌍 **Idiomas** | 2 | pt-BR e en-US completos |
-| 📊 **Entidades** | 7 | Modelos de banco relacionais |
+| 📊 **Entidades** | 8 | Modelos de banco relacionais |
 
 </div>
 
