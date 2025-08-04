@@ -1,4 +1,5 @@
-import type { ErrorCode, ApiResponse, ErrorResponse } from '#shared/types/api-response'
+import type { ApiResponse, ErrorResponse } from '#shared/types/api-response'
+import { ErrorCode } from '#shared/types/api-response'
 
 // Context types para categorizar erros
 export enum ErrorContext {
@@ -72,19 +73,20 @@ export function createAppError(
     statusMessage = fallbackStatusMessage
   }
 
-  const error = createError({
+  const nuxtError = createError({
     statusCode,
     statusMessage,
-    message
-  }) as EnhancedError
+    message,
+  })
 
-  // Enhance with additional properties
-  error.context = context
-  error.retryable = retryable
-  error.userFriendly = userFriendly
-  error.timestamp = new Date()
-
-  return error
+  // Enhance the NuxtError with additional properties to match EnhancedError
+  return Object.assign(nuxtError, {
+    statusMessage, // Re-assert statusMessage to satisfy the non-optional type
+    context,
+    retryable,
+    userFriendly,
+    timestamp: new Date(),
+  })
 }
 
 /**
@@ -148,7 +150,7 @@ export function processApiError(response: ApiResponse<any>): EnhancedError | nul
   const { error } = errorResponse
 
   const context = mapErrorCodeToContext(error.code)
-  
+
   const enhancedError = createAppError(
     'errors.apiError',
     {

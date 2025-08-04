@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { retrieveMiniImage } from '#shared/utils'
 
-  const {fetchMilitaryOrganizations, selectMilitaryOrganization, selectedMilitaryOrganization, militaryOrganizations} = useMilitaryOrganizations()
+  const {fetchMilitaryOrganizations, selectMilitaryOrganization, clearSelection ,selectedMilitaryOrganization, militaryOrganizations} = useMilitaryOrganizations()
 
   const militaryOrganizationStore = useMilitaryOrganizationStore()
   const listOfMilitaryOrganizations = ref<militaryOrganization[]>([])
@@ -17,8 +17,8 @@
 </script>
 <template>
   <v-card class="border border-solid border-opacity-100 pa-4" rounded="xl">
-    <v-row>
-      <v-col align-self="center">
+    <v-row dense>
+      <v-col align-self="center" v-show="!selectedMilitaryOrganization">
 
         <v-autocomplete
           v-if="militaryOrganizations"
@@ -37,15 +37,16 @@
           @update:model-value="setSelectedMilitaryOrganization"
         />
       </v-col>
-      <v-col align-self="center">
+      <v-col v-if="!selectedMilitaryOrganization">
         <h3>Selecione a OM</h3>
       </v-col>
-      <v-col v-if="selectedMilitaryOrganization && selectedMilitaryOrganization.logo" align-self="center" class="text-right" cols="2">
-
+      <v-col v-else  align-self="center" class="pt-0 pb-0 my-auto align-content-center">
+        <h2 class="my-auto d-inline-block">{{selectedMilitaryOrganization.name}} - {{selectedMilitaryOrganization.acronym}}</h2> <v-icon-btn size="small" class="ml-10" variant="outlined" icon="mdi-refresh-circle" @click="clearSelection" color="white"/>
+      </v-col>
+      <v-col v-if="selectedMilitaryOrganization && selectedMilitaryOrganization.logo" class="text-right pt-0 pb-0" cols="2">
         <nuxt-img
           :src="retrieveMiniImage(selectedMilitaryOrganization.logo)"
-          class="text-right pt-auto pb-auto my-auto align-content-center"
-          width="35"
+          width="30"
         />
 
       </v-col>
