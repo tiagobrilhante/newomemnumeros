@@ -3,7 +3,6 @@ import { handleError } from '../utils/errorHandler'
 import { MilitaryOrganizationTransformer } from '../transformers/militaryOrganization.transformer'
 import { DEFAULT_MO_COLOR } from '#shared/constants/defaults'
 import { imageUploadService } from './imageUpload.service'
-import { sanitizeForFilename } from '#shared/utils/sanitize-data'
 import type {
   MilitaryOrganizationCreateInput,
   MilitaryOrganizationUpdateInput

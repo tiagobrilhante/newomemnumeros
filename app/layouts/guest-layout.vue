@@ -21,13 +21,11 @@
 <template>
   <KeepAlive>
     <v-app theme="dark">
-
-
       <NavBar />
 
       <v-main class="login-background my-space">
         <v-container class="my-container" fluid>
-          <NuxtPage />
+          <nuxt-page />
         </v-container>
       </v-main>
 

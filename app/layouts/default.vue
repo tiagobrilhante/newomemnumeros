@@ -46,7 +46,7 @@
         <p class="text-body-1 mt-4">{{ $t('loading') }}</p>
       </div>
       <div v-show="isContentReady">
-        <NuxtPage />
+        <nuxt-page />
       </div>
     </v-main>
     <KeepAlive>

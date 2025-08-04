@@ -1,53 +1,96 @@
 export const PERMISSION_CATEGORIES = [
   {
-    module: 'Usuários',
-    module_alias: 'users',
+    module: 'Admin',
+    module_alias: 'admin',
+    module_color: 'yellow',
+    permissions: [
+      {
+        slug: 'mo.admin',
+        category: 'system',
+        description: 'Permite as opções administrativas para um administrador de nível Organização Militar'
+      },
+      {
+        slug: 'system.admin',
+        category: 'system',
+        description: 'Super usuário - Administrador Global do Sistema'
+      },
+      {
+        slug: 'militaryOrganization.management',
+        category: 'militaryOrganization',
+        description: 'Permite a gerência de Organizações Militares'
+      },
+      {
+        slug: 'linkUser.management',
+        category: 'linkUser',
+        description: 'Permite vincular usuários a uma seção'
+      },
+      {
+        slug: 'reports.generate',
+        category: 'reports',
+        description: 'Permite gerar relatórios administrativos'
+      },
+      {
+        slug: 'reports.export',
+        category: 'reports',
+        description: 'Permite exportar relatórios administrativos'
+      },
+      {
+        slug: 'sections.management',
+        category: 'sections',
+        description: 'Permite a gerência de Seções'
+      },
+      {
+        slug: 'users.management',
+        category: 'users',
+        description: 'Permite a gerência de Usuários'
+      },
+      {
+        slug: 'roles.management',
+        category: 'roles',
+        description: 'Permite a gerência de papéis e permissões'
+      },
+    ]
+  },
+  {
+    module: 'Numbers',
+    module_alias: 'number',
     module_color: 'blue',
     permissions: [
       {
-        name: 'Criar Usuário',
-        alias: 'create_user',
-        description: 'Permite criar novos usuários no sistema'
+        slug: 'number.create.category',
+        category: 'number',
+        description: 'Permite a Criação de Categorias no OM em números'
       },
       {
-        name: 'Editar Usuário',
-        alias: 'edit_user',
-        description: 'Permite editar dados de usuários existentes'
+        slug: 'linkUser.management',
+        category: 'linkUser',
+        description: 'Permite vincular usuários a uma seção'
       },
       {
-        name: 'Excluir Usuário',
-        alias: 'delete_user',
-        description: 'Permite excluir usuários do sistema'
+        slug: 'reports.generate',
+        category: 'reports',
+        description: 'Permite gerar relatórios administrativos'
       },
       {
-        name: 'Visualizar Usuários',
-        alias: 'view_users',
-        description: 'Permite visualizar lista de usuários'
-      }
+        slug: 'reports.export',
+        category: 'reports',
+        description: 'Permite exportar relatórios administrativos'
+      },
+      {
+        slug: 'sections.management',
+        category: 'sections',
+        description: 'Permite a gerência de Seções'
+      },
+      {
+        slug: 'users.management',
+        category: 'users',
+        description: 'Permite a gerência de Usuários'
+      },
+      {
+        slug: 'roles.management',
+        category: 'roles',
+        description: 'Permite a gerência de papéis e permissões'
+      },
     ]
   },
-  {
-    module: 'Permissões',
-    module_alias: 'permissions',
-    module_color: 'green',
-    permissions: [
-      {
-        name: 'Gerenciar Permissões',
-        alias: 'manage_permissions',
-        description: 'Permite gerenciar permissões do sistema'
-      }
-    ]
-  },
-  {
-    module: 'Vínculos',
-    module_alias: 'user_link',
-    module_color: 'purple',
-    permissions: [
-      {
-        name: 'Criar Vínculo',
-        alias: 'create_user_link',
-        description: 'Permite criar vínculos entre usuários e seções'
-      }
-    ]
-  }
 ]

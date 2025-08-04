@@ -1,6 +1,5 @@
 <script lang="ts" setup>
   import { Cropper } from 'vue-advanced-cropper'
-  import { debounce } from '~/utils/debounce'
   import 'vue-advanced-cropper/dist/style.css'
 
   interface Props {

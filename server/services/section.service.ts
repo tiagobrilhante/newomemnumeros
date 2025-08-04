@@ -1,7 +1,6 @@
 import prisma from '../prisma'
 import { handleError } from '../utils/errorHandler'
 import { SectionTransformer } from '../transformers/section.transformer'
-import { sanitizeData } from '#shared/utils/sanitize-data'
 import { serverTByLocale } from '../utils/i18n'
 import { createError } from 'h3'
 

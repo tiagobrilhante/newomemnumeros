@@ -3,9 +3,9 @@
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
 
 
-
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
+  const {selectedMilitaryOrganization} = useMilitaryOrganizations()
 
   useHead({
     title: $t('militaryOrganizationsManagement') + ' - ' + appName,
@@ -23,6 +23,8 @@
       <v-col>
         <BaseTitle :title-variables="titleVariables" />
         <military-organization-selector/>
+
+        <permissions-role-management v-if="selectedMilitaryOrganization"/>
 
       </v-col>
     </v-row>
