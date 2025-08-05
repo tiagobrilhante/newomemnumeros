@@ -56,6 +56,7 @@
   "isParentMilitaryOrganization": "This is a parent",
   "parentMilitaryOrganization": "Parent MO",
   "selectParentMilitaryOrganization": "Select Parent MO",
+  "selectMilitaryOrganization": "Select Military Organization",
   "save": "Save",
   "cancel": "Cancel",
   "moColorSelect": "Select MO color",
@@ -79,11 +80,14 @@
   "manageSections": "Sections Management",
   "registeredSections": "Registered Sections",
   "addNewSection": "Add New Section",
+  "selectSession": "Select Session",
+  "selectSessionHint": "You can select a Section or leave it blank",
   "mo": "MO",
   "sectionFullName": "Section Full Name",
   "confirmDeleteSection": "Are you sure you want to delete the Section:",
   "consequenceDeleteSection": "Accounts linked to this Section will lose access to some system functionalities.",
   "error": "Error",
+  "selectAll": "Select All",
 
   "imageEditor": {
     "zoomInstruction": "Use mouse scroll to adjust image zoom.",
@@ -165,6 +169,94 @@
     "militaryOrganizationUpdated": "Military organization updated successfully!",
     "militaryOrganizationDeleted": "Military organization deleted successfully!",
     "militaryOrganizationLogoDeleted": "Military organization logo removed successfully!"
+  },
+  "permission": {
+    "input": {
+      "role": {
+        "name": "Role name"
+      }
+    },
+    "messages": {
+      "superUserMessage": "As a Super User, you have full system access. No other permissions are required.",
+      "organizationAdminMessage": "As an Organization Administrator, you have complete administrative access to your organization. No other permissions are required.",
+      "superUserSelected": "Super User Selected",
+      "organizationAdminSelected": "Organization Administrator Selected"
+    },
+    "managePermissions": "Roles and Permissions Management",
+    "totalPermissions": "Total Permissions",
+    "selectedPermissions": "Selected Permissions",
+    "module": {
+      "admin": "Administration",
+      "numbers": "Military Organization Numbers"
+    },
+    "subcategories": {
+      "system_access": {
+        "title": "System Management",
+        "description": "System access permissions"
+      },
+      "resource_management": {
+        "title": "Resource Management",
+        "description": "System resource management"
+      },
+      "operations": {
+        "title": "Operations",
+        "description": "Specific administrative operations"
+      },
+      "reporting": {
+        "title": "Reports",
+        "description": "Report generation and export"
+      },
+      "categories_management": {
+        "title": "Category Management",
+        "description": "Category management in numbers module"
+      },
+      "indicators_management": {
+        "title": "Indicator Management",
+        "description": "Indicator management in numbers module"
+      }
+    },
+    "admin": {
+      "system": {
+        "manage": "Super User - Global System Administrator"
+      },
+      "organizations": {
+        "manage": "Allows management of Military Organizations"
+      },
+      "organization": {
+        "manage": "Allows administrative options for Military Organization level administrator"
+      },
+      "sections": {
+        "manage": "Allows management of Sections"
+      },
+      "users": {
+        "manage": "Allows management of Users"
+      },
+      "roles": {
+        "manage": "Allows management of roles and permissions"
+      },
+      "user_section": {
+        "manage": "Allows linking users to Sections"
+      },
+      "reports": {
+        "generate": "Allows generating administrative reports",
+        "export": "Allows exporting administrative reports"
+      }
+    },
+    "numbers": {
+      "categories": {
+        "create": "Allows creation of Categories in Military Organization numbers module",
+        "update": "Allows editing of Categories in Military Organization numbers module",
+        "delete": "Allows deletion of Categories in Military Organization numbers module",
+        "deactivate": "Allows deactivation of Categories in Military Organization numbers module"
+      },
+      "indicators": {
+        "create": "Allows creation of Indicators in Military Organization numbers module",
+        "update": "Allows modification of Indicators in Military Organization numbers module",
+        "delete": "Allows deletion of Indicators in Military Organization numbers module",
+        "deactivate": "Allows deactivation of Indicators in Military Organization numbers module",
+        "launch": "Allows data entry for Indicators in Military Organization numbers module"
+      }
+    }
   },
 
   "$vuetify": {

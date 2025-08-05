@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   import { retrieveMiniImage } from '#shared/utils'
 
-  const {fetchMilitaryOrganizations, selectMilitaryOrganization, clearSelection ,selectedMilitaryOrganization, militaryOrganizations} = useMilitaryOrganizations()
+  const {fetchMilitaryOrganizations, selectMilitaryOrganization, clearSelection ,selectedMilitaryOrganization, militaryOrganizations, loading} = useMilitaryOrganizations()
 
   const militaryOrganizationStore = useMilitaryOrganizationStore()
   const listOfMilitaryOrganizations = ref<militaryOrganization[]>([])
@@ -22,14 +22,15 @@
 
         <v-autocomplete
           v-if="militaryOrganizations"
-          v-model="selectedMilitaryOrganization"
-          :items="militaryOrganizations"
+          :loading
+          :model-value="selectedMilitaryOrganization"
+          :items="militaryOrganizations || []"
           density="compact"
           hide-details
           item-title="acronym"
           item-value="id"
-          label="Organização Militar"
-          placeholder="Selecione a organização Militar"
+          :label="$t('leftMenu.militaryOrganization')"
+          :placeholder="$t('selectMilitaryOrganization')"
           required
           rounded="xl"
           variant="outlined"
@@ -37,13 +38,13 @@
           @update:model-value="setSelectedMilitaryOrganization"
         />
       </v-col>
-      <v-col v-if="!selectedMilitaryOrganization">
-        <h3>Selecione a OM</h3>
+      <v-col v-if="!selectedMilitaryOrganization" class="align-content-center">
+        <h3 class="pl-5">{{$t('selectMilitaryOrganization')}}</h3>
       </v-col>
-      <v-col v-else  align-self="center" class="pt-0 pb-0 my-auto align-content-center">
-        <h2 class="my-auto d-inline-block">{{selectedMilitaryOrganization.name}} - {{selectedMilitaryOrganization.acronym}}</h2> <v-icon-btn size="small" class="ml-10" variant="outlined" icon="mdi-refresh-circle" @click="clearSelection" color="white"/>
+      <v-col v-else class="align-content-center">
+        <h2 class="d-inline-block">{{selectedMilitaryOrganization.name}} - {{selectedMilitaryOrganization.acronym}}</h2> <v-icon-btn size="small" class="ml-10 mb-1" variant="outlined" icon="mdi-refresh-circle" @click="clearSelection" color="white"/>
       </v-col>
-      <v-col v-if="selectedMilitaryOrganization && selectedMilitaryOrganization.logo" class="text-right pt-0 pb-0" cols="2">
+      <v-col v-if="selectedMilitaryOrganization && selectedMilitaryOrganization.logo" class="text-right pt-0 pb-0 align-content-center mb-0" cols="2">
         <nuxt-img
           :src="retrieveMiniImage(selectedMilitaryOrganization.logo)"
           width="30"

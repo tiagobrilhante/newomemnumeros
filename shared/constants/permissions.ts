@@ -1,96 +1,135 @@
-export const PERMISSION_CATEGORIES = [
+interface Permission {
+  slug: string
+  category: string
+}
+
+interface PermissionSubcategory {
+  name: string
+  permissions: Permission[]
+}
+
+interface PermissionModule {
+  module: string
+  module_alias: string
+  module_color: string
+  subcategories: PermissionSubcategory[]
+}
+
+export const PERMISSION_CATEGORIES: PermissionModule[] = [
   {
     module: 'Admin',
     module_alias: 'admin',
     module_color: 'yellow',
-    permissions: [
+    subcategories: [
       {
-        slug: 'mo.admin',
-        category: 'system',
-        description: 'Permite as opções administrativas para um administrador de nível Organização Militar'
+        name: 'system_access',
+        permissions: [
+          {
+            slug: 'admin.system.manage',
+            category: 'system',
+          },
+          {
+            slug: 'admin.organization.manage',
+            category: 'system',
+          },
+        ],
       },
       {
-        slug: 'system.admin',
-        category: 'system',
-        description: 'Super usuário - Administrador Global do Sistema'
+        name: 'resource_management',
+        permissions: [
+          {
+            slug: 'admin.organizations.manage',
+            category: 'organizations',
+          },
+          {
+            slug: 'admin.sections.manage',
+            category: 'sections',
+          },
+          {
+            slug: 'admin.users.manage',
+            category: 'users',
+          },
+          {
+            slug: 'admin.roles.manage',
+            category: 'roles',
+          },
+        ],
       },
       {
-        slug: 'militaryOrganization.management',
-        category: 'militaryOrganization',
-        description: 'Permite a gerência de Organizações Militares'
+        name: 'operations',
+        permissions: [
+          {
+            slug: 'admin.user_sections.manage',
+            category: 'user_sections',
+          },
+        ],
       },
       {
-        slug: 'linkUser.management',
-        category: 'linkUser',
-        description: 'Permite vincular usuários a uma seção'
+        name: 'reporting',
+        permissions: [
+          {
+            slug: 'admin.reports.generate',
+            category: 'reports',
+          },
+          {
+            slug: 'admin.reports.export',
+            category: 'reports',
+          },
+        ],
       },
-      {
-        slug: 'reports.generate',
-        category: 'reports',
-        description: 'Permite gerar relatórios administrativos'
-      },
-      {
-        slug: 'reports.export',
-        category: 'reports',
-        description: 'Permite exportar relatórios administrativos'
-      },
-      {
-        slug: 'sections.management',
-        category: 'sections',
-        description: 'Permite a gerência de Seções'
-      },
-      {
-        slug: 'users.management',
-        category: 'users',
-        description: 'Permite a gerência de Usuários'
-      },
-      {
-        slug: 'roles.management',
-        category: 'roles',
-        description: 'Permite a gerência de papéis e permissões'
-      },
-    ]
+    ],
   },
   {
-    module: 'Numbers',
-    module_alias: 'number',
+    module: 'numbers',
+    module_alias: 'numbers',
     module_color: 'blue',
-    permissions: [
+    subcategories: [
       {
-        slug: 'number.create.category',
-        category: 'number',
-        description: 'Permite a Criação de Categorias no OM em números'
+        name: 'categories_management',
+        permissions: [
+          {
+            slug: 'numbers.categories.create',
+            category: 'categories',
+          },
+          {
+            slug: 'numbers.categories.update',
+            category: 'categories',
+          },
+          {
+            slug: 'numbers.categories.delete',
+            category: 'categories',
+          },
+          {
+            slug: 'numbers.categories.deactivate',
+            category: 'categories',
+          },
+        ],
       },
       {
-        slug: 'linkUser.management',
-        category: 'linkUser',
-        description: 'Permite vincular usuários a uma seção'
+        name: 'indicators_management',
+        permissions: [
+          {
+            slug: 'numbers.indicators.create',
+            category: 'indicators',
+          },
+          {
+            slug: 'numbers.indicators.update',
+            category: 'indicators',
+          },
+          {
+            slug: 'numbers.indicators.delete',
+            category: 'indicators',
+          },
+          {
+            slug: 'numbers.indicators.deactivate',
+            category: 'indicators',
+          },
+          {
+            slug: 'numbers.indicators.launch',
+            category: 'indicators',
+          },
+        ],
       },
-      {
-        slug: 'reports.generate',
-        category: 'reports',
-        description: 'Permite gerar relatórios administrativos'
-      },
-      {
-        slug: 'reports.export',
-        category: 'reports',
-        description: 'Permite exportar relatórios administrativos'
-      },
-      {
-        slug: 'sections.management',
-        category: 'sections',
-        description: 'Permite a gerência de Seções'
-      },
-      {
-        slug: 'users.management',
-        category: 'users',
-        description: 'Permite a gerência de Usuários'
-      },
-      {
-        slug: 'roles.management',
-        category: 'roles',
-        description: 'Permite a gerência de papéis e permissões'
-      },
-    ]
+    ],
   },
 ]

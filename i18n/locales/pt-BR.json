@@ -56,6 +56,7 @@
   "isParentMilitaryOrganization": "É OM pai",
   "parentMilitaryOrganization": "OM pai",
   "selectParentMilitaryOrganization": "Selecione a OM pai",
+  "selectMilitaryOrganization": "Selecione a OM",
   "save": "Salvar",
   "cancel": "Cancelar",
   "moColorSelect": "Selecione a cor da OM",
@@ -79,12 +80,14 @@
   "manageSections": "Gerenciamento de Seções",
   "registeredSections": "Seções Cadastradas",
   "addNewSection": "Cadastrar nova Seção",
+  "selectSession": "Selecione uma seção",
+  "selectSessionHint": "Você pode selecionar uma Seção ou deixar em branco",
   "mo": "OM",
   "sectionFullName": "Nome completo da Seção",
   "confirmDeleteSection": "Você tem certeza que deseja excluir a Seção:",
   "consequenceDeleteSection": "Contas vinculadas a essa Seção, perderão acesso a algumas funcionalidades do sistema.",
   "error": "Erro",
-
+  "selectAll": "Selecionar tudo",
   "imageEditor": {
     "zoomInstruction": "Use o scroll do mouse para ajustar o zoom da imagem.",
     "moveInstruction": "Com o botão direito do mouse, clique na imagem (mantendo pressionado) para movimentar a imagem.",
@@ -163,6 +166,94 @@
     "militaryOrganizationUpdated": "Organização militar atualizada com sucesso!",
     "militaryOrganizationDeleted": "Organização militar excluída com sucesso!",
     "militaryOrganizationLogoDeleted": "Logo da organização militar removido com sucesso!"
+  },
+  "permission": {
+    "input": {
+      "role": {
+        "name": "Nome da Função (papel)"
+      }
+    },
+    "messages": {
+      "superUserMessage": "Como Super Usuário, você tem acesso total ao sistema. Outras permissões não são necessárias.",
+      "organizationAdminMessage": "Como Administrador de Organização, você tem acesso administrativo completo à sua organização. Outras permissões não são necessárias.",
+      "superUserSelected": "Super Usuário Selecionado",
+      "organizationAdminSelected": "Administrador de Organização Selecionado"
+    },
+    "managePermissions": "Gerenciamento de Funções e Permissões",
+    "totalPermissions": "Total de Permissões",
+    "selectedPermissions": "Permissões Selecionadas",
+    "module": {
+      "admin": "Administração",
+      "numbers": "OM em Números"
+    },
+    "subcategories": {
+      "system_access": {
+        "title": "Gerenciamento do Sistema",
+        "description": "Permissões de acesso ao sistema"
+      },
+      "resource_management": {
+        "title": "Gerenciamento de Recursos",
+        "description": "Gerenciamento de recursos do sistema"
+      },
+      "operations": {
+        "title": "Operações",
+        "description": "Operações administrativas específicas"
+      },
+      "reporting": {
+        "title": "Relatórios",
+        "description": "Geração e exportação de relatórios"
+      },
+      "categories_management": {
+        "title": "Gerenciamento de Categorias",
+        "description": "Gerenciamento de categorias no módulo números"
+      },
+      "indicators_management": {
+        "title": "Gerenciamento de Indicadores",
+        "description": "Gerenciamento de indicadores no módulo números"
+      }
+    },
+    "admin": {
+      "system": {
+        "manage": "Super usuário - Administrador Global do Sistema"
+      },
+      "organizations": {
+        "manage": "Permite a gerência de Organizações Militares"
+      },
+      "organization": {
+        "manage": "Permite as opções administrativas para um administrador de nível Organização Militar"
+      },
+      "sections": {
+        "manage": "Permite a gerência de Seções"
+      },
+      "users": {
+        "manage": "Permite a gerência de Usuários"
+      },
+      "roles": {
+        "manage": "Permite a gerência de papéis e permissões"
+      },
+      "user_section": {
+        "manage": "Permite a vinculação de usuários à Seções"
+      },
+      "reports": {
+        "generate": "Permite gerar relatórios administrativos",
+        "export": "Permite exportar relatórios administrativos"
+      }
+    },
+    "numbers": {
+      "categories": {
+        "create": "Permite a Criação de Categorias no OM em números",
+        "update": "Permite a Edição de Categorias no OM em números",
+        "delete": "Permite a Exclusão de Categorias no OM em números",
+        "deactivate": "Permite a Desativação de Categorias no OM em números"
+      },
+      "indicators": {
+        "create": "Permite a Criação de Indicadores no OM em números",
+        "update": "Permite a Alteração de Indicadores no OM em números",
+        "delete": "Permite a Exclusão de Indicadores no OM em números",
+        "deactivate": "Permite a Desativação de Indicadores no OM em números",
+        "launch": "Permite O Lançamento de dados de Indicadores no OM em números"
+      }
+    }
   },
   "$vuetify": {
     "open": "Abrir",

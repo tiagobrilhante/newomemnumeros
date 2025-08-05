@@ -11,7 +11,7 @@
     title: $t('militaryOrganizationsManagement') + ' - ' + appName,
   })
   const titleVariables = {
-    title: 'Gerenciamento de Funções e Permissões',
+    title: $t('permission.managePermissions'),
     icon: 'mdi-shield-account',
   }
 </script>
