@@ -97,7 +97,7 @@ export function sanitizeForFilename(input: string): string {
     .replace(/\s+/g, '_') // Substituir espaços por underscores
     .replace(/_{2,}/g, '_') // Múltiplos underscores consecutivos viram um só
     .replace(/^_+|_+$/g, '') // Remover underscores do início e fim
-    .toLowerCase() // Converter para minúsculo (padrão de sistema de arquivos)
+    .toLowerCase()
 }
 
 export const cleanStringToCreateFolders = (myString: string): string => {
@@ -157,12 +157,16 @@ import { PERMISSION_CATEGORIES } from '#shared/constants/permissions'
 
 export const retrievePermissionInfo = (permission: string) => {
   for (const category of PERMISSION_CATEGORIES) {
-    const foundPermission = category.permissions.find((perm) => perm.slug === permission)
-    if (foundPermission) {
-      return {
-        module: category.module,
-        module_color: category.module_color,
-        description: foundPermission.description,
+    // Percorrer subcategorias dentro de cada módulo
+    for (const subcategory of category.subcategories) {
+      const foundPermission = subcategory.permissions.find((perm) => perm.slug === permission)
+      if (foundPermission) {
+        return {
+          module: category.module,
+          module_color: category.module_color,
+          subcategory: subcategory.name,
+          category: foundPermission.category,
+        }
       }
     }
   }

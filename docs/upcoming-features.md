@@ -64,7 +64,7 @@ server/api/numbers/
 <!-- Expansão planejada -->
 <template>
   <v-container>
-    <!-- Lista de Roles Existentes -->
+    <!-- Lista de Role Existentes -->
     <RolesList />
     
     <!-- Formulário Criar/Editar Role -->

@@ -2,6 +2,10 @@ import { toast } from 'vue3-toastify'
 import { useMilitaryOrganizationStore } from '~/stores/military-organization.store'
 import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
 import { militaryOrganizationService } from '~/services/militaryOrganization.service'
+import type { militaryOrganization, MilitaryOrganizationMutable } from '#shared/types/military-organization'
+import type { section, SectionMutable } from '#shared/types/sections'
+import type { ApiResponse } from '#shared/types/api-response'
+
 
 interface MilitaryOrganizationFilters {
   search?: string
@@ -55,8 +59,8 @@ export const useMilitaryOrganizations = () => {
       if (!response.success) {
         throw createMilitaryOrganizationError(
           'errors.serverCommunication',
-          response.message || 'Erro ao carregar organizações militares',
-          response.statusCode || 500,
+          'Erro ao carregar organizações militares',
+          500,
         )
       }
 
@@ -110,7 +114,7 @@ export const useMilitaryOrganizations = () => {
       )
 
       if (response.success) {
-        store.militaryOrganizations.push(response.data)
+        store.militaryOrganizations.push(response.data as MilitaryOrganizationMutable)
         const successMessage = getTranslatedMessage(
           'success.militaryOrganizationCreated',
           'Organização militar criada com sucesso!',
@@ -166,7 +170,7 @@ export const useMilitaryOrganizations = () => {
       const response = await militaryOrganizationService.update(processedData)
 
       if (response.success) {
-        store.updateMilitaryOrganization(response.data)
+        store.updateMilitaryOrganization(response.data as MilitaryOrganizationMutable)
         const successMessage = getTranslatedMessage(
           'success.militaryOrganizationUpdated',
           'Organização militar atualizada com sucesso!',
@@ -241,10 +245,10 @@ export const useMilitaryOrganizations = () => {
 
       if (response.success) {
 
-        store.deleteMilitaryOrganizationLogo(response.data)
+        store.deleteMilitaryOrganizationLogo(response.data as MilitaryOrganizationMutable)
 
         if (selectedMilitaryOrganization.value?.id === response.data.id) {
-          store.setSelectedMilitaryOrganization(response.data)
+          store.setSelectedMilitaryOrganization(response.data as MilitaryOrganizationMutable)
         }
 
         const successMessage = getTranslatedMessage(
@@ -299,8 +303,8 @@ export const useMilitaryOrganizations = () => {
       if (!resp.success || !resp.data) {
         throw createMilitaryOrganizationError(
           'errors.recordNotFound',
-          resp.message || 'Organização militar não encontrada',
-          resp.statusCode || 404,
+          'Organização militar não encontrada',
+          404,
         )
       }
 
@@ -308,10 +312,10 @@ export const useMilitaryOrganizations = () => {
 
       const idx = store.militaryOrganizations.findIndex(mo => mo.id === id)
       idx >= 0
-        ? store.militaryOrganizations.splice(idx, 1, data)
-        : store.militaryOrganizations.push(data)
+        ? store.militaryOrganizations.splice(idx, 1, data as MilitaryOrganizationMutable)
+        : store.militaryOrganizations.push(data as MilitaryOrganizationMutable)
 
-      store.setSelectedMilitaryOrganization(data)
+      store.setSelectedMilitaryOrganization(data as MilitaryOrganizationMutable)
       return data
     } finally {
       loading.value = false
@@ -320,7 +324,7 @@ export const useMilitaryOrganizations = () => {
 
   const selectMilitaryOrganization = (militaryOrganization: militaryOrganization | null): void => {
     if (militaryOrganization) {
-      store.setSelectedMilitaryOrganization(militaryOrganization)
+      store.setSelectedMilitaryOrganization(militaryOrganization as MilitaryOrganizationMutable)
     } else {
       store.clearSelectedMilitaryOrganization()
     }
@@ -383,7 +387,7 @@ export const useMilitaryOrganizations = () => {
   }
 
   const addSectionToMilitaryOrganization = (militaryOrganizationId: string, newSection: section): void => {
-    store.addSectionToMilitaryOrganization(militaryOrganizationId, newSection)
+    store.addSectionToMilitaryOrganization(militaryOrganizationId, newSection as SectionMutable)
   }
 
   const removeSectionFromMilitaryOrganization = (militaryOrganizationId: string, sectionId: string): void => {
@@ -391,7 +395,7 @@ export const useMilitaryOrganizations = () => {
   }
 
   const updateSectionInMilitaryOrganization = (militaryOrganizationId: string, updatedSection: section): void => {
-    store.updateSectionInMilitaryOrganization(militaryOrganizationId, updatedSection)
+    store.updateSectionInMilitaryOrganization(militaryOrganizationId, updatedSection as SectionMutable)
   }
 
   return {

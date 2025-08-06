@@ -163,7 +163,7 @@ async function seed() {
     },
   })
 
-  console.log('Roles criados')
+  console.log('Role criados')
 
   await prisma.permission.createMany({
     data: [
