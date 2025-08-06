@@ -1,3 +1,6 @@
+<script setup lang="ts">
+  const {selectedMilitaryOrganization} = useMilitaryOrganizations()
+</script>
 <template>
     <v-card class="border border-solid border-opacity-100 pa-4 mt-4" rounded="xl">
       <v-card-title>
@@ -8,8 +11,9 @@
       </v-card-title>
     <v-card-text>
       teste
+      <hr>
+      {{selectedMilitaryOrganization}}
     </v-card-text>
   </v-card>
 </template>
-<script setup lang="ts">
-</script>
+

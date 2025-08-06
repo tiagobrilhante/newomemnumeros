@@ -1,3 +1,5 @@
+import type { SectionMutable } from './sections'
+
 export type militaryOrganization = {
   readonly id?: string
   readonly name: string
@@ -11,4 +13,19 @@ export type militaryOrganization = {
 
   readonly subOrganizationsCount?: number
   readonly usersCount?: number
+}
+
+// Versão mutável para uso em stores
+export type MilitaryOrganizationMutable = {
+  id?: string
+  name: string
+  acronym: string
+  color?: string
+  logo?: string
+  sections?: SectionMutable[]
+  militaryOrganizationId?: string | null
+  parentOrganization?: MilitaryOrganizationMutable
+  militaryOrganizations?: MilitaryOrganizationMutable[]
+  subOrganizationsCount?: number
+  usersCount?: number
 }

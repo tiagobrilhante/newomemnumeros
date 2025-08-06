@@ -1,8 +1,30 @@
 import { defineStore } from 'pinia'
+import type { militaryOrganization, MilitaryOrganizationMutable } from '#shared/types/military-organization'
+import type { SectionMutable } from '#shared/types/sections'
+
+// Helper para converter readonly para mutable
+const toMutable = (mo: militaryOrganization): MilitaryOrganizationMutable => ({
+  id: mo.id,
+  name: mo.name,
+  acronym: mo.acronym,
+  color: mo.color,
+  logo: mo.logo,
+  sections: mo.sections?.map(s => ({
+    id: s.id,
+    name: s.name,
+    acronym: s.acronym,
+    militaryOrganizationId: s.militaryOrganizationId
+  })) || [],
+  militaryOrganizationId: mo.militaryOrganizationId,
+  parentOrganization: mo.parentOrganization ? toMutable(mo.parentOrganization) : undefined,
+  militaryOrganizations: mo.militaryOrganizations?.map(toMutable) || [],
+  subOrganizationsCount: mo.subOrganizationsCount,
+  usersCount: mo.usersCount
+})
 
 type militaryOrganizationState = {
-  militaryOrganizations: militaryOrganization[]
-  selectedMilitaryOrganization: militaryOrganization | null
+  militaryOrganizations: MilitaryOrganizationMutable[]
+  selectedMilitaryOrganization: MilitaryOrganizationMutable | null
   loading: boolean
   error: string | null
 }
@@ -17,9 +39,9 @@ export const useMilitaryOrganizationStore = defineStore('militaryOrganizationSto
 
   actions: {
 
-    updateMilitaryOrganization(updatedDataMilitaryOrganization: militaryOrganization) {
+    updateMilitaryOrganization(updatedDataMilitaryOrganization: MilitaryOrganizationMutable) {
       const militaryOrganizationIndex = this.militaryOrganizations.findIndex(
-        (militaryOrganization: militaryOrganization) => militaryOrganization.id === updatedDataMilitaryOrganization.id,
+        (militaryOrganization: MilitaryOrganizationMutable) => militaryOrganization.id === updatedDataMilitaryOrganization.id,
       )
       if (militaryOrganizationIndex !== -1) {
         this.militaryOrganizations.splice(militaryOrganizationIndex, 1, updatedDataMilitaryOrganization)
@@ -32,10 +54,11 @@ export const useMilitaryOrganizationStore = defineStore('militaryOrganizationSto
     },
 
     setMilitaryOrganizations(militaryOrganizations: militaryOrganization[]) {
-      this.militaryOrganizations = militaryOrganizations
+      // Converte readonly para mutable para uso interno do store
+      this.militaryOrganizations = militaryOrganizations.map(toMutable)
     },
 
-    setSelectedMilitaryOrganization(militaryOrganization: militaryOrganization) {
+    setSelectedMilitaryOrganization(militaryOrganization: MilitaryOrganizationMutable) {
       this.selectedMilitaryOrganization = militaryOrganization
     },
 
@@ -56,7 +79,7 @@ export const useMilitaryOrganizationStore = defineStore('militaryOrganizationSto
       this.error = null
     },
 
-    deleteMilitaryOrganizationLogo(militaryOrganization: militaryOrganization) {
+    deleteMilitaryOrganizationLogo(militaryOrganization: MilitaryOrganizationMutable) {
       const id = militaryOrganization.id
       const index = this.militaryOrganizations.findIndex(
         (militaryOrganization) => militaryOrganization.id === id,
@@ -65,62 +88,72 @@ export const useMilitaryOrganizationStore = defineStore('militaryOrganizationSto
         this.militaryOrganizations[index] = {
           ...this.militaryOrganizations[index],
           logo: militaryOrganization.logo ?? '/logos/default/default.png',
-        }
+        } as MilitaryOrganizationMutable
       }
     },
 
-    addSectionToMilitaryOrganization(militaryOrganizationId: string, newSection: section) {
+    addSectionToMilitaryOrganization(militaryOrganizationId: string, newSection: SectionMutable) {
       // Atualizar no array militaryOrganizations
-      const moIndex = this.militaryOrganizations.findIndex(mo => mo.id === militaryOrganizationId)
+      const moIndex = this.militaryOrganizations.findIndex((mo: MilitaryOrganizationMutable) => mo.id === militaryOrganizationId)
       if (moIndex !== -1) {
-        this.militaryOrganizations[moIndex] = {
-          ...this.militaryOrganizations[moIndex],
-          sections: [...(this.militaryOrganizations[moIndex].sections || []), newSection]
+        const currentMO = this.militaryOrganizations[moIndex]
+        if (currentMO) {
+          this.militaryOrganizations[moIndex] = {
+            ...currentMO,
+            sections: [...(currentMO.sections || []), newSection]
+          } as MilitaryOrganizationMutable
+        
+          // Atualizar selectedMilitaryOrganization se for a mesma (usa a referência atualizada)
+          if (this.selectedMilitaryOrganization?.id === militaryOrganizationId) {
+            this.selectedMilitaryOrganization = this.militaryOrganizations[moIndex]
+          }
         }
-      }
-      
-      // Atualizar selectedMilitaryOrganization se for a mesma (usa a referência atualizada)
-      if (this.selectedMilitaryOrganization?.id === militaryOrganizationId) {
-        this.selectedMilitaryOrganization = this.militaryOrganizations[moIndex]
       }
     },
 
     removeSectionFromMilitaryOrganization(militaryOrganizationId: string, sectionId: string) {
       // Atualizar no array militaryOrganizations
-      const moIndex = this.militaryOrganizations.findIndex(mo => mo.id === militaryOrganizationId)
+      const moIndex = this.militaryOrganizations.findIndex((mo: MilitaryOrganizationMutable) => mo.id === militaryOrganizationId)
       if (moIndex !== -1) {
-        this.militaryOrganizations[moIndex] = {
-          ...this.militaryOrganizations[moIndex],
-          sections: (this.militaryOrganizations[moIndex].sections || []).filter(section => section.id !== sectionId)
-        }
-      }
-      
-      // Atualizar selectedMilitaryOrganization se for a mesma (usa a referência atualizada)
-      if (this.selectedMilitaryOrganization?.id === militaryOrganizationId) {
-        this.selectedMilitaryOrganization = this.militaryOrganizations[moIndex]
-      }
-    },
-
-    updateSectionInMilitaryOrganization(militaryOrganizationId: string, updatedSection: section) {
-      // Atualizar no array militaryOrganizations
-      const moIndex = this.militaryOrganizations.findIndex(mo => mo.id === militaryOrganizationId)
-      if (moIndex !== -1 && this.militaryOrganizations[moIndex].sections) {
-        const sectionIndex = this.militaryOrganizations[moIndex].sections!.findIndex(section => section.id === updatedSection.id)
-        if (sectionIndex !== -1) {
+        const currentMO = this.militaryOrganizations[moIndex]
+        if (currentMO) {
           this.militaryOrganizations[moIndex] = {
-            ...this.militaryOrganizations[moIndex],
-            sections: [
-              ...this.militaryOrganizations[moIndex].sections!.slice(0, sectionIndex),
-              updatedSection,
-              ...this.militaryOrganizations[moIndex].sections!.slice(sectionIndex + 1)
-            ]
+            ...currentMO,
+            sections: (currentMO.sections || []).filter((section: SectionMutable) => section.id !== sectionId)
+          } as MilitaryOrganizationMutable
+        
+          // Atualizar selectedMilitaryOrganization se for a mesma (usa a referência atualizada)
+          if (this.selectedMilitaryOrganization?.id === militaryOrganizationId) {
+            this.selectedMilitaryOrganization = this.militaryOrganizations[moIndex]
           }
         }
       }
-      
-      // Atualizar selectedMilitaryOrganization se for a mesma (usa a referência atualizada)
-      if (this.selectedMilitaryOrganization?.id === militaryOrganizationId) {
-        this.selectedMilitaryOrganization = this.militaryOrganizations[moIndex]
+    },
+
+    updateSectionInMilitaryOrganization(militaryOrganizationId: string, updatedSection: SectionMutable) {
+      // Atualizar no array militaryOrganizations
+      const moIndex = this.militaryOrganizations.findIndex((mo: MilitaryOrganizationMutable) => mo.id === militaryOrganizationId)
+      if (moIndex !== -1) {
+        const currentMO = this.militaryOrganizations[moIndex]
+        if (currentMO && currentMO.sections) {
+          const sections = currentMO.sections
+          const sectionIndex = sections.findIndex((section: SectionMutable) => section.id === updatedSection.id)
+          if (sectionIndex !== -1) {
+            this.militaryOrganizations[moIndex] = {
+              ...currentMO,
+              sections: [
+                ...sections.slice(0, sectionIndex),
+                updatedSection,
+                ...sections.slice(sectionIndex + 1)
+              ]
+            } as MilitaryOrganizationMutable
+          
+            // Atualizar selectedMilitaryOrganization se for a mesma (usa a referência atualizada)
+            if (this.selectedMilitaryOrganization?.id === militaryOrganizationId) {
+              this.selectedMilitaryOrganization = this.militaryOrganizations[moIndex]
+            }
+          }
+        }
       }
     },
 

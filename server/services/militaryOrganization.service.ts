@@ -2,7 +2,7 @@ import prisma from '../prisma'
 import { handleError } from '../utils/errorHandler'
 import { MilitaryOrganizationTransformer } from '../transformers/militaryOrganization.transformer'
 import { DEFAULT_MO_COLOR } from '#shared/constants/defaults'
-import { imageUploadService } from './imageUpload.service'
+import { imageService } from './image.service'
 import { sanitizeData, sanitizeForFilename } from '#shared/utils'
 import { serverTByLocale } from '../utils/i18n'
 import { createError } from 'h3'
@@ -142,7 +142,7 @@ export async function createMilitaryOrganization(data: MilitaryOrganizationCreat
     let logoPath = '/logos/default/default.png'
     if (logo && logo.startsWith('data:')) {
       const folderName = sanitizeForFilename(sanitizedAcronym)
-      const uploadResult = await imageUploadService.saveLogoWithThumb(logo, folderName)
+      const uploadResult = await imageService.saveLogoWithThumb(logo, folderName)
 
       if (!uploadResult.success) {
         return createError({
@@ -280,11 +280,11 @@ export async function updateMilitaryOrganization(data: MilitaryOrganizationUpdat
     if (logo !== undefined) {
       if (logo && logo.startsWith('data:')) {
         if (existingOrganization.logo !== '/logos/default/default.png') {
-          await imageUploadService.deleteImage(existingOrganization.logo)
+          await imageService.deleteImage(existingOrganization.logo)
         }
 
         const folderName = sanitizeForFilename(sanitizedAcronym)
-        const uploadResult = await imageUploadService.saveLogoWithThumb(logo, folderName)
+        const uploadResult = await imageService.saveLogoWithThumb(logo, folderName)
 
         if (!uploadResult.success) {
           return createError({
@@ -296,7 +296,7 @@ export async function updateMilitaryOrganization(data: MilitaryOrganizationUpdat
         logoPath = uploadResult.publicUrl!
       } else if (logo === null) {
         if (existingOrganization.logo !== '/logos/default/default.png') {
-          await imageUploadService.deleteImage(existingOrganization.logo)
+          await imageService.deleteImage(existingOrganization.logo)
         }
         logoPath = '/logos/default/default.png'
       } else if (logo) {
@@ -408,7 +408,7 @@ export async function deleteMilitaryOrganization(id: string, locale: string) {
       const acronym = logoToDelete.split('/')[2]
 
       if (acronym) {
-        await imageUploadService.deleteOrganizationFolder(acronym)
+        await imageService.deleteOrganizationFolder(acronym)
       }
     }
 
@@ -442,7 +442,7 @@ export async function deleteMilitaryOrganizationLogo(id: string, locale: string)
     }
 
     if (existingOrganization.logo !== '/logos/default/default.png') {
-      await imageUploadService.deleteImage(existingOrganization.logo)
+      await imageService.deleteImage(existingOrganization.logo)
     }
 
     const updatedOrganization = await prisma.militaryOrganization.update({
