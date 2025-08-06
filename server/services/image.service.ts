@@ -44,7 +44,7 @@ export class ImageService {
    * @param matches RegExpMatchArray obtido na validação
    */
   public getMimeType(matches: RegExpMatchArray): string {
-    return matches[1]
+    return matches[1]!
   }
 
   /**
@@ -52,7 +52,7 @@ export class ImageService {
    * @param matches RegExpMatchArray obtido na validação
    */
   public decodeImage(matches: RegExpMatchArray): Buffer {
-    return Buffer.from(matches[2], 'base64')
+    return Buffer.from(matches[2]!, 'base64')
   }
 
   /**
@@ -95,7 +95,18 @@ export class ImageService {
   // ==========================================
 
   /**
-   * Salva logo com thumbnail usando o padrão existente
+   * Salva logo de organização militar com thumbnail (método principal do sistema)
+   * 
+   * Funcionalidades:
+   * - Processa imagem para tamanho padrão (354x472px) e miniatura (50x50px)
+   * - Salva com nomes fixos: logo.png e logo_mini.png
+   * - Cria diretório específico por organização (/logos/organizationId/)
+   * - Retorna URL com timestamp para evitar cache do navegador
+   * - Validação automática de formato (PNG/JPEG apenas)
+   * 
+   * @param base64Data - String base64 da imagem (formato: data:image/type;base64,...)
+   * @param organizationId - ID da organização militar (usado para criar pasta)
+   * @returns Promise com resultado do upload (sucesso/erro + URL pública)
    */
   async saveLogoWithThumb(
     base64Data: string,
@@ -136,7 +147,19 @@ export class ImageService {
   }
 
   /**
-   * Salva uma imagem base64 como arquivo
+   * Salva uma imagem base64 como arquivo com nome único (UUID)
+   * 
+   * Diferente do saveLogoWithThumb, este método:
+   * - NÃO processa/redimensiona a imagem (salva como está)
+   * - Gera nome único com UUID ao invés de nomes fixos
+   * - Suporta diferentes tipos de pasta (logos, profiles, documents)
+   * - Valida tamanho e tipo de arquivo antes de salvar
+   * 
+   * Uso futuro: Upload de documentos, fotos de perfil, imagens diversas
+   * 
+   * @param base64Data - String base64 da imagem (formato: data:image/type;base64,...)
+   * @param options - Configurações de upload (pasta, subpasta, validações)
+   * @returns Promise com resultado do upload (sucesso/erro + URLs)
    */
   async saveBase64Image(
     base64Data: string, 
@@ -253,7 +276,20 @@ export class ImageService {
   }
 
   /**
-   * Move uma imagem de um local para outro
+   * Move uma imagem existente de um local para outro no sistema de arquivos
+   * 
+   * Processo realizado:
+   * 1. Lê arquivo da localização atual
+   * 2. Gera novo nome único (UUID) para evitar conflitos  
+   * 3. Cria novo diretório de destino (se necessário)
+   * 4. Salva arquivo no novo local
+   * 5. Remove arquivo da localização original
+   * 
+   * Uso futuro: Reorganização de arquivos, migração de dados, mudança de estrutura
+   * 
+   * @param currentUrl - URL atual do arquivo (ex: "/logos/org1/old-file.png")
+   * @param newOptions - Novas configurações de localização (pasta, subpasta)
+   * @returns Promise com resultado da operação (sucesso/erro + nova URL)
    */
   async moveImage(
     currentUrl: string, 
@@ -309,8 +345,8 @@ export class ImageService {
       throw new Error('Invalid base64 format')
     }
 
-    const mimeType = matches[1]
-    const base64Content = matches[2]
+    const mimeType = matches[1]!
+    const base64Content = matches[2]!
     const buffer = Buffer.from(base64Content, 'base64')
     
     // Mapear MIME type para extensão
