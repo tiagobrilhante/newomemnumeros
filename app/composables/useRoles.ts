@@ -38,13 +38,21 @@ export const useRoles = () => {
   const roles = computed(() => store.roles)
   const selectedRole = computed(() => store.selectedRole)
   const totalRoles = computed(() => store.totalRoles)
+  // Roles globais = sem vinculação organizacional específica (templates)
   const globalRoles = computed(() =>
     roles.value.filter(role => !role.militaryOrganizations?.length),
   )
+  
+  // Roles organizacionais = vinculadas a organizações específicas  
   const organizationRoles = computed(() => (organizationId: string) =>
     roles.value.filter(role => 
       role.militaryOrganizations?.some(mo => mo.id === organizationId)
     ),
+  )
+  
+  // Todas as roles organizacionais (não globais)
+  const nonGlobalRoles = computed(() =>
+    roles.value.filter(role => role.militaryOrganizations?.length),
   )
 
   const fetchRoles = async (): Promise<Role[]> => {
@@ -231,6 +239,30 @@ export const useRoles = () => {
     store.clearSelectedRole()
   }
 
+  const fetchRoleUsage = async (roleId: string) => {
+    loading.value = true
+    error.value = ''
+
+    try {
+      const response = await $fetch(`/api/roles/${roleId}/usage`)
+      
+      if (response.success && response.data) {
+        return response.data
+      } else {
+        const errorMessage = 'Failed to fetch role usage'
+        error.value = errorMessage
+        throw createRoleError('errors.fetchRoleUsage', errorMessage)
+      }
+    } catch (err) {
+      const errorMessage = getTranslatedMessage('errors.fetchRoleUsage', 'Failed to fetch role usage')
+      error.value = errorMessage
+      toast.error(errorMessage)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   const clearError = () => {
     error.value = ''
   }
@@ -246,12 +278,14 @@ export const useRoles = () => {
     totalRoles,
     globalRoles,
     organizationRoles,
+    nonGlobalRoles,
     filteredRoles,
 
     // Ações
     fetchRoles,
     fetchRolesByOrganization,
     fetchRoleById,
+    fetchRoleUsage,
     createRole,
     updateRole,
     deleteRole,

@@ -217,40 +217,9 @@ export async function createRole(
       }
     }
 
-    // Lógica de auto-vinculação para OM Admin
-    let finalMilitaryOrganizationIds = data.militaryOrganizationIds || []
-    
-    if (currentUserId && (!data.militaryOrganizationIds || data.militaryOrganizationIds.length === 0)) {
-      // Buscar o usuário atual para verificar se é OM Admin
-      const currentUser = await prisma.user.findUnique({
-        where: { id: currentUserId },
-        include: {
-          role: {
-            include: {
-              permissions: {
-                include: {
-                  permission: true
-                }
-              }
-            }
-          },
-          section: {
-            include: {
-              militaryOrganization: true
-            }
-          }
-        }
-      })
-
-      // Verificar se é OM Admin (tem permissão mo.admin)
-      const isOMAdmin = currentUser?.role?.permissions?.some(
-        rp => rp.permission.slug === 'mo.admin'
-      )
-
-      if (isOMAdmin && currentUser?.section?.militaryOrganization) {
-        finalMilitaryOrganizationIds = [currentUser.section.militaryOrganization.id]
-      }
-    }
+    // Roles são criadas como templates globais por padrão
+    // A vinculação com organizações é feita separadamente via interface
+    const finalMilitaryOrganizationIds = data.militaryOrganizationIds || []
 
     // Usar transação para criar role e relacionamentos
     const newRole = await prisma.$transaction(async (tx) => {
@@ -511,6 +480,81 @@ export async function updateRole(id: string, data: RoleUpdateInput, locale: stri
     return RoleTransformer.single(updatedRole)
   } catch (error) {
     throw await handleError(error, locale, 'UPDATE_ROLE')
+  }
+}
+
+export async function getRoleUsage(id: string, locale: string) {
+  try {
+    // Verificar se o role existe
+    const role = await prisma.role.findUnique({
+      where: {
+        id,
+        deleted: false,
+      },
+    })
+
+    if (!role) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: await serverTByLocale(locale, 'errors.roleNotFound', 'Role not found')
+      })
+    }
+
+    // Buscar organizações que usam esta role
+    const organizationsUsingRole = await prisma.roleMilitaryOrganization.findMany({
+      where: {
+        roleId: id,
+      },
+      include: {
+        militaryOrganization: {
+          where: {
+            deleted: false
+          }
+        }
+      }
+    })
+
+    // Buscar usuários que têm esta role
+    const usersWithRole = await prisma.user.findMany({
+      where: {
+        roleId: id,
+        deleted: false,
+      },
+      include: {
+        section: {
+          include: {
+            militaryOrganization: true
+          }
+        }
+      }
+    })
+
+    // Buscar seções vinculadas a esta role
+    const sectionsUsingRole = await prisma.roleSection.findMany({
+      where: {
+        roleId: id,
+      },
+      include: {
+        section: {
+          where: {
+            deleted: false
+          },
+          include: {
+            militaryOrganization: true
+          }
+        }
+      }
+    })
+
+    return {
+      role,
+      organizationsUsingRole: organizationsUsingRole.map(rmo => rmo.militaryOrganization).filter(Boolean),
+      usersWithRole: usersWithRole.length,
+      sectionsUsingRole: sectionsUsingRole.map(rs => rs.section).filter(Boolean),
+      isGlobal: organizationsUsingRole.length === 0 && sectionsUsingRole.length === 0
+    }
+  } catch (error) {
+    throw await handleError(error, locale, 'GET_ROLE_USAGE')
   }
 }
 

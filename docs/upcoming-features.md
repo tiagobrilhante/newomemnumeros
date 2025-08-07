@@ -45,39 +45,40 @@ server/api/numbers/
     └── by-user/[id].get.ts       # Relatório por usuário
 ```
 
-#### 2. **Role Management Interface** 👑
-*Interface completa para gestão de papéis e permissões*
+#### 2. **Sistema de Vinculação de Roles** 🔗
+*Interface para vincular roles globais a organizações e seções*
 
-**Status**: 🔶 Iniciado (RoleManagement.vue criado)  
+**Status**: 🔶 Planejado (Sistema base implementado em v1.5.0)  
 **Funcionalidades**:
-- ✅ Estrutura de permissões implementada
-- ✅ Componente base criado
-- 🔲 Interface para criar/editar roles
-- 🔲 Vinculação roles ↔ permissions 
-- 🔲 Vinculação roles ↔ sections (many-to-many)
-- 🔲 Preview de permissões por role
-- 🔲 Roles globais vs organizacionais
-- 🔲 Hierarquia de permissões
+- ✅ Sistema de Roles Globais implementado
+- ✅ Arquitetura pivot com tabelas relacionais
+- ✅ Visualização de uso de roles
+- ✅ Interface básica de gestão
+- 🔲 Interface drag-and-drop para vinculações
+- 🔲 Bulk operations para múltiplas vinculações
+- 🔲 Preview em tempo real de mudanças
+- 🔲 Validação de conflitos de permissões
+- 🔲 Histórico de vinculações
 
-**Evolução do RoleManagement.vue**:
+**Componentes Planejados**:
 ```vue
-<!-- Expansão planejada -->
+<!-- Interface de Vinculação Avançada -->
 <template>
   <v-container>
-    <!-- Lista de Role Existentes -->
-    <RolesList />
+    <!-- Drag & Drop Interface -->
+    <RoleLinkingMatrix />
     
-    <!-- Formulário Criar/Editar Role -->
-    <RoleForm />
+    <!-- Bulk Operations -->
+    <BulkRoleOperations />
     
-    <!-- Matrix Permissions -->
-    <PermissionsMatrix />
+    <!-- Real-time Preview -->
+    <RoleLinkingPreview />
     
-    <!-- Vinculação Sections -->
-    <RoleSectionsManager />
+    <!-- Validation Conflicts -->
+    <PermissionConflictValidator />
     
-    <!-- Preview de Permissões -->
-    <PermissionsPreview />
+    <!-- History Tracking -->
+    <RoleLinkingHistory />
   </v-container>
 </template>
 ```
@@ -230,7 +231,7 @@ app/components/audit/
 | Feature | Estimativa | Complexidade |
 |---------|------------|--------------|
 | Módulo Numbers | 3-4 semanas | Alta |
-| Role Management UI | 2-3 semanas | Média |
+| Sistema de Vinculação de Roles | 1-2 semanas | Baixa |
 | Sistema de Auditoria | 2-3 semanas | Média |
 | Notificações | 1-2 semanas | Baixa |
 | Relatórios Avançados | 3-4 semanas | Alta |
@@ -247,10 +248,11 @@ app/components/audit/
 ## 🎯 Objetivos por Quarter
 
 ### **Q3 2025** - Funcionalidades Core
-- ✅ Módulo Numbers completo
-- ✅ Role Management funcional
-- ✅ Sistema de Auditoria básico
-- ✅ Testing framework implementado
+- ✅ Sistema de Roles Globais (v1.5.0) - **CONCLUÍDO**
+- 🔲 Módulo Numbers completo
+- 🔲 Sistema de Vinculação de Roles avançado
+- 🔲 Sistema de Auditoria básico
+- 🔲 Testing framework implementado
 
 ### **Q4 2025** - Experiência do Usuário
 - ✅ Sistema de Notificações
@@ -290,6 +292,25 @@ app/components/audit/
 ---
 
 **Mantido por**: TC Brilhante  
-**Última atualização**: 04/08/2025  
+**Última atualização**: 07/08/2025  
 **Revisão**: Trimestral  
-**Status**: 🟢 Ativo
+**Status**: 🟢 Ativo  
+
+---
+
+## 🎉 Funcionalidades Recentemente Implementadas
+
+### ✅ **v1.5.0 - Sistema de Roles Globais** (07/08/2025)
+- **Arquitetura pivot** com tabela `RoleMilitaryOrganization`
+- **Roles como templates** globais reutilizáveis
+- **Visualização de uso** de roles por organização
+- **Interface separada** entre roles globais e organizacionais
+- **6 novos endpoints** para gerenciamento completo
+- **Migração automática** de dados existentes
+
+### ✅ **v1.4.0 - Sistema de Error Handling Unificado** (04/08/2025)
+- **ApiResponse pattern** em todos os 37 endpoints
+- **Error categorization** automática com ErrorCode enum
+- **Retry logic** inteligente para erros transientes
+- **Tradução multilíngue** de mensagens de erro
+- **Toast notifications** automáticas para UX

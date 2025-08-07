@@ -53,7 +53,7 @@ Sistema web robusto de gestão militar desenvolvido com **Nuxt 4**, projetado pa
 <td width="50%">
 
 ### Backend & Database
-- **Nuxt Server API** - 31 endpoints
+- **Nuxt Server API** - 37 endpoints
 - **Prisma ORM** - MySQL
 - **JWT** - Autenticação segura
 - **bcrypt** - Hash de senhas
@@ -146,6 +146,14 @@ pnpm run db:seed
 - ✅ Busca avançada por critérios
 - ✅ Validação de dados robusta
 
+### 👔 Sistema de Roles Globais
+- ✅ **Templates de funções** reutilizáveis
+- ✅ **Vinculação múltipla** a organizações
+- ✅ **Visualização de uso** por organização  
+- ✅ **Roles flexíveis** (podem existir sem vinculação)
+- ✅ **Controle granular** de permissões
+- ✅ **Interface intuitiva** para gestão
+
 ### 🎨 Interface & UX
 - ✅ Design responsivo mobile-first
 - ✅ Tema dark otimizado
@@ -167,27 +175,31 @@ pnpm run db:seed
 ```
 MilitaryOrganization (OM)
 ├── Sections (Seções)
-├── Roles (Funções/Cargos) → vinculadas à OM
-└── Users (Usuários) → vinculados a Rank, Role e Section
+├── Users (Usuários) → vinculados a Rank, Role e Section
+└── RoleMilitaryOrganization ↔ Roles Globais
 
-RoleSection (Many-to-Many)
-├── Role ↔ Section (relacionamento flexível)
-└── Permissions via RolePermission
+Sistema de Roles Globais:
+Role (Template Global)
+├── RoleMilitaryOrganization (Many-to-Many) → vinculada a múltiplas OMs
+├── RoleSection (Many-to-Many) → vinculada a seções
+├── RolePermission (Many-to-Many) → permissões
+└── Users → podem ser designados com roles em suas OMs
 ```
 
-### 📊 Entidades (8) - Arquitetura v1.2.0
+### 📊 Entidades (9) - Arquitetura v1.5.0
 | Entidade | Descrição | Campos Principais |
 |----------|-----------|-------------------|
 | **User** | Usuários do sistema | `name`, `email`, `rankId`, `roleId`, `sectionId` |
 | **Rank** | Patentes militares | `name`, `hierarchy`, `acronym` |
 | **MilitaryOrganization** | Organizações militares | `name`, `acronym`, `color`, `logo`, `parentId` |
 | **Section** | Seções organizacionais | `name`, `acronym`, `militaryOrganizationId` |
-| **Role** | Funções/cargos | `name`, `acronym`, `militaryOrganizationId` (opcional) |
+| **Role** | Funções/cargos globais | `name`, `acronym` (sem vinculação direta à OM) |
 | **Permission** | Permissões do sistema | `slug`, `description`, `category` |
 | **RolePermission** | Pivot roles-permissions | `roleId`, `permissionId` |
 | **RoleSection** | Pivot roles-sections | `roleId`, `sectionId` |
+| **RoleMilitaryOrganization** | Pivot roles-organizações | `roleId`, `militaryOrganizationId` |
 
-> **Nova Arquitetura**: Role.militaryOrganizationId é opcional, permitindo roles globais. User agora tem vinculação direta com Section.
+> **🚀 Arquitetura Pivot (v1.5.0)**: Roles são **templates globais** que podem ser vinculadas a múltiplas organizações via tabela pivot `RoleMilitaryOrganization`. Sistema permite visualizar quais organizações usam cada role global.
 
 ---
 
@@ -246,7 +258,7 @@ GET    /api/users/get-users-by-om/[id]                # Usuários por OM
 </details>
 
 <details>
-<summary><strong>🎖️ Patentes (5 endpoints)</strong></summary>
+<summary><strong>🎖️ Patentes (6 endpoints)</strong></summary>
 
 ```http
 GET    /api/ranks                           # Listar patentes
@@ -255,6 +267,20 @@ GET    /api/ranks/[id]                      # Buscar patente
 PUT    /api/ranks/[id]                      # Atualizar patente
 DELETE /api/ranks/[id]                      # Deletar patente
 GET    /api/ranks/hierarchy/[hierarchy]     # Por hierarquia
+```
+</details>
+
+<details>
+<summary><strong>👔 Roles Globais (6 endpoints)</strong></summary>
+
+```http
+GET    /api/roles                               # Listar roles
+POST   /api/roles                               # Criar role
+GET    /api/roles/[id]                          # Buscar role por ID
+PUT    /api/roles/[id]                          # Atualizar role
+DELETE /api/roles/[id]                          # Deletar role
+GET    /api/roles/[id]/usage                    # Ver uso da role (organizações)
+GET    /api/roles/organization/[organizationId] # Roles por organização
 ```
 </details>
 
@@ -274,7 +300,7 @@ newomemnumeros/
 │   ├── stores/                  # 8 stores Pinia (6 core + 2 admin)
 │   └── types/                   # Definições TypeScript
 ├── server/
-│   ├── api/                     # 31 endpoints organizados
+│   ├── api/                     # 37 endpoints organizados
 │   ├── services/                # 6 services server-side
 │   ├── transformers/            # 8 transformers de dados
 │   ├── schemas/                 # Validação Zod
@@ -434,17 +460,17 @@ pnpm run format           # Formatar código (Prettier)
 
 | Categoria | Quantidade | Descrição |
 |-----------|------------|-----------|
-| 🌐 **APIs** | 31 | Endpoints funcionais implementados |
+| 🌐 **APIs** | 37 | Endpoints funcionais implementados |
 | 🧩 **Componentes** | 17 | Componentes Vue organizados por funcionalidade |
 | 📄 **Páginas** | 7 | Páginas funcionais (públicas + admin) |
-| 🔧 **Composables** | 7 | Lógica de negócio reutilizável |
-| 🗃️ **Stores** | 8 | Estados Pinia com persistência (6 core + 2 admin) |
+| 🔧 **Composables** | 9 | Lógica de negócio reutilizável |
+| 🗃️ **Stores** | 6 | Estados Pinia com persistência |
 | 🔄 **Services** | 13 | Client/Server comunicação API (7+6) |
 | 🔀 **Transformers** | 8 | Consistência de dados |
-| 🛡️ **Middlewares** | 4+ | Segurança e controle |
+| 🛡️ **Middlewares** | 7 | Segurança e controle |
 | 🚨 **Error System** | 1 | Sistema unificado de tratamento de erro |
 | 🌍 **Idiomas** | 2 | pt-BR e en-US completos |
-| 📊 **Entidades** | 8 | Modelos de banco relacionais |
+| 📊 **Entidades** | 9 | Modelos de banco relacionais |
 
 </div>
 
@@ -517,7 +543,7 @@ Implementação do padrão **"Handler Unified with Specialized Layers"** garanti
 4. **Vue**: `useErrorHandler` → Tratamento específico + UX otimizada
 
 #### ✅ Padronização Total Implementada
-- **31 endpoints** padronizados para `Promise<ApiResponse<T>>`
+- **37 endpoints** padronizados para `Promise<ApiResponse<T>>`
 - **Eliminação completa** de suporte legacy
 - **Mapeamento automático** de erros Prisma (P2002, P2025, P2003)
 - **Tradução multilíngue** de mensagens de erro

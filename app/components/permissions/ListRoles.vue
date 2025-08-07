@@ -3,7 +3,7 @@ import type { Role } from '#shared/types/role'
 import type { VDataTable } from 'vuetify/components'
 
 const { selectedMilitaryOrganization } = useMilitaryOrganizations()
-const { fetchRolesByOrganization, fetchRoles, roles, loading } = useRoles()
+const { fetchRolesByOrganization, fetchRoles, fetchRoleUsage, roles, loading } = useRoles()
 const dialog = ref(false)
 const CARD_PROPS = reactive({
   modalType: '',
@@ -18,6 +18,7 @@ const headers: VDataTable['$props']['headers'] = [
   { title: 'Nome', key: 'name', sortable: true },
   { title: 'Sigla', key: 'acronym', sortable: true },
   { title: 'Permissões', key: 'permissions', sortable: false },
+  { title: 'Uso', key: 'usage', sortable: false },
   { title: 'Ações', key: 'actions', sortable: false, align: 'center' }
 ]
 
@@ -42,6 +43,25 @@ const editRole = (role: Role) => {
 const deleteRole = (role: Role) => {
   console.log('Deletar role:', role)
   // TODO: Implementar confirmação e deleção
+}
+
+const viewRoleUsage = async (role: Role) => {
+  try {
+    const usage = await fetchRoleUsage(role.id!)
+    console.log('Uso da role:', usage)
+    
+    // Mostrar dialog com informações de uso
+    const message = `
+Role: ${role.name}
+Organizações que usam: ${usage.organizationsUsingRole?.length || 0}
+Usuários com esta role: ${usage.usersWithRole || 0}
+Seções vinculadas: ${usage.sectionsUsingRole?.length || 0}
+Tipo: ${usage.isGlobal ? 'Global' : 'Organizacional'}
+    `
+    alert(message) // TODO: Substituir por dialog melhor
+  } catch (error) {
+    console.error('Erro ao buscar uso da role:', error)
+  }
 }
 
 const openDialog = (type: string) => {
@@ -103,6 +123,18 @@ onMounted(async () => {
                   Nenhuma permissão
                 </span>
               </div>
+            </template>
+            <template #[`item.usage`]="{ item }">
+              <v-chip
+                size="small"
+                color="info"
+                variant="tonal"
+                @click="viewRoleUsage(item)"
+                class="cursor-pointer"
+              >
+                <v-icon start>mdi-information-outline</v-icon>
+                Ver uso
+              </v-chip>
             </template>
             <template #[`item.actions`]="{ item }">
               <v-btn
@@ -169,6 +201,18 @@ onMounted(async () => {
                   Nenhuma permissão
                 </span>
               </div>
+            </template>
+            <template #[`item.usage`]="{ item }">
+              <v-chip
+                size="small"
+                color="success"
+                variant="tonal"
+                @click="viewRoleUsage(item)"
+                class="cursor-pointer"
+              >
+                <v-icon start>mdi-earth</v-icon>
+                Ver organizações
+              </v-chip>
             </template>
             <template #[`item.actions`]="{ item }">
               <v-btn
