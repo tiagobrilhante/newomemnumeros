@@ -1,4 +1,4 @@
-# 🪖 Sistema de Gestão Militar
+# 🪖 BasicOM - Sistema de gerenciamento básico da vida vegetativa de Organizações Militares
 
 <div align="center">
 
@@ -8,8 +8,8 @@
 ![Vuetify](https://img.shields.io/badge/Vuetify-3.0+-1867C0?style=for-the-badge&logo=vuetify&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-5.0+-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
 
-**Sistema web completo para gestão militar hierárquica**  
-*Gerenciamento de usuários, organizações, seções, patentes e permissões*
+**Sistema web completo para gerenciamento básico da vida vegetativa de OMs**  
+*Gerenciamento administrativo de usuários, organizações, seções, posto/graduações e permissões*
 
 [🚀 Demo](#-como-executar) • [📖 Documentação](#-funcionalidades) • [🛠️ API](#-apis-implementadas) • [🏗️ Arquitetura](#-arquitetura)
 
@@ -19,18 +19,30 @@
 
 ## 📋 Visão Geral
 
-Sistema web robusto de gestão militar desenvolvido com **Nuxt 4**, projetado para gerenciar hierarquias complexas de organizações militares, controle granular de permissões e administração completa de usuários com diferentes patentes e funções.
+O **BasicOM** é um sistema web desenvolvido com **Nuxt 4** para gerenciamento básico da vida vegetativa de organizações militares. Focado exclusivamente na gestão administrativa e organizacional de usuários, seções, postos/graduações e permissões. 
+
+**Escopo do Sistema:**
+- ✅ **Vida Vegetativa**: Aspectos administrativos, burocráticos e organizacionais
+- ✅ **Gestão de Pessoal**: Cadastro, organização e controle administrativo
+- ✅ **Estrutura Organizacional**: Organograma e distribuição por seções
+- ❌ **Comando e Controle**: Não aborda aspectos operacionais ou táticos
+- ❌ **Operações Militares**: Não contempla atividades de combate ou missão
+- ❌ **Hierarquia de Comando**: Limitado aos aspectos administrativos
+
+> **Nota Importante**: O repositório será renomeado de `newomemnumeros` para `basicom` em versão futura.
 
 ### ✨ Características Principais
 
 - 🔐 **Autenticação JWT** completa e segura
-- 🏛️ **Hierarquia organizacional** com suporte pai-filho
-- 👥 **Gestão de usuários** com patentes e funções
-- 🛡️ **Sistema de permissões** granular por módulo
-- 🖼️ **Upload de logos** com processamento automático
+- 🏛️ **Estrutura organizacional** administrativa com suporte pai-filho
+- 👥 **Gestão administrativa de usuários** com postos/graduações e funções
+- 🛡️ **Sistema de permissões** granular para módulos administrativos
+- 🖼️ **Upload de logos** institucionais com processamento automático
 - 🌍 **Internacionalização** pt-BR/en-US
 - 📱 **Design responsivo** mobile-first
-- 🎨 **Temas personalizáveis** por organização
+- 🎨 **Temas personalizáveis** por organização militar
+
+> **⚠️ Importante**: Este sistema é voltado **exclusivamente para a vida vegetativa** (aspectos administrativos, burocráticos e organizacionais) das Organizações Militares. Não contempla operações militares, comando tático ou hierarquia operacional.
 
 ---
 
@@ -53,7 +65,7 @@ Sistema web robusto de gestão militar desenvolvido com **Nuxt 4**, projetado pa
 <td width="50%">
 
 ### Backend & Database
-- **Nuxt Server API** - 37 endpoints
+- **Nuxt Server API** - 37 endpoints administrativos
 - **Prisma ORM** - MySQL
 - **JWT** - Autenticação segura
 - **bcrypt** - Hash de senhas
@@ -131,8 +143,8 @@ pnpm run db:seed
 - ✅ Organizações militares hierárquicas
 - ✅ Seções dentro das organizações
 - ✅ Suporte a estrutura pai-filho
-- ✅ Gestão de patentes militares
-- ✅ Sistema de funções/cargos
+- ✅ Gestão de postos/graduações
+- ✅ Sistema de funções administrativas
 - ✅ Soft delete para preservação de dados
 
 </td>
@@ -140,7 +152,7 @@ pnpm run db:seed
 
 ### 👥 Gestão de Usuários
 - ✅ CRUD completo de usuários
-- ✅ Vinculação a patentes e funções
+- ✅ Vinculação a posto/graduações e funções
 - ✅ Controle de acesso por permissões
 - ✅ Histórico de modificações
 - ✅ Busca avançada por critérios
@@ -175,7 +187,7 @@ pnpm run db:seed
 ```
 MilitaryOrganization (OM)
 ├── Sections (Seções)
-├── Users (Usuários) → vinculados a Rank, Role e Section
+├── Users (Usuários) → vinculados a Rank (Posto/Grad), Role e Section
 └── RoleMilitaryOrganization ↔ Roles Globais
 
 Sistema de Roles Globais:
@@ -187,16 +199,16 @@ Role (Template Global)
 ```
 
 ### 📊 Entidades (9) - Arquitetura v1.5.0
-| Entidade | Descrição | Campos Principais |
-|----------|-----------|-------------------|
-| **User** | Usuários do sistema | `name`, `email`, `rankId`, `roleId`, `sectionId` |
-| **Rank** | Patentes militares | `name`, `hierarchy`, `acronym` |
-| **MilitaryOrganization** | Organizações militares | `name`, `acronym`, `color`, `logo`, `parentId` |
-| **Section** | Seções organizacionais | `name`, `acronym`, `militaryOrganizationId` |
-| **Role** | Funções/cargos globais | `name`, `acronym` (sem vinculação direta à OM) |
-| **Permission** | Permissões do sistema | `slug`, `description`, `category` |
-| **RolePermission** | Pivot roles-permissions | `roleId`, `permissionId` |
-| **RoleSection** | Pivot roles-sections | `roleId`, `sectionId` |
+| Entidade | Descrição                | Campos Principais |
+|----------|--------------------------|-------------------|
+| **User** | Usuários do sistema      | `name`, `email`, `rankId`, `roleId`, `sectionId` |
+| **Rank** | Postos/Graduações        | `name`, `hierarchy`, `acronym` |
+| **MilitaryOrganization** | Organizações militares   | `name`, `acronym`, `color`, `logo`, `parentId` |
+| **Section** | Seções organizacionais   | `name`, `acronym`, `militaryOrganizationId` |
+| **Role** | Funções/cargos globais   | `name`, `acronym` (sem vinculação direta à OM) |
+| **Permission** | Permissões do sistema    | `slug`, `description`, `category` |
+| **RolePermission** | Pivot roles-permissions  | `roleId`, `permissionId` |
+| **RoleSection** | Pivot roles-sections     | `roleId`, `sectionId` |
 | **RoleMilitaryOrganization** | Pivot roles-organizações | `roleId`, `militaryOrganizationId` |
 
 > **🚀 Arquitetura Pivot (v1.5.0)**: Roles são **templates globais** que podem ser vinculadas a múltiplas organizações via tabela pivot `RoleMilitaryOrganization`. Sistema permite visualizar quais organizações usam cada role global.
@@ -258,14 +270,14 @@ GET    /api/users/get-users-by-om/[id]                # Usuários por OM
 </details>
 
 <details>
-<summary><strong>🎖️ Patentes (6 endpoints)</strong></summary>
+<summary><strong>🎖️ Postos/Graduações (6 endpoints)</strong></summary>
 
 ```http
-GET    /api/ranks                           # Listar patentes
-POST   /api/ranks                           # Criar patente
-GET    /api/ranks/[id]                      # Buscar patente
-PUT    /api/ranks/[id]                      # Atualizar patente
-DELETE /api/ranks/[id]                      # Deletar patente
+GET    /api/ranks                           # Listar posto/graduações
+POST   /api/ranks                           # Criar posto/graduação
+GET    /api/ranks/[id]                      # Buscar posto/graduação
+PUT    /api/ranks/[id]                      # Atualizar posto/graduação
+DELETE /api/ranks/[id]                      # Deletar posto/graduação
 GET    /api/ranks/hierarchy/[hierarchy]     # Por hierarquia
 ```
 </details>
@@ -484,7 +496,7 @@ pnpm run format           # Formatar código (Prettier)
 DATABASE_URL="mysql://user:password@localhost:3306/database"
 
 # Aplicação  
-NUXT_APP_NAME="Sistema de Gestão Militar"
+NUXT_APP_NAME="BasicOM - Gerenciamento de OMs"
 NUXT_APP_CREATOR="Desenvolvedor"
 
 # JWT (opcional - usa padrão se não definida)
@@ -514,10 +526,10 @@ pnpm run db:seed
 ### Docker
 ```bash
 # Build da imagem
-docker build -t sistema-gestao-militar .
+docker build -t basicom .
 
 # Executar container
-docker run -p 3000:3000 sistema-gestao-militar
+docker run -p 3000:3000 basicom
 ```
 
 ---
@@ -574,28 +586,52 @@ Implementação do padrão **"Handler Unified with Specialized Layers"** garanti
 ### Processo de Contribuição
 1. **Fork** o repositório
 2. **Crie** uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** para a branch (`git push origin feature/AmazingFeature`)
-5. **Abra** um Pull Request
+3. **Commit** suas mudanças seguindo [Conventional Commits](https://www.conventionalcommits.org/)
+4. **Commits** devem ser feitos usando a lingua inglesa (en-us)
+5. **Push** para a branch (`git push origin feature/AmazingFeature`)
+6. **Abra** um Pull Request com template completo
 
-### Padrões de Código
-- **ESLint + Prettier** configurados
+### Padrões de Desenvolvimento
+- **Clean Code**: Seguir princípios de código limpo
+- **SOLID**: Aplicar princípios de design orientado a objetos
+- **DRY**: Evitar repetição de código
+- **ESLint + Prettier** configurados e obrigatórios
 - **TypeScript** estrito habilitado
-- **Conventional Commits** recomendado
+- **Conventional Commits** obrigatório:
+  - `feat:` para novas funcionalidades
+  - `fix:` para correções de bugs
+  - `docs:` para mudanças na documentação
+  - `style:` para formatação de código
+  - `refactor:` para refatoração sem mudança de funcionalidade
+  - `test:` para adição de testes
+  - `chore:` para tarefas de manutenção
 - **Testes** obrigatórios para novas features
+- **Code Review** obrigatório via Pull Request
+- **Documentação** atualizada para mudanças significativas
+
+### Padrões de Pull Request
+- **Template completo** preenchido
+- **Descrição clara** do problema e solução
+- **Screenshots** para mudanças de UI
+- **Testes automatizados** passando
+- **Build** sem erros ou warnings
+- **Breaking changes** claramente documentadas
 
 ---
 
 ## 📄 Licença
 
-Este projeto está sob licença privada. Todos os direitos reservados.
+Este projeto está sob licença privada. Desenvolvido para uso em ambiente militar. Todos os direitos reservados.
 
 ---
 
 <div align="center">
 
-**Desenvolvido com ❤️ para gestão militar eficiente**
+**Desenvolvido com profissionalismo para um gerenciamento básico da vida vegetativa das OMs**
 
-[🔝 Voltar ao topo](#-sistema-de-gestão-militar)
+
+**autor**: TC Brilhante - Ch STI CMA
+
+[🔝 Voltar ao topo](#-basicom---sistema-de-gerenciamento-básico-da-vida-vegetativa-de-organizações-militares)
 
 </div>
