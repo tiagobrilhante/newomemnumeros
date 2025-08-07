@@ -1,0 +1,12 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/yourusername/newomemnumeros/docs
+    about: Check the documentation for usage guides and API reference
+  - name: 🔒 Security Policy  
+    url: https://github.com/yourusername/newomemnumeros/blob/main/SECURITY.md
+    about: Review our security policy for vulnerability reporting procedures
+  - name: 🤝 Contributing Guidelines
+    url: https://github.com/yourusername/newomemnumeros/blob/main/CONTRIBUTING.md
+    about: Learn how to contribute to BasicOM development
+EOF < /dev/null
