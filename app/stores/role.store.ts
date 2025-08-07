@@ -6,15 +6,15 @@ const toMutable = (role: Role): RoleMutable => ({
   id: role.id,
   name: role.name,
   acronym: role.acronym,
-  militaryOrganizationId: role.militaryOrganizationId,
-  militaryOrganization: role.militaryOrganization ? {
-    id: role.militaryOrganization.id,
-    name: role.militaryOrganization.name,
-    acronym: role.militaryOrganization.acronym,
-    color: role.militaryOrganization.color,
-    logo: role.militaryOrganization.logo,
-    militaryOrganizationId: role.militaryOrganization.militaryOrganizationId,
-  } : undefined,
+  militaryOrganizations: role.militaryOrganizations?.map(mo => ({
+    id: mo.id,
+    name: mo.name,
+    acronym: mo.acronym,
+    color: mo.color,
+    logo: mo.logo,
+    militaryOrganizationId: mo.militaryOrganizationId,
+  })),
+  permissions: role.permissions,
   deleted: role.deleted,
   createdAt: role.createdAt,
   updatedAt: role.updatedAt
@@ -80,7 +80,9 @@ export const useRoleStore = defineStore('roleStore', {
 
     setRolesByOrganization(organizationId: string, roles: Role[]) {
       // Remove roles existentes da organiza��o
-      this.roles = this.roles.filter(role => role.militaryOrganizationId !== organizationId)
+      this.roles = this.roles.filter(role => 
+        !role.militaryOrganizations?.some(mo => mo.id === organizationId)
+      )
       
       // Adiciona os novos roles
       const newRoles = roles.map(toMutable)
@@ -88,7 +90,9 @@ export const useRoleStore = defineStore('roleStore', {
     },
 
     clearRolesByOrganization(organizationId: string) {
-      this.roles = this.roles.filter(role => role.militaryOrganizationId !== organizationId)
+      this.roles = this.roles.filter(role => 
+        !role.militaryOrganizations?.some(mo => mo.id === organizationId)
+      )
     },
 
     setLoading(loading: boolean) {

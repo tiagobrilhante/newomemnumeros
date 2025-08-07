@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client'
-import type { ErrorResponse, ErrorCode } from '#shared/types/api-response'
+import { ErrorCode } from '#shared/types/api-response'
+import type { ErrorResponse } from '#shared/types/api-response'
 import { 
   createErrorResponse, 
   mapPrismaErrorCode, 

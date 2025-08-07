@@ -100,51 +100,39 @@ async function seed() {
 
   console.log('Seções criadas')
 
-  // Criar roles
-  const stiChCma = await prisma.role.create({
-    data: {
-      name: 'Chefe da Seção de Tecnologia da Informação',
-      acronym: 'Ch STI',
-      militaryOrganizationId: cma.id,
-    },
-  })
-
-  await prisma.role.createMany({
+  const roles1 = await prisma.role.createMany({
     data: [
+      {
+        name: 'Chefe da Seção de Tecnologia da Informação',
+        acronym: 'Ch STI',
+      },
       {
         name: 'Chefe da Seção de Pessoal',
         acronym: 'Ch E1',
-        militaryOrganizationId: cma.id,
       },
       {
         name: 'Chefe da Seção de Inteligência',
         acronym: 'Ch E2',
-        militaryOrganizationId: cma.id,
       },
       {
         name: 'Chefe Seção de Operações',
         acronym: 'Ch E3',
-        militaryOrganizationId: cma.id,
       },
       {
         name: 'Adjunto da Seção de Operações',
         acronym: 'Adj E3',
-        militaryOrganizationId: cma.id,
       },
       {
         name: 'Chefe Seção de Logística',
         acronym: 'Ch E4',
-        militaryOrganizationId: cma.id,
       },
       {
         name: 'Chefe da Seção de Planejamento Estratégico Institucional',
         acronym: 'Ch SPEI',
-        militaryOrganizationId: cma.id,
       },
       {
         name: 'Chefe da Seção de Pessoal',
         acronym: 'Ch E1',
-        militaryOrganizationId: bdaInfSl1.id,
       },
     ],
   })
@@ -209,6 +197,7 @@ async function seed() {
       },
     ],
   })
+
   const adminPermissionGlobal = await prisma.permission.create({
     data: {
       slug: 'system.admin',
@@ -228,6 +217,53 @@ async function seed() {
   console.log('Permissões criadas')
 
   //continue a partir daqui
+  
+  // Buscar roles criadas anteriormente
+  const allRoles = await prisma.role.findMany()
+  const chStiRole = allRoles.find(role => role.acronym === 'Ch STI')
+  const chE1Role = allRoles.find(role => role.acronym === 'Ch E1')
+  const chE2Role = allRoles.find(role => role.acronym === 'Ch E2')
+  const chE3Role = allRoles.find(role => role.acronym === 'Ch E3')
+  const adjE3Role = allRoles.find(role => role.acronym === 'Adj E3')
+  const chE4Role = allRoles.find(role => role.acronym === 'Ch E4')
+  const chSpeiRole = allRoles.find(role => role.acronym === 'Ch SPEI')
+
+  console.log('Roles encontradas para vinculação')
+
+  // Criar vinculações RoleMilitaryOrganization
+  const roleMilOrgData = []
+
+  // Admin Geral - sem vinculação específica (role global)
+  // Admin OM - vinculado ao CMA
+  roleMilOrgData.push({
+    roleId: adminRole.id,
+    militaryOrganizationId: cma.id,
+  })
+
+  // Roles específicas vinculadas ao CMA
+  if (chStiRole) roleMilOrgData.push({ roleId: chStiRole.id, militaryOrganizationId: cma.id })
+  if (chE1Role) roleMilOrgData.push({ roleId: chE1Role.id, militaryOrganizationId: cma.id })
+  if (chE2Role) roleMilOrgData.push({ roleId: chE2Role.id, militaryOrganizationId: cma.id })
+  if (chE3Role) roleMilOrgData.push({ roleId: chE3Role.id, militaryOrganizationId: cma.id })
+  if (adjE3Role) roleMilOrgData.push({ roleId: adjE3Role.id, militaryOrganizationId: cma.id })
+  if (chE4Role) roleMilOrgData.push({ roleId: chE4Role.id, militaryOrganizationId: cma.id })
+  if (chSpeiRole) roleMilOrgData.push({ roleId: chSpeiRole.id, militaryOrganizationId: cma.id })
+
+  // Role Ch E1 vinculada também à 1ª Bda Inf Sl (segunda ocorrência)
+  const chE1Roles = allRoles.filter(role => role.acronym === 'Ch E1')
+  const chE1BdaRole = chE1Roles.length > 1 ? chE1Roles[1] : null
+  if (chE1BdaRole) {
+    roleMilOrgData.push({
+      roleId: chE1BdaRole.id,
+      militaryOrganizationId: bdaInfSl1.id,
+    })
+  }
+
+  await prisma.roleMilitaryOrganization.createMany({
+    data: roleMilOrgData
+  })
+
+  console.log('Vinculações RoleMilitaryOrganization criadas')
 
   const allPermissions = await prisma.permission.findMany()
 
@@ -248,40 +284,92 @@ async function seed() {
   })
 
   // Atribuir permissões técnicas ao Chefe STI
-  const stiPermissions = allPermissions.filter(p =>
-    p.category === 'users' ||
-    p.category === 'system' ||
-    p.category === 'sections' ||
-    p.slug.includes('.management')
-  )
+  if (chStiRole) {
+    const stiPermissions = allPermissions.filter(p =>
+      p.category === 'users' ||
+      p.category === 'system' ||
+      p.category === 'sections' ||
+      p.slug.includes('.management')
+    )
 
-  await prisma.rolePermission.createMany({
-    data: stiPermissions.map(permission => ({
-      permissionId: permission.id,
-      roleId: stiChCma.id,
-    }))
-  })
-
-
+    await prisma.rolePermission.createMany({
+      data: stiPermissions.map(permission => ({
+        permissionId: permission.id,
+        roleId: chStiRole.id,
+      }))
+    })
+  }
 
   console.log('Permissões atribuídas aos roles')
 
   // Criar relacionamentos RoleSection para vincular roles às seções apropriadas
+  const roleSectionData = []
+
+  // Chefe STI vinculado à seção STI
+  if (chStiRole) {
+    roleSectionData.push({
+      roleId: chStiRole.id,
+      sectionId: stiCma.id,
+    })
+  }
+
+  // Outros chefes vinculados às suas respectivas seções
+  if (chE1Role) {
+    roleSectionData.push({
+      roleId: chE1Role.id,
+      sectionId: e1Cma.id,
+    })
+  }
+
+  if (chE2Role) {
+    roleSectionData.push({
+      roleId: chE2Role.id,
+      sectionId: e2Cma.id,
+    })
+  }
+
+  if (chE3Role) {
+    roleSectionData.push({
+      roleId: chE3Role.id,
+      sectionId: e3Cma.id,
+    })
+  }
+
+  if (adjE3Role) {
+    roleSectionData.push({
+      roleId: adjE3Role.id,
+      sectionId: e3Cma.id,
+    })
+  }
+
+  if (chE4Role) {
+    roleSectionData.push({
+      roleId: chE4Role.id,
+      sectionId: e4Cma.id,
+    })
+  }
+
+  if (chSpeiRole) {
+    roleSectionData.push({
+      roleId: chSpeiRole.id,
+      sectionId: speiCma.id,
+    })
+  }
+
+  // Ch E1 da 1ª Bda Inf Sl vinculado à sua seção
+  if (chE1BdaRole) {
+    roleSectionData.push({
+      roleId: chE1BdaRole.id,
+      sectionId: e1BdaInfSl1.id,
+    })
+  }
+
   await prisma.roleSection.createMany({
-    data: [
-      // Chefe STI vinculado à seção STI
-      {
-        roleId: stiChCma.id,
-        sectionId: stiCma.id,
-      },
-      // Outros chefes podem ser vinculados às suas respectivas seções
-      // Exemplo: Ch E1 vinculado à seção E1, etc.
-    ]
+    data: roleSectionData
   })
 
   console.log('Relacionamentos Role-Section criados')
 
-  const allRoles = await prisma.role.findMany()
   const allSections = await prisma.section.findMany()
 
   const getRandomRole = () => {
@@ -401,7 +489,7 @@ async function seed() {
         cpf: '31484707028',
         password: hashedPassword,
         rankId: ranks[4].id,
-        roleId: stiChCma.id,
+        roleId: chStiRole?.id || getRandomRole(),
         sectionId: stiCma.id, // Ch STI vinculado à seção STI
       },
       {

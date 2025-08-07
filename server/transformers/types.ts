@@ -6,7 +6,11 @@ export type UserWithIncludes = Prisma.UserGetPayload<{
     rank: true
     role: {
       include: {
-        militaryOrganization: true
+        RoleMilitaryOrganization: {
+          include: {
+            militaryOrganization: true
+          }
+        }
         permissions: {
           include: {
             permission: true
@@ -24,7 +28,11 @@ export type UserWithIncludes = Prisma.UserGetPayload<{
 
 export type RoleWithIncludes = Prisma.RoleGetPayload<{
   include: {
-    militaryOrganization: true
+    RoleMilitaryOrganization: {
+      include: {
+        militaryOrganization: true
+      }
+    }
     permissions: {
       include: {
         permission: true

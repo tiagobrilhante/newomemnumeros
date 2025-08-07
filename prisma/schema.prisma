@@ -68,10 +68,10 @@ model MilitaryOrganization {
   sections           Section[]
 
   // Auditoria
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  deleted   Boolean  @default(false)
-  Role      Role[]
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  deleted                  Boolean                    @default(false)
+  RoleMilitaryOrganization RoleMilitaryOrganization[]
 
   @@index([militaryOrganizationId])
   @@index([deleted])
@@ -101,25 +101,22 @@ model Section {
 }
 
 model Role {
-  id                     String  @id @default(uuid())
-  name                   String  @db.VarChar(255)
-  acronym                String  @db.VarChar(50)
-  militaryOrganizationId String?
+  id      String @id @default(uuid())
+  name    String @db.VarChar(255)
+  acronym String @db.VarChar(50)
 
   // Relacionamentos
-  users                User[]
-  permissions          RolePermission[]
-  militaryOrganization MilitaryOrganization? @relation(fields: [militaryOrganizationId], references: [id], onDelete: Cascade)
+  users                    User[]
+  permissions              RolePermission[]
+  RoleSection              RoleSection[]
+  RoleMilitaryOrganization RoleMilitaryOrganization[]
 
   // Auditoria
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  deleted     Boolean       @default(false)
-  RoleSection RoleSection[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted   Boolean  @default(false)
 
-  @@unique([acronym, militaryOrganizationId])
-  @@index([militaryOrganizationId])
-  @@index([deleted])
+  @@index([name, deleted])
   @@map("roles")
 }
 
@@ -176,4 +173,21 @@ model RoleSection {
   @@index([sectionId])
   @@index([roleId])
   @@map("role_section")
+}
+
+model RoleMilitaryOrganization {
+  id                     String               @id @default(uuid())
+  roleId                 String
+  militaryOrganizationId String
+  //relacionamentos
+  role                   Role                 @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  militaryOrganization   MilitaryOrganization @relation(fields: [militaryOrganizationId], references: [id], onDelete: Cascade)
+  // Auditoria
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+  deleted                Boolean              @default(false)
+
+  @@index([militaryOrganizationId])
+  @@index([roleId])
+  @@map("role_military_organization")
 }

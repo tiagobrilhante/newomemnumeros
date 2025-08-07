@@ -23,9 +23,7 @@
       <v-col>
         <BaseTitle :title-variables="titleVariables" />
         <military-organization-selector/>
-
         <permissions-role-management v-if="selectedMilitaryOrganization"/>
-
       </v-col>
     </v-row>
   </v-container>

@@ -12,7 +12,8 @@ export default defineEventHandler(async (event): Promise<ApiResponse<Role>> => {
 
   try {
     const roleData = await readBody(event)
-    const newRole = await createRole(roleData, locale)
+    const currentUserId = event.context.user?.id
+    const newRole = await createRole(roleData, locale, currentUserId)
     return createSuccessResponse(newRole)
   } catch (error) {
     const errorResponse = await handleError(error, locale, 'CREATE_ROLE')

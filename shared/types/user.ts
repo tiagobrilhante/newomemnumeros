@@ -1,12 +1,12 @@
 import type { rank } from '~/types/rank'
 import type { section } from '~/types/sections'
+import type { militaryOrganization } from '~/types/military-organization'
 
 export type role = {
   id: string
   name: string
   acronym: string
-  sectionId: string
-  section: section
+  militaryOrganizations?: militaryOrganization[]
   permissions: string[]
 }
 

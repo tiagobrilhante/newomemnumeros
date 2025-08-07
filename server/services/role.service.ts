@@ -9,13 +9,18 @@ import type { Role } from '#shared/types/role'
 interface RoleCreateInput {
   name: string
   acronym: string
-  militaryOrganizationId?: string | null
+  militaryOrganizationIds?: string[] // IDs das OMs para vincular (opcional)
+  sectionIds?: string[] // IDs das seções para vincular (opcional)
+  permissionIds?: string[] // IDs das permissões para vincular (opcional)
+  // Se for um OM Admin criando, será auto-vinculada à sua OM
 }
 
 interface RoleUpdateInput {
   name?: string
   acronym?: string
-  militaryOrganizationId?: string | null
+  militaryOrganizationIds?: string[] // IDs das OMs para vincular (opcional)
+  sectionIds?: string[] // IDs das seções para vincular (opcional) 
+  permissionIds?: string[] // IDs das permissões para vincular (opcional)
 }
 
 function sanitizeRoleData(name: string, acronym: string) {
@@ -32,7 +37,16 @@ export async function getAllRoles(locale: string): Promise<Role[]> {
         deleted: false,
       },
       include: {
-        militaryOrganization: true,
+        RoleMilitaryOrganization: {
+          include: {
+            militaryOrganization: true
+          }
+        },
+        RoleSection: {
+          include: {
+            section: true
+          }
+        },
         permissions: {
           include: {
             permission: true
@@ -58,7 +72,16 @@ export async function getRoleById(id: string, locale: string): Promise<Role> {
         deleted: false,
       },
       include: {
-        militaryOrganization: true,
+        RoleMilitaryOrganization: {
+          include: {
+            militaryOrganization: true
+          }
+        },
+        RoleSection: {
+          include: {
+            section: true
+          }
+        },
         permissions: {
           include: {
             permission: true
@@ -99,11 +122,24 @@ export async function getRolesByOrganization(organizationId: string, locale: str
 
     const roles = await prisma.role.findMany({
       where: {
-        militaryOrganizationId: organizationId,
+        RoleMilitaryOrganization: {
+          some: {
+            militaryOrganizationId: organizationId
+          }
+        },
         deleted: false,
       },
       include: {
-        militaryOrganization: true,
+        RoleMilitaryOrganization: {
+          include: {
+            militaryOrganization: true
+          }
+        },
+        RoleSection: {
+          include: {
+            section: true
+          }
+        },
         permissions: {
           include: {
             permission: true
@@ -121,18 +157,21 @@ export async function getRolesByOrganization(organizationId: string, locale: str
   }
 }
 
-export async function createRole(data: RoleCreateInput, locale: string): Promise<Role> {
+export async function createRole(
+  data: RoleCreateInput, 
+  locale: string, 
+  currentUserId?: string
+): Promise<Role> {
   try {
     const { sanitizedName, sanitizedAcronym } = sanitizeRoleData(data.name, data.acronym)
 
-    // Verificar se já existe um role com o mesmo nome na organização (ou globalmente se for global)
+    // Verificar duplicatas (busca global pois roles podem ser flexíveis)
     const existingRole = await prisma.role.findFirst({
       where: {
         OR: [
           { name: sanitizedName },
           { acronym: sanitizedAcronym }
         ],
-        militaryOrganizationId: data.militaryOrganizationId || null,
         deleted: false,
       },
     })
@@ -144,38 +183,144 @@ export async function createRole(data: RoleCreateInput, locale: string): Promise
       })
     }
 
-    // Se militaryOrganizationId for fornecido, verificar se a organização existe
-    if (data.militaryOrganizationId) {
-      const organization = await prisma.militaryOrganization.findUnique({
+    // Verificar se organizações existem (se fornecidas)
+    if (data.militaryOrganizationIds && data.militaryOrganizationIds.length > 0) {
+      const organizations = await prisma.militaryOrganization.findMany({
         where: {
-          id: data.militaryOrganizationId,
+          id: { in: data.militaryOrganizationIds },
           deleted: false,
         },
       })
 
-      if (!organization) {
+      if (organizations.length !== data.militaryOrganizationIds.length) {
         throw createError({
           statusCode: 404,
-          statusMessage: await serverTByLocale(locale, 'errors.organizationNotFound', 'Organization not found')
+          statusMessage: await serverTByLocale(locale, 'errors.organizationNotFound', 'One or more organizations not found')
         })
       }
     }
 
-    const newRole = await prisma.role.create({
-      data: {
-        name: sanitizedName,
-        acronym: sanitizedAcronym,
-        militaryOrganizationId: data.militaryOrganizationId,
-      },
-      include: {
-        militaryOrganization: true,
-        permissions: {
-          include: {
-            permission: true
-          }
+    // Verificar se seções existem (se fornecidas)
+    if (data.sectionIds && data.sectionIds.length > 0) {
+      const sections = await prisma.section.findMany({
+        where: {
+          id: { in: data.sectionIds },
+          deleted: false,
         },
-      },
+      })
+
+      if (sections.length !== data.sectionIds.length) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: await serverTByLocale(locale, 'errors.sectionNotFound', 'One or more sections not found')
+        })
+      }
+    }
+
+    // Lógica de auto-vinculação para OM Admin
+    let finalMilitaryOrganizationIds = data.militaryOrganizationIds || []
+    
+    if (currentUserId && (!data.militaryOrganizationIds || data.militaryOrganizationIds.length === 0)) {
+      // Buscar o usuário atual para verificar se é OM Admin
+      const currentUser = await prisma.user.findUnique({
+        where: { id: currentUserId },
+        include: {
+          role: {
+            include: {
+              permissions: {
+                include: {
+                  permission: true
+                }
+              }
+            }
+          },
+          section: {
+            include: {
+              militaryOrganization: true
+            }
+          }
+        }
+      })
+
+      // Verificar se é OM Admin (tem permissão mo.admin)
+      const isOMAdmin = currentUser?.role?.permissions?.some(
+        rp => rp.permission.slug === 'mo.admin'
+      )
+
+      if (isOMAdmin && currentUser?.section?.militaryOrganization) {
+        finalMilitaryOrganizationIds = [currentUser.section.militaryOrganization.id]
+      }
+    }
+
+    // Usar transação para criar role e relacionamentos
+    const newRole = await prisma.$transaction(async (tx) => {
+      // Criar o role
+      const role = await tx.role.create({
+        data: {
+          name: sanitizedName,
+          acronym: sanitizedAcronym,
+        },
+      })
+
+      // Criar relacionamentos com organizações
+      if (finalMilitaryOrganizationIds.length > 0) {
+        await tx.roleMilitaryOrganization.createMany({
+          data: finalMilitaryOrganizationIds.map(orgId => ({
+            roleId: role.id,
+            militaryOrganizationId: orgId
+          })),
+        })
+      }
+
+      // Criar relacionamentos com seções
+      if (data.sectionIds && data.sectionIds.length > 0) {
+        await tx.roleSection.createMany({
+          data: data.sectionIds.map(sectionId => ({
+            roleId: role.id,
+            sectionId
+          })),
+        })
+      }
+
+      // Criar relacionamentos com permissões
+      if (data.permissionIds && data.permissionIds.length > 0) {
+        await tx.rolePermission.createMany({
+          data: data.permissionIds.map(permissionId => ({
+            roleId: role.id,
+            permissionId
+          })),
+        })
+      }
+
+      // Buscar o role completo com includes
+      return await tx.role.findUnique({
+        where: { id: role.id },
+        include: {
+          RoleMilitaryOrganization: {
+            include: {
+              militaryOrganization: true
+            }
+          },
+          RoleSection: {
+            include: {
+              section: true
+            }
+          },
+          permissions: {
+            include: {
+              permission: true
+            }
+          },
+        },
+      })
     })
+
+    if (!newRole) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: await serverTByLocale(locale, 'errors.createRole', 'Failed to create role')
+      })
+    }
 
     return RoleTransformer.single(newRole)
   } catch (error) {
@@ -213,19 +358,14 @@ export async function updateRole(id: string, data: RoleUpdateInput, locale: stri
       sanitizedAcronym = sanitized.sanitizedAcronym
     }
 
-    // Verificar se já existe outro role com o mesmo nome/acronym na mesma organização
-    if (data.name || data.acronym || data.militaryOrganizationId !== undefined) {
-      const targetOrganizationId = data.militaryOrganizationId !== undefined 
-        ? data.militaryOrganizationId 
-        : existingRole.militaryOrganizationId
-
+    // Verificar duplicatas (busca global)
+    if (data.name || data.acronym) {
       const duplicateRole = await prisma.role.findFirst({
         where: {
           OR: [
             { name: sanitizedName },
             { acronym: sanitizedAcronym }
           ],
-          militaryOrganizationId: targetOrganizationId,
           deleted: false,
           NOT: { id }, // Excluir o próprio role da verificação
         },
@@ -239,41 +379,134 @@ export async function updateRole(id: string, data: RoleUpdateInput, locale: stri
       }
     }
 
-    // Se militaryOrganizationId for fornecido, verificar se a organização existe
-    if (data.militaryOrganizationId) {
-      const organization = await prisma.militaryOrganization.findUnique({
+    // Verificar se organizações existem (se fornecidas)
+    if (data.militaryOrganizationIds && data.militaryOrganizationIds.length > 0) {
+      const organizations = await prisma.militaryOrganization.findMany({
         where: {
-          id: data.militaryOrganizationId,
+          id: { in: data.militaryOrganizationIds },
           deleted: false,
         },
       })
 
-      if (!organization) {
+      if (organizations.length !== data.militaryOrganizationIds.length) {
         throw createError({
           statusCode: 404,
-          statusMessage: await serverTByLocale(locale, 'errors.organizationNotFound', 'Organization not found')
+          statusMessage: await serverTByLocale(locale, 'errors.organizationNotFound', 'One or more organizations not found')
         })
       }
     }
 
-    const updatedRole = await prisma.role.update({
-      where: { id },
-      data: {
-        name: sanitizedName,
-        acronym: sanitizedAcronym,
-        militaryOrganizationId: data.militaryOrganizationId !== undefined 
-          ? data.militaryOrganizationId 
-          : existingRole.militaryOrganizationId,
-      },
-      include: {
-        militaryOrganization: true,
-        permissions: {
-          include: {
-            permission: true
-          }
+    // Verificar se seções existem (se fornecidas)
+    if (data.sectionIds && data.sectionIds.length > 0) {
+      const sections = await prisma.section.findMany({
+        where: {
+          id: { in: data.sectionIds },
+          deleted: false,
         },
-      },
+      })
+
+      if (sections.length !== data.sectionIds.length) {
+        throw createError({
+          statusCode: 404,
+          statusMessage: await serverTByLocale(locale, 'errors.sectionNotFound', 'One or more sections not found')
+        })
+      }
+    }
+
+    // Usar transação para atualizar role e relacionamentos
+    const updatedRole = await prisma.$transaction(async (tx) => {
+      // Atualizar dados básicos do role
+      await tx.role.update({
+        where: { id },
+        data: {
+          name: sanitizedName,
+          acronym: sanitizedAcronym,
+        },
+      })
+
+      // Atualizar relacionamentos com organizações (se fornecidos)
+      if (data.militaryOrganizationIds !== undefined) {
+        // Remover relacionamentos existentes
+        await tx.roleMilitaryOrganization.deleteMany({
+          where: { roleId: id }
+        })
+
+        // Criar novos relacionamentos
+        if (data.militaryOrganizationIds.length > 0) {
+          await tx.roleMilitaryOrganization.createMany({
+            data: data.militaryOrganizationIds.map(orgId => ({
+              roleId: id,
+              militaryOrganizationId: orgId
+            })),
+          })
+        }
+      }
+
+      // Atualizar relacionamentos com seções (se fornecidos)
+      if (data.sectionIds !== undefined) {
+        // Remover relacionamentos existentes
+        await tx.roleSection.deleteMany({
+          where: { roleId: id }
+        })
+
+        // Criar novos relacionamentos
+        if (data.sectionIds.length > 0) {
+          await tx.roleSection.createMany({
+            data: data.sectionIds.map(sectionId => ({
+              roleId: id,
+              sectionId
+            })),
+          })
+        }
+      }
+
+      // Atualizar relacionamentos com permissões (se fornecidos)
+      if (data.permissionIds !== undefined) {
+        // Remover relacionamentos existentes
+        await tx.rolePermission.deleteMany({
+          where: { roleId: id }
+        })
+
+        // Criar novos relacionamentos
+        if (data.permissionIds.length > 0) {
+          await tx.rolePermission.createMany({
+            data: data.permissionIds.map(permissionId => ({
+              roleId: id,
+              permissionId
+            })),
+          })
+        }
+      }
+
+      // Buscar o role completo atualizado
+      return await tx.role.findUnique({
+        where: { id },
+        include: {
+          RoleMilitaryOrganization: {
+            include: {
+              militaryOrganization: true
+            }
+          },
+          RoleSection: {
+            include: {
+              section: true
+            }
+          },
+          permissions: {
+            include: {
+              permission: true
+            }
+          },
+        },
+      })
     })
+
+    if (!updatedRole) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: await serverTByLocale(locale, 'errors.updateRole', 'Failed to update role')
+      })
+    }
 
     return RoleTransformer.single(updatedRole)
   } catch (error) {

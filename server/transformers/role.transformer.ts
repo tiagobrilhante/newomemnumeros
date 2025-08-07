@@ -4,38 +4,47 @@ import type { RoleWithIncludes } from './types'
 
 export class RoleTransformer extends BaseTransformer {
   static transform(role: RoleWithIncludes) {
-    const { createdAt, updatedAt, deleted, militaryOrganization, permissions, ...cleanRole } = role
+    const { createdAt, updatedAt, deleted, RoleMilitaryOrganization, permissions, ...cleanRole } = role
+
+    // Obter militaryOrganization via RoleMilitaryOrganization pivot
+    const militaryOrganizations = RoleMilitaryOrganization?.map(rmo => rmo.militaryOrganization).filter(Boolean) || []
 
     return {
       ...cleanRole,
-      ...(militaryOrganization && { 
-        militaryOrganization: {
-          id: militaryOrganization.id,
-          name: militaryOrganization.name,
-          acronym: militaryOrganization.acronym,
-          color: militaryOrganization.color,
-          logo: militaryOrganization.logo
-        }
+      ...(militaryOrganizations.length > 0 && { 
+        militaryOrganizations: militaryOrganizations.map(mo => ({
+          id: mo.id,
+          name: mo.name,
+          acronym: mo.acronym,
+          color: mo.color,
+          logo: mo.logo
+        }))
       }),
-      permissions: permissions.map(rolePermission =>
-        PermissionTransformer.transform(rolePermission.permission)
-      )
+      permissions: permissions.map(rolePermission => ({
+        id: rolePermission.id,
+        permissionId: rolePermission.permissionId,
+        roleId: rolePermission.roleId,
+        permission: PermissionTransformer.transform(rolePermission.permission)
+      }))
     }
   }
 
   static transformForAuth(role: RoleWithIncludes) {
-    const { createdAt, updatedAt, deleted, militaryOrganization, permissions, ...cleanRole } = role
+    const { createdAt, updatedAt, deleted, RoleMilitaryOrganization, permissions, ...cleanRole } = role
+
+    // Obter militaryOrganization via RoleMilitaryOrganization pivot
+    const militaryOrganizations = RoleMilitaryOrganization?.map(rmo => rmo.militaryOrganization).filter(Boolean) || []
 
     return {
       ...cleanRole,
-      ...(militaryOrganization && { 
-        militaryOrganization: {
-          id: militaryOrganization.id,
-          name: militaryOrganization.name,
-          acronym: militaryOrganization.acronym,
-          color: militaryOrganization.color,
-          logo: militaryOrganization.logo
-        }
+      ...(militaryOrganizations.length > 0 && { 
+        militaryOrganizations: militaryOrganizations.map(mo => ({
+          id: mo.id,
+          name: mo.name,
+          acronym: mo.acronym,
+          color: mo.color,
+          logo: mo.logo
+        }))
       }),
       permissions: permissions.map(rolePermission =>
         PermissionTransformer.toSlug(rolePermission.permission)

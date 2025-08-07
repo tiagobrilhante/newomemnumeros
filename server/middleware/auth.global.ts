@@ -54,7 +54,11 @@ export default defineEventHandler(async (event: H3Event) => {
           rank: true,
           role: {
             include: {
-              militaryOrganization: true,
+              RoleMilitaryOrganization: {
+                include: {
+                  militaryOrganization: true
+                }
+              },
               permissions: {
                 include: {
                   permission: true

@@ -2,11 +2,11 @@ import { toast } from 'vue3-toastify'
 import { useRoleStore } from '~/stores/role.store'
 import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
 import { roleService } from '~/services/role.service'
-import type { Role } from '#shared/types/role'
+import type { Role, RoleCreateInput, RoleUpdateInput } from '#shared/types/role'
 
 interface RoleFilters {
   search?: string
-  militaryOrganizationId?: string | null
+  militaryOrganizationIds?: string[]
 }
 
 // noinspection JSUnusedGlobalSymbols
@@ -39,10 +39,12 @@ export const useRoles = () => {
   const selectedRole = computed(() => store.selectedRole)
   const totalRoles = computed(() => store.totalRoles)
   const globalRoles = computed(() =>
-    roles.value.filter(role => !role.militaryOrganizationId),
+    roles.value.filter(role => !role.militaryOrganizations?.length),
   )
   const organizationRoles = computed(() => (organizationId: string) =>
-    roles.value.filter(role => role.militaryOrganizationId === organizationId),
+    roles.value.filter(role => 
+      role.militaryOrganizations?.some(mo => mo.id === organizationId)
+    ),
   )
 
   const fetchRoles = async (): Promise<Role[]> => {
@@ -120,12 +122,12 @@ export const useRoles = () => {
     }
   }
 
-  const createRole = async (roleData: Omit<Role, 'id'>): Promise<Role> => {
+  const createRole = async (roleData: RoleCreateInput): Promise<Role> => {
     loading.value = true
     error.value = ''
 
     try {
-      const response = await roleService.create(roleData as Role)
+      const response = await roleService.create(roleData)
       
       if (response.success && response.data) {
         store.addRole(response.data)
@@ -147,12 +149,12 @@ export const useRoles = () => {
     }
   }
 
-  const updateRole = async (roleData: Role): Promise<Role> => {
+  const updateRole = async (id: string, roleData: RoleUpdateInput): Promise<Role> => {
     loading.value = true
     error.value = ''
 
     try {
-      const response = await roleService.update(roleData)
+      const response = await roleService.update(id, roleData)
       
       if (response.success && response.data) {
         store.updateRole(response.data)
@@ -212,14 +214,13 @@ export const useRoles = () => {
         )
       }
 
-      if (filters.militaryOrganizationId !== undefined) {
-        if (filters.militaryOrganizationId === null) {
-          // Buscar roles globais
-          filtered = filtered.filter(role => !role.militaryOrganizationId)
-        } else {
-          // Buscar roles de uma organização específica
-          filtered = filtered.filter(role => role.militaryOrganizationId === filters.militaryOrganizationId)
-        }
+      if (filters.militaryOrganizationIds) {
+        // Buscar roles de organizações específicas
+        filtered = filtered.filter(role => 
+          filters.militaryOrganizationIds!.some(orgId => 
+            role.militaryOrganizations?.some(mo => mo.id === orgId)
+          )
+        )
       }
 
       return filtered

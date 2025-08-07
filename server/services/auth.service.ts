@@ -18,7 +18,11 @@ export async function authenticateUser(email: string, password: string) {
       rank: true,
       role: {
         include: {
-          militaryOrganization: true,
+          RoleMilitaryOrganization: {
+            include: {
+              militaryOrganization: true
+            }
+          },
           permissions: {
             include: {
               permission: true

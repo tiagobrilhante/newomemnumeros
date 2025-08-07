@@ -4,6 +4,6 @@
 
   <permissions-list-roles />
 
-  <permissions-create-role />
+
 
 </template>

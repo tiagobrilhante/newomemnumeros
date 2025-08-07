@@ -1,4 +1,4 @@
-import type { Role } from '#shared/types/role'
+import type { Role, RoleCreateInput, RoleUpdateInput } from '#shared/types/role'
 import type { ApiResponse } from '#shared/types/api-response'
 
 class RoleService {
@@ -31,7 +31,7 @@ class RoleService {
     }
   }
 
-  async create(data: Role): Promise<ApiResponse<Role>> {
+  async create(data: RoleCreateInput): Promise<ApiResponse<Role>> {
     try {
       return await $fetch<ApiResponse<Role>>(this.baseURL, {
         method: 'POST',
@@ -43,14 +43,14 @@ class RoleService {
     }
   }
 
-  async update(data: Role): Promise<ApiResponse<Role>> {
+  async update(id: string, data: RoleUpdateInput): Promise<ApiResponse<Role>> {
     try {
-      return await $fetch<ApiResponse<Role>>(`${this.baseURL}/${data.id}`, {
+      return await $fetch<ApiResponse<Role>>(`${this.baseURL}/${id}`, {
         method: 'PUT',
         body: data,
       })
     } catch (error) {
-      console.error(`Erro ao atualizar role ${data.id}:`, error)
+      console.error(`Erro ao atualizar role ${id}:`, error)
       throw error
     }
   }
