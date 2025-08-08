@@ -1,6 +1,6 @@
 import { toast } from 'vue3-toastify'
 import { useSectionStore } from '~/stores/section.store'
-import { createAppError, type ErrorHandlerOptions } from '#shared/utils/clientErrorHandler'
+import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
 import { sectionService } from '~/services/section.service'
 
 interface SectionFilters {

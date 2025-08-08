@@ -1,13 +1,13 @@
 import { toast } from 'vue3-toastify'
 import type { ApiResponse } from '#shared/types/api-response'
-import { 
-  enhanceError, 
-  processApiError, 
-  logError, 
+import {
+  enhanceError,
+  processApiError,
+  logError,
   getUserFriendlyMessage,
-  type EnhancedError, 
-  type ErrorContext 
-} from '#shared/utils/clientErrorHandler'
+  type EnhancedError,
+  type ErrorContext
+} from '~/utils/clientErrorHandler'
 
 export interface RetryOptions {
   attempts: number
@@ -84,9 +84,9 @@ export function useErrorHandler<T>(
 
     // Log error if enabled
     if (shouldLogError) {
-      logError(enhancedError, { 
+      logError(enhancedError, {
         functionContext: asyncFunction.name || 'anonymous',
-        retryCount: retryCount.value 
+        retryCount: retryCount.value
       })
     }
 
@@ -123,7 +123,7 @@ export function useErrorHandler<T>(
       return result
     } catch (err) {
       const enhancedError = handleError(err)
-      
+
       // Try retry logic if configured and error is retryable
       if (retryOptions && enhancedError.retryable && retryCount.value < retryOptions.attempts) {
         return await executeWithRetry(enhancedError)
@@ -150,7 +150,7 @@ export function useErrorHandler<T>(
       }
 
       // Calculate delay with optional backoff
-      const delay = (retryOptions?.delay || 1000) * 
+      const delay = (retryOptions?.delay || 1000) *
         Math.pow(retryOptions?.backoffMultiplier || 1, attempt - 1)
 
       // Wait before retry
@@ -163,7 +163,7 @@ export function useErrorHandler<T>(
         return result
       } catch (err) {
         const enhancedError = handleError(err)
-        
+
         // Check if we should continue retrying
         if (retryOptions?.retryCondition && !retryOptions.retryCondition(enhancedError)) {
           break
@@ -174,7 +174,7 @@ export function useErrorHandler<T>(
           if (onMaxRetriesReached) {
             onMaxRetriesReached(enhancedError)
           }
-          
+
           if (showToast) {
             const message = `Máximo de tentativas atingido: ${getUserFriendlyMessage(enhancedError)}`
             toast.error(message)
@@ -280,7 +280,7 @@ export function useAuthErrorHandler<T>(
       if (error.statusCode === 401) {
         navigateTo('/login')
       }
-      
+
       if (onAuthError) {
         onAuthError(error)
       }

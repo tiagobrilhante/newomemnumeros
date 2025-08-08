@@ -1,58 +1,58 @@
-import type { rank } from '~/types/rank'
+import type { rank } from '#shared/types/rank'
 import type { ApiResponse } from '#shared/types/api-response'
-import { enhanceError, ErrorContext } from '#shared/utils/clientErrorHandler'
+import { enhanceError, ErrorContext } from '~/utils/clientErrorHandler'
 
 class RankService {
   private baseURL = '/api/ranks'
 
   async findAll(): Promise<rank[]> {
     const endpoint = this.baseURL
-    
+
     try {
       const response = await $fetch<ApiResponse<rank[]>>(endpoint)
-      
+
       if (!response.success) {
         throw enhanceError(
           new Error(response.error.message),
           ErrorContext.BUSINESS_LOGIC,
-          { 
+          {
             endpoint,
             errorCode: response.error.code,
             statusCode: response.error.statusCode
           }
         )
       }
-      
+
       return response.data
     } catch (error) {
-      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_ALL_RANKS',
-        endpoint 
+        endpoint
       })
     }
   }
 
   async findById(id: string): Promise<rank | null> {
     const endpoint = `${this.baseURL}/${id}`
-    
+
     try {
       const response = await $fetch<ApiResponse<rank | null>>(endpoint)
-      
+
       if (!response.success) {
         throw enhanceError(
           new Error(response.error.message),
           ErrorContext.BUSINESS_LOGIC,
-          { 
+          {
             endpoint,
             errorCode: response.error.code,
             statusCode: response.error.statusCode
           }
         )
       }
-      
+
       return response.data
     } catch (error) {
-      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_RANK_BY_ID',
         endpoint,
         rankId: id
@@ -62,25 +62,25 @@ class RankService {
 
   async findByHierarchy(hierarchy: number): Promise<rank[]> {
     const endpoint = `${this.baseURL}/hierarchy/${hierarchy}`
-    
+
     try {
       const response = await $fetch<ApiResponse<rank[]>>(endpoint)
-      
+
       if (!response.success) {
         throw enhanceError(
           new Error(response.error.message),
           ErrorContext.BUSINESS_LOGIC,
-          { 
+          {
             endpoint,
             errorCode: response.error.code,
             statusCode: response.error.statusCode
           }
         )
       }
-      
+
       return response.data
     } catch (error) {
-      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_RANKS_BY_HIERARCHY',
         endpoint,
         hierarchy
@@ -90,28 +90,28 @@ class RankService {
 
   async create(data: rank): Promise<rank> {
     const endpoint = this.baseURL
-    
+
     try {
       const response = await $fetch<ApiResponse<rank>>(endpoint, {
         method: 'POST',
         body: data,
       })
-      
+
       if (!response.success) {
         throw enhanceError(
           new Error(response.error.message),
           ErrorContext.BUSINESS_LOGIC,
-          { 
+          {
             endpoint,
             errorCode: response.error.code,
             statusCode: response.error.statusCode
           }
         )
       }
-      
+
       return response.data
     } catch (error) {
-      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'CREATE_RANK',
         endpoint,
         rankName: data.name
@@ -121,28 +121,28 @@ class RankService {
 
   async update(data: rank): Promise<rank> {
     const endpoint = `${this.baseURL}/${data.id}`
-    
+
     try {
       const response = await $fetch<ApiResponse<rank>>(endpoint, {
         method: 'PUT',
         body: data,
       })
-      
+
       if (!response.success) {
         throw enhanceError(
           new Error(response.error.message),
           ErrorContext.BUSINESS_LOGIC,
-          { 
+          {
             endpoint,
             errorCode: response.error.code,
             statusCode: response.error.statusCode
           }
         )
       }
-      
+
       return response.data
     } catch (error) {
-      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'UPDATE_RANK',
         endpoint,
         rankId: data.id
@@ -152,27 +152,27 @@ class RankService {
 
   async delete(id: string): Promise<{ message: string }> {
     const endpoint = `${this.baseURL}/${id}`
-    
+
     try {
       const response = await $fetch<ApiResponse<{ message: string }>>(endpoint, {
         method: 'DELETE',
       })
-      
+
       if (!response.success) {
         throw enhanceError(
           new Error(response.error.message),
           ErrorContext.BUSINESS_LOGIC,
-          { 
+          {
             endpoint,
             errorCode: response.error.code,
             statusCode: response.error.statusCode
           }
         )
       }
-      
+
       return response.data
     } catch (error) {
-      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'DELETE_RANK',
         endpoint,
         rankId: id

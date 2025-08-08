@@ -1,7 +1,7 @@
 import { toast } from 'vue3-toastify'
 import { useRoleStore } from '~/stores/role.store'
 import { useNetworkErrorHandler } from './useErrorHandler'
-import { createAppError, type ErrorHandlerOptions } from '#shared/utils/clientErrorHandler'
+import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
 import { roleService } from '~/services/role.service'
 import type { Role, RoleCreateInput, RoleUpdateInput } from '#shared/types/role'
 
@@ -44,14 +44,14 @@ export const useRoles = () => {
   const globalRoles = computed(() =>
     roles.value.filter(role => !role.militaryOrganizations?.length),
   )
-  
-  // Roles organizacionais = vinculadas a organizações específicas  
+
+  // Roles organizacionais = vinculadas a organizações específicas
   const organizationRoles = computed(() => (organizationId: string) =>
-    roles.value.filter(role => 
+    roles.value.filter(role =>
       role.militaryOrganizations?.some(mo => mo.id === organizationId)
     ),
   )
-  
+
   // Todas as roles organizacionais (não globais)
   const nonGlobalRoles = computed(() =>
     roles.value.filter(role => role.militaryOrganizations?.length),
@@ -184,8 +184,8 @@ export const useRoles = () => {
 
       if (filters.militaryOrganizationIds) {
         // Buscar roles de organizações específicas
-        filtered = filtered.filter(role => 
-          filters.militaryOrganizationIds!.some(orgId => 
+        filtered = filtered.filter(role =>
+          filters.militaryOrganizationIds!.some(orgId =>
             role.militaryOrganizations?.some(mo => mo.id === orgId)
           )
         )
