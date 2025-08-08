@@ -1,6 +1,6 @@
 import { authService } from '~/services/auth.service'
 import { useAuthUserStore } from '~/stores/auth.store'
-import type { loginCredentials } from '~/types/auth'
+import type { loginCredentials } from '#shared/types/auth'
 
 // noinspection JSUnusedGlobalSymbols
 export const useAuth = () => {
@@ -24,7 +24,7 @@ export const useAuth = () => {
         email: credentials.email,
         error: error instanceof Error ? error.message : 'Unknown error'
       })
-      
+
       const errorMessage = error instanceof Error ? error.message : 'Credenciais inválidas'
       return { success: false, error: errorMessage }
     }
@@ -35,7 +35,7 @@ export const useAuth = () => {
    */
   const logout = async () => {
     isLoggingOut.value = true
-    
+
     try {
       await authService.logout()
     } catch (err) {
@@ -110,7 +110,7 @@ export const useAuth = () => {
     user,
     permissions,
     isLoggingOut: readonly(isLoggingOut),
-    
+
     // Actions
     login,
     logout,

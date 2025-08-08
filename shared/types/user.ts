@@ -1,6 +1,6 @@
-import type { rank } from '~/types/rank'
-import type { section } from '~/types/sections'
-import type { militaryOrganization } from '~/types/military-organization'
+import type { rank } from './rank'
+import type { section } from './sections'
+import type { militaryOrganization } from './military-organization'
 
 export type role = {
   id: string

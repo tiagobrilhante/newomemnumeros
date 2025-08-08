@@ -1,4 +1,4 @@
-import type { militaryOrganization, MilitaryOrganizationMutable } from '#shared/types/military-organization'
+import type { militaryOrganization, MilitaryOrganizationMutable } from './military-organization'
 
 export type Permission = {
   readonly id?: string

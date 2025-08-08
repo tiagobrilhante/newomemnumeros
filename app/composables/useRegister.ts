@@ -1,6 +1,7 @@
 import type { RegisterResponse } from '~/services/register.service'
 import { registerService } from '~/services/register.service'
-import type { registerData } from '~/types/register'
+import type { registerData } from '#shared/types/register'
+//TODO tem um erro aqui em registerResponse
 
 // noinspection JSUnusedGlobalSymbols
 export const useRegister = () => {
