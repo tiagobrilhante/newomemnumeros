@@ -1,6 +1,6 @@
 import type { ApiResponse } from '#shared/types/api-response'
 import { sanitizeData } from '#shared/utils'
-import { enhanceError, ErrorContext } from '~/utils/clientErrorHandler'
+import { enhanceError, ErrorContext } from '#shared/utils/clientErrorHandler'
 
 type VerifyTokenResponse = { user: user }
 type CheckAccessResponse = { hasAccess: boolean }

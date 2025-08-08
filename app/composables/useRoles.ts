@@ -1,6 +1,7 @@
 import { toast } from 'vue3-toastify'
 import { useRoleStore } from '~/stores/role.store'
 import { useNetworkErrorHandler } from './useErrorHandler'
+import { createAppError, type ErrorHandlerOptions } from '#shared/utils/clientErrorHandler'
 import { roleService } from '~/services/role.service'
 import type { Role, RoleCreateInput, RoleUpdateInput } from '#shared/types/role'
 
@@ -23,6 +24,15 @@ export const useRoles = () => {
     } catch {
       return fallback
     }
+  }
+
+  const createRoleError = (messageKey: string, fallbackMessage: string, statusCode = 500) => {
+    return createAppError(messageKey, {
+      statusCode,
+      statusMessageKey: 'errors.genericTitle',
+      fallbackStatusMessage: 'Role Error',
+      fallbackMessage,
+    } satisfies ErrorHandlerOptions)
   }
 
 
@@ -52,16 +62,9 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const response = await roleService.getAll()
-      
-      if (response.success && response.data) {
-        store.setRoles(response.data)
-        return response.data
-      } else {
-        const errorMessage = 'Failed to fetch roles'
-        error.value = errorMessage
-        throw createRoleError('errors.fetchRoles', errorMessage)
-      }
+      const roles = await roleService.getAll()
+      store.setRoles(roles)
+      return roles
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.fetchRoles', 'Failed to fetch roles')
       error.value = errorMessage
@@ -77,16 +80,9 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const response = await roleService.findByOrganization(organizationId)
-      
-      if (response.success && response.data) {
-        store.setRolesByOrganization(organizationId, response.data)
-        return response.data
-      } else {
-        const errorMessage = 'Failed to fetch organization roles'
-        error.value = errorMessage
-        throw createRoleError('errors.fetchOrganizationRoles', errorMessage)
-      }
+      const roles = await roleService.findByOrganization(organizationId)
+      store.setRolesByOrganization(organizationId, roles)
+      return roles
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.fetchOrganizationRoles', 'Failed to fetch organization roles')
       error.value = errorMessage
@@ -102,16 +98,9 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const response = await roleService.findById(id)
-      
-      if (response.success && response.data) {
-        store.setSelectedRole(response.data)
-        return response.data
-      } else {
-        const errorMessage = 'Role not found'
-        error.value = errorMessage
-        throw createRoleError('errors.roleNotFound', errorMessage, 404)
-      }
+      const role = await roleService.findById(id)
+      store.setSelectedRole(role)
+      return role
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.roleNotFound', 'Role not found')
       error.value = errorMessage
@@ -127,18 +116,11 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const response = await roleService.create(roleData)
-      
-      if (response.success && response.data) {
-        store.addRole(response.data)
-        const successMessage = getTranslatedMessage('success.roleCreated', 'Role created successfully')
-        toast.success(successMessage)
-        return response.data
-      } else {
-        const errorMessage = 'Failed to create role'
-        error.value = errorMessage
-        throw createRoleError('errors.createRole', errorMessage)
-      }
+      const role = await roleService.create(roleData)
+      store.addRole(role)
+      const successMessage = getTranslatedMessage('success.roleCreated', 'Role created successfully')
+      toast.success(successMessage)
+      return role
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.createRole', 'Failed to create role')
       error.value = errorMessage
@@ -154,18 +136,11 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const response = await roleService.update(id, roleData)
-      
-      if (response.success && response.data) {
-        store.updateRole(response.data)
-        const successMessage = getTranslatedMessage('success.roleUpdated', 'Role updated successfully')
-        toast.success(successMessage)
-        return response.data
-      } else {
-        const errorMessage = 'Failed to update role'
-        error.value = errorMessage
-        throw createRoleError('errors.updateRole', errorMessage)
-      }
+      const role = await roleService.update(id, roleData)
+      store.updateRole(role)
+      const successMessage = getTranslatedMessage('success.roleUpdated', 'Role updated successfully')
+      toast.success(successMessage)
+      return role
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.updateRole', 'Failed to update role')
       error.value = errorMessage
@@ -181,17 +156,10 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const response = await roleService.delete(id)
-      
-      if (response.success) {
-        store.removeRole(id)
-        const successMessage = getTranslatedMessage('success.roleDeleted', 'Role deleted successfully')
-        toast.success(successMessage)
-      } else {
-        const errorMessage = 'Failed to delete role'
-        error.value = errorMessage
-        throw createRoleError('errors.deleteRole', errorMessage)
-      }
+      await roleService.delete(id)
+      store.removeRole(id)
+      const successMessage = getTranslatedMessage('success.roleDeleted', 'Role deleted successfully')
+      toast.success(successMessage)
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.deleteRole', 'Failed to delete role')
       error.value = errorMessage

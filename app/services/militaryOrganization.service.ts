@@ -1,9 +1,14 @@
+import type { ApiResponse } from '#shared/types/api-response'
+import { enhanceError, ErrorContext } from '#shared/utils/clientErrorHandler'
+
 class MilitaryOrganizationService {
   private baseURL = '/api/military-organizations'
 
-  async findAll(): Promise<ApiResponse<militaryOrganization[]>> {
+  async findAll(): Promise<militaryOrganization[]> {
+    const endpoint = this.baseURL
+    
     try {
-      return await $fetch<ApiResponse<militaryOrganization[]>>(this.baseURL, {
+      const response = await $fetch<ApiResponse<militaryOrganization[]>>(endpoint, {
         params: {
           include: {
             parentOrganization: true,
@@ -11,24 +16,61 @@ class MilitaryOrganizationService {
           },
         },
       })
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error('Erro ao buscar organizações Militares:', error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'GET_ALL_MILITARY_ORGANIZATIONS',
+        endpoint 
+      })
     }
   }
 
-  async findById(id: string): Promise<ApiResponse<militaryOrganization | null>> {
+  async findById(id: string): Promise<militaryOrganization | null> {
+    const endpoint = `${this.baseURL}/${id}`
+    
     try {
-      return await $fetch<ApiResponse<militaryOrganization | null>>(`${this.baseURL}/${id}`)
+      const response = await $fetch<ApiResponse<militaryOrganization | null>>(endpoint)
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error(`Erro ao buscar Organização Militar ${id}:`, error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'GET_MILITARY_ORGANIZATION_BY_ID',
+        endpoint,
+        militaryOrganizationId: id
+      })
     }
   }
 
-  async create(data: militaryOrganization): Promise<ApiResponse<militaryOrganization>> {
+  async create(data: militaryOrganization): Promise<militaryOrganization> {
+    const endpoint = this.baseURL
+    
     try {
-      return await $fetch<ApiResponse<militaryOrganization>>(this.baseURL, {
+      const response = await $fetch<ApiResponse<militaryOrganization>>(endpoint, {
         method: 'POST',
         body: data,
         params: {
@@ -39,43 +81,117 @@ class MilitaryOrganizationService {
           },
         },
       })
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error('Erro ao criar organização Militar:', error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'CREATE_MILITARY_ORGANIZATION',
+        endpoint,
+        organizationName: data.name
+      })
     }
   }
 
-  async update(data: militaryOrganization): Promise<ApiResponse<militaryOrganization>> {
+  async update(data: militaryOrganization): Promise<militaryOrganization> {
+    const endpoint = `${this.baseURL}/${data.id}`
+    
     try {
-      return await $fetch<ApiResponse<militaryOrganization>>(`${this.baseURL}/${data.id}`, {
+      const response = await $fetch<ApiResponse<militaryOrganization>>(endpoint, {
         method: 'PUT',
         body: data,
       })
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error(`Erro ao atualizar Organização Militar ${data.id}:`, error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'UPDATE_MILITARY_ORGANIZATION',
+        endpoint,
+        militaryOrganizationId: data.id
+      })
     }
   }
 
-  async delete(id: string): Promise<ApiResponse<void>> {
+  async delete(id: string): Promise<void> {
+    const endpoint = `${this.baseURL}/${id}`
+    
     try {
-      return await $fetch<ApiResponse<void>>(`${this.baseURL}/${id}`, {
+      const response = await $fetch<ApiResponse<void>>(endpoint, {
         method: 'DELETE',
       })
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error(`Erro ao deletar organização Militar ${id}:`, error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'DELETE_MILITARY_ORGANIZATION',
+        endpoint,
+        militaryOrganizationId: id
+      })
     }
   }
 
-  async deleteLogo(id: string): Promise<ApiResponse<militaryOrganization>> {
+  async deleteLogo(id: string): Promise<militaryOrganization> {
+    const endpoint = `${this.baseURL}/delete-logo/${id}`
+    
     try {
-      return await $fetch<ApiResponse<militaryOrganization>>(`${this.baseURL}/delete-logo/${id}`, {
+      const response = await $fetch<ApiResponse<militaryOrganization>>(endpoint, {
         method: 'DELETE',
       })
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error(`Erro ao deletar logo de organização Militar ${id}:`, error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'DELETE_MILITARY_ORGANIZATION_LOGO',
+        endpoint,
+        militaryOrganizationId: id
+      })
     }
   }
 }

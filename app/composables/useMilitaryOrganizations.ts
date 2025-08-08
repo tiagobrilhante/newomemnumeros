@@ -1,6 +1,6 @@
 import { toast } from 'vue3-toastify'
 import { useMilitaryOrganizationStore } from '~/stores/military-organization.store'
-import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
+import { createAppError, type ErrorHandlerOptions } from '#shared/utils/clientErrorHandler'
 import { militaryOrganizationService } from '~/services/militaryOrganization.service'
 import type { militaryOrganization, MilitaryOrganizationMutable } from '#shared/types/military-organization'
 import type { section, SectionMutable } from '#shared/types/sections'

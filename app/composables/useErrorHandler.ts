@@ -7,7 +7,7 @@ import {
   getUserFriendlyMessage,
   type EnhancedError, 
   type ErrorContext 
-} from '~/utils/clientErrorHandler'
+} from '#shared/utils/clientErrorHandler'
 
 export interface RetryOptions {
   attempts: number

@@ -1,68 +1,183 @@
 import type { Role, RoleCreateInput, RoleUpdateInput } from '#shared/types/role'
 import type { ApiResponse } from '#shared/types/api-response'
+import { enhanceError, ErrorContext } from '#shared/utils/clientErrorHandler'
 
 class RoleService {
   private baseURL = '/api/roles'
 
-  async getAll(): Promise<ApiResponse<Role[]>> {
+  async getAll(): Promise<Role[]> {
+    const endpoint = this.baseURL
+    
     try {
-      return await $fetch<ApiResponse<Role[]>>(`${this.baseURL}`)
+      const response = await $fetch<ApiResponse<Role[]>>(endpoint)
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error('Erro ao buscar todos os roles:', error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'GET_ALL_ROLES',
+        endpoint
+      })
     }
   }
 
-  async findById(id: string): Promise<ApiResponse<Role>> {
+  async findById(id: string): Promise<Role> {
+    const endpoint = `${this.baseURL}/${id}`
+    
     try {
-      return await $fetch<ApiResponse<Role>>(`${this.baseURL}/${id}`)
+      const response = await $fetch<ApiResponse<Role>>(endpoint)
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error(`Erro ao buscar role ${id}:`, error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'GET_ROLE_BY_ID',
+        endpoint,
+        roleId: id 
+      })
     }
   }
 
-  async findByOrganization(organizationId: string): Promise<ApiResponse<Role[]>> {
+  async findByOrganization(organizationId: string): Promise<Role[]> {
+    const endpoint = `${this.baseURL}/organization/${organizationId}`
+    
     try {
-      return await $fetch<ApiResponse<Role[]>>(`${this.baseURL}/organization/${organizationId}`)
+      const response = await $fetch<ApiResponse<Role[]>>(endpoint)
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error(`Erro ao buscar roles da organização ${organizationId}:`, error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'GET_ROLES_BY_ORGANIZATION',
+        endpoint,
+        organizationId 
+      })
     }
   }
 
-  async create(data: RoleCreateInput): Promise<ApiResponse<Role>> {
+  async create(data: RoleCreateInput): Promise<Role> {
+    const endpoint = this.baseURL
+    
     try {
-      return await $fetch<ApiResponse<Role>>(this.baseURL, {
+      const response = await $fetch<ApiResponse<Role>>(endpoint, {
         method: 'POST',
         body: data,
       })
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error('Erro ao criar role:', error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'CREATE_ROLE',
+        endpoint,
+        roleName: data.name 
+      })
     }
   }
 
-  async update(id: string, data: RoleUpdateInput): Promise<ApiResponse<Role>> {
+  async update(id: string, data: RoleUpdateInput): Promise<Role> {
+    const endpoint = `${this.baseURL}/${id}`
+    
     try {
-      return await $fetch<ApiResponse<Role>>(`${this.baseURL}/${id}`, {
+      const response = await $fetch<ApiResponse<Role>>(endpoint, {
         method: 'PUT',
         body: data,
       })
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      return response.data
     } catch (error) {
-      console.error(`Erro ao atualizar role ${id}:`, error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'UPDATE_ROLE',
+        endpoint,
+        roleId: id 
+      })
     }
   }
 
-  async delete(id: string): Promise<ApiResponse<void>> {
+  async delete(id: string): Promise<void> {
+    const endpoint = `${this.baseURL}/${id}`
+    
     try {
-      return await $fetch<ApiResponse<void>>(`${this.baseURL}/${id}`, {
+      const response = await $fetch<ApiResponse<void>>(endpoint, {
         method: 'DELETE',
       })
+      
+      if (!response.success) {
+        throw enhanceError(
+          new Error(response.error.message),
+          ErrorContext.BUSINESS_LOGIC,
+          { 
+            endpoint,
+            errorCode: response.error.code,
+            statusCode: response.error.statusCode
+          }
+        )
+      }
+      
+      // Para void, não retornamos response.data
+      return
     } catch (error) {
-      console.error(`Erro ao deletar role ${id}:`, error)
-      throw error
+      throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, { 
+        operation: 'DELETE_ROLE',
+        endpoint,
+        roleId: id 
+      })
     }
   }
 }

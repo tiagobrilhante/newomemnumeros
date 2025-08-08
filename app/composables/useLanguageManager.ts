@@ -1,6 +1,6 @@
 import { getValidLocaleOrDefault, isValidLocale } from '#shared/config/i18n'
-import type { ErrorHandlerOptions } from '~/utils/clientErrorHandler'
-import { createAppError } from '~/utils/clientErrorHandler'
+import type { ErrorHandlerOptions } from '#shared/utils/clientErrorHandler'
+import { createAppError } from '#shared/utils/clientErrorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export const useLanguageManager = () => {
