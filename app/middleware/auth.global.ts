@@ -18,12 +18,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
     const authCookie = useCookie('auth-token');
     if (authCookie.value) {
       try {
-        const response = await $fetch<{ user: user }>('/api/auth/verify-token', {
+        const response = await $fetch<ApiResponse<{ user: user }>>('/api/auth/verify-token', {
           method: 'GET',
           credentials: 'include',
         });
-        if (response?.user) {
-          authStore.setUser(response.user);
+        if (response?.success && response?.data?.user) {
+          authStore.setUser(response.data.user);
           return;
         }
       } catch (error: any) {

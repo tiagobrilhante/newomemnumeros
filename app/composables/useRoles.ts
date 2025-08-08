@@ -260,15 +260,23 @@ export const useRoles = () => {
 
     const { data, execute } = useNetworkErrorHandler(
       async () => {
-        const response = await $fetch(`/api/roles/${roleId}/usage`)
+        const response = await $fetch<ApiResponse<any>>(`/api/roles/${roleId}/usage`)
+        
+        if (!response.success) {
+          throw createRoleError(
+            'errors.serverCommunication',
+            'Erro ao carregar uso da role',
+            500,
+          )
+        }
+        
         return response.data
       },
       3, // maxRetries
       1000 // retryDelay
     )
 
-    const result = await execute()
-    return result
+    return await execute()
   }
 
   const clearError = () => {
