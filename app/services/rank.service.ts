@@ -5,25 +5,12 @@ import { enhanceError, ErrorContext } from '~/utils/clientErrorHandler'
 class RankService {
   private baseURL = '/api/ranks'
 
-  async findAll(): Promise<rank[]> {
+  async findAll(): Promise<ApiResponse<rank[]>> {
     const endpoint = this.baseURL
 
     try {
       const response = await $fetch<ApiResponse<rank[]>>(endpoint)
-
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_ALL_RANKS',
@@ -32,25 +19,12 @@ class RankService {
     }
   }
 
-  async findById(id: string): Promise<rank | null> {
+  async findById(id: string): Promise<ApiResponse<rank | null>> {
     const endpoint = `${this.baseURL}/${id}`
 
     try {
       const response = await $fetch<ApiResponse<rank | null>>(endpoint)
-
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_RANK_BY_ID',
@@ -60,25 +34,12 @@ class RankService {
     }
   }
 
-  async findByHierarchy(hierarchy: number): Promise<rank[]> {
+  async findByHierarchy(hierarchy: number): Promise<ApiResponse<rank[]>> {
     const endpoint = `${this.baseURL}/hierarchy/${hierarchy}`
 
     try {
       const response = await $fetch<ApiResponse<rank[]>>(endpoint)
-
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_RANKS_BY_HIERARCHY',
@@ -88,7 +49,7 @@ class RankService {
     }
   }
 
-  async create(data: rank): Promise<rank> {
+  async create(data: rank): Promise<ApiResponse<rank>> {
     const endpoint = this.baseURL
 
     try {
@@ -97,19 +58,7 @@ class RankService {
         body: data,
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'CREATE_RANK',
@@ -119,7 +68,7 @@ class RankService {
     }
   }
 
-  async update(data: rank): Promise<rank> {
+  async update(data: rank): Promise<ApiResponse<rank>> {
     const endpoint = `${this.baseURL}/${data.id}`
 
     try {
@@ -128,19 +77,7 @@ class RankService {
         body: data,
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'UPDATE_RANK',
@@ -150,7 +87,7 @@ class RankService {
     }
   }
 
-  async delete(id: string): Promise<{ message: string }> {
+  async delete(id: string): Promise<ApiResponse<{ message: string }>> {
     const endpoint = `${this.baseURL}/${id}`
 
     try {
@@ -158,19 +95,7 @@ class RankService {
         method: 'DELETE',
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'DELETE_RANK',
@@ -181,20 +106,29 @@ class RankService {
   }
 
   async findAllOrdered(): Promise<rank[]> {
-    const data = await this.findAll()
-    return data.sort((a, b) => a.hierarchy - b.hierarchy)
+    const response = await this.findAll()
+    if (!response.success) {
+      throw new Error(response.error?.message || 'Failed to fetch ranks')
+    }
+    return response.data.sort((a, b) => a.hierarchy - b.hierarchy)
   }
 
   async findSuperior(hierarchy: number): Promise<rank[]> {
-    const data = await this.findAll()
-    return data
+    const response = await this.findAll()
+    if (!response.success) {
+      throw new Error(response.error?.message || 'Failed to fetch ranks')
+    }
+    return response.data
       .filter((rank) => rank.hierarchy < hierarchy)
       .sort((a, b) => a.hierarchy - b.hierarchy)
   }
 
   async findSubordinate(hierarchy: number): Promise<rank[]> {
-    const data = await this.findAll()
-    return data
+    const response = await this.findAll()
+    if (!response.success) {
+      throw new Error(response.error?.message || 'Failed to fetch ranks')
+    }
+    return response.data
       .filter((rank) => rank.hierarchy > hierarchy)
       .sort((a, b) => a.hierarchy - b.hierarchy)
   }

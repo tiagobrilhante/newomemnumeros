@@ -4,7 +4,7 @@ import { enhanceError, ErrorContext } from '~/utils/clientErrorHandler'
 class MilitaryOrganizationService {
   private baseURL = '/api/military-organizations'
 
-  async findAll(): Promise<militaryOrganization[]> {
+  async findAll(): Promise<ApiResponse<militaryOrganization[]>> {
     const endpoint = this.baseURL
 
     try {
@@ -17,19 +17,7 @@ class MilitaryOrganizationService {
         },
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_ALL_MILITARY_ORGANIZATIONS',
@@ -38,25 +26,12 @@ class MilitaryOrganizationService {
     }
   }
 
-  async findById(id: string): Promise<militaryOrganization | null> {
+  async findById(id: string): Promise<ApiResponse<militaryOrganization | null>> {
     const endpoint = `${this.baseURL}/${id}`
 
     try {
       const response = await $fetch<ApiResponse<militaryOrganization | null>>(endpoint)
-
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_MILITARY_ORGANIZATION_BY_ID',
@@ -66,7 +41,7 @@ class MilitaryOrganizationService {
     }
   }
 
-  async create(data: militaryOrganization): Promise<militaryOrganization> {
+  async create(data: militaryOrganization): Promise<ApiResponse<militaryOrganization>> {
     const endpoint = this.baseURL
 
     try {
@@ -82,19 +57,7 @@ class MilitaryOrganizationService {
         },
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'CREATE_MILITARY_ORGANIZATION',
@@ -104,7 +67,7 @@ class MilitaryOrganizationService {
     }
   }
 
-  async update(data: militaryOrganization): Promise<militaryOrganization> {
+  async update(data: militaryOrganization): Promise<ApiResponse<militaryOrganization>> {
     const endpoint = `${this.baseURL}/${data.id}`
 
     try {
@@ -113,19 +76,7 @@ class MilitaryOrganizationService {
         body: data,
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'UPDATE_MILITARY_ORGANIZATION',
@@ -135,7 +86,7 @@ class MilitaryOrganizationService {
     }
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<ApiResponse<void>> {
     const endpoint = `${this.baseURL}/${id}`
 
     try {
@@ -143,19 +94,7 @@ class MilitaryOrganizationService {
         method: 'DELETE',
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'DELETE_MILITARY_ORGANIZATION',
@@ -165,7 +104,7 @@ class MilitaryOrganizationService {
     }
   }
 
-  async deleteLogo(id: string): Promise<militaryOrganization> {
+  async deleteLogo(id: string): Promise<ApiResponse<militaryOrganization>> {
     const endpoint = `${this.baseURL}/delete-logo/${id}`
 
     try {
@@ -173,19 +112,7 @@ class MilitaryOrganizationService {
         method: 'DELETE',
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'DELETE_MILITARY_ORGANIZATION_LOGO',

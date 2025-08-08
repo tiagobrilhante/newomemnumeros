@@ -62,9 +62,18 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const roles = await roleService.getAll()
-      store.setRoles(roles)
-      return roles
+      const response = await roleService.getAll()
+      
+      if (!response.success) {
+        throw createRoleError(
+          'errors.serverCommunication',
+          'Erro ao carregar roles',
+          500,
+        )
+      }
+      
+      store.setRoles(response.data)
+      return response.data
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.fetchRoles', 'Failed to fetch roles')
       error.value = errorMessage
@@ -80,9 +89,18 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const roles = await roleService.findByOrganization(organizationId)
-      store.setRolesByOrganization(organizationId, roles)
-      return roles
+      const response = await roleService.findByOrganization(organizationId)
+      
+      if (!response.success) {
+        throw createRoleError(
+          'errors.serverCommunication',
+          'Erro ao carregar roles da organização',
+          500,
+        )
+      }
+      
+      store.setRolesByOrganization(organizationId, response.data)
+      return response.data
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.fetchOrganizationRoles', 'Failed to fetch organization roles')
       error.value = errorMessage
@@ -98,9 +116,18 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const role = await roleService.findById(id)
-      store.setSelectedRole(role)
-      return role
+      const response = await roleService.findById(id)
+      
+      if (!response.success) {
+        throw createRoleError(
+          'errors.recordNotFound',
+          'Role não encontrada',
+          404,
+        )
+      }
+      
+      store.setSelectedRole(response.data)
+      return response.data
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.roleNotFound', 'Role not found')
       error.value = errorMessage
@@ -116,11 +143,20 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const role = await roleService.create(roleData)
-      store.addRole(role)
+      const response = await roleService.create(roleData)
+      
+      if (!response.success) {
+        throw createRoleError(
+          'errors.serverCommunication',
+          'Erro ao criar role',
+          500,
+        )
+      }
+      
+      store.addRole(response.data)
       const successMessage = getTranslatedMessage('success.roleCreated', 'Role created successfully')
       toast.success(successMessage)
-      return role
+      return response.data
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.createRole', 'Failed to create role')
       error.value = errorMessage
@@ -136,11 +172,20 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      const role = await roleService.update(id, roleData)
-      store.updateRole(role)
+      const response = await roleService.update(id, roleData)
+      
+      if (!response.success) {
+        throw createRoleError(
+          'errors.serverCommunication',
+          'Erro ao atualizar role',
+          500,
+        )
+      }
+      
+      store.updateRole(response.data)
       const successMessage = getTranslatedMessage('success.roleUpdated', 'Role updated successfully')
       toast.success(successMessage)
-      return role
+      return response.data
     } catch (err) {
       const errorMessage = getTranslatedMessage('errors.updateRole', 'Failed to update role')
       error.value = errorMessage
@@ -156,7 +201,16 @@ export const useRoles = () => {
     error.value = ''
 
     try {
-      await roleService.delete(id)
+      const response = await roleService.delete(id)
+      
+      if (!response.success) {
+        throw createRoleError(
+          'errors.serverCommunication',
+          'Erro ao excluir role',
+          500,
+        )
+      }
+      
       store.removeRole(id)
       const successMessage = getTranslatedMessage('success.roleDeleted', 'Role deleted successfully')
       toast.success(successMessage)

@@ -4,25 +4,12 @@ import { enhanceError, ErrorContext } from '~/utils/clientErrorHandler'
 class SectionService {
   private baseURL = '/api/sections'
 
-  async findAll(): Promise<section[]> {
+  async findAll(): Promise<ApiResponse<section[]>> {
     const endpoint = this.baseURL
 
     try {
       const response = await $fetch<ApiResponse<section[]>>(endpoint)
-
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_ALL_SECTIONS',
@@ -31,25 +18,12 @@ class SectionService {
     }
   }
 
-  async findAllByMilitaryOrganizationId(id: string): Promise<section[]> {
+  async findAllByMilitaryOrganizationId(id: string): Promise<ApiResponse<section[]>> {
     const endpoint = `${this.baseURL}/by-om-id/${id}`
 
     try {
       const response = await $fetch<ApiResponse<section[]>>(endpoint)
-
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_SECTIONS_BY_OM',
@@ -59,25 +33,12 @@ class SectionService {
     }
   }
 
-  async findById(id: string): Promise<section | null> {
+  async findById(id: string): Promise<ApiResponse<section | null>> {
     const endpoint = `${this.baseURL}/${id}`
 
     try {
       const response = await $fetch<ApiResponse<section | null>>(endpoint)
-
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'GET_SECTION_BY_ID',
@@ -87,7 +48,7 @@ class SectionService {
     }
   }
 
-  async create(data: section): Promise<section> {
+  async create(data: section): Promise<ApiResponse<section>> {
     const endpoint = this.baseURL
 
     try {
@@ -96,19 +57,7 @@ class SectionService {
         body: data,
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'CREATE_SECTION',
@@ -118,7 +67,7 @@ class SectionService {
     }
   }
 
-  async update(data: section): Promise<section> {
+  async update(data: section): Promise<ApiResponse<section>> {
     const endpoint = `${this.baseURL}/${data.id}`
 
     try {
@@ -127,19 +76,7 @@ class SectionService {
         body: data,
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'UPDATE_SECTION',
@@ -149,7 +86,7 @@ class SectionService {
     }
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string): Promise<ApiResponse<void>> {
     const endpoint = `${this.baseURL}/${id}`
 
     try {
@@ -157,19 +94,7 @@ class SectionService {
         method: 'DELETE',
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'DELETE_SECTION',

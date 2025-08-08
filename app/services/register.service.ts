@@ -5,7 +5,7 @@ import { enhanceError, ErrorContext } from '~/utils/clientErrorHandler'
 class RegisterService {
   private baseURL = '/api/auth'
 
-  async register(data: registerData): Promise<any> {
+  async register(data: registerData): Promise<ApiResponse<any>> {
     const endpoint = `${this.baseURL}/register`
 
     try {
@@ -14,19 +14,7 @@ class RegisterService {
         body: sanitizeData(data),
       })
 
-      if (!response.success) {
-        throw enhanceError(
-          new Error(response.error.message),
-          ErrorContext.BUSINESS_LOGIC,
-          {
-            endpoint,
-            errorCode: response.error.code,
-            statusCode: response.error.statusCode
-          }
-        )
-      }
-
-      return response.data
+      return response
     } catch (error) {
       // Se já é um EnhancedError, re-lança
       if (error && typeof error === 'object' && 'context' in error) {
