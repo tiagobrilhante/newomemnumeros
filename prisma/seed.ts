@@ -1,6 +1,7 @@
 // noinspection JSUnresolvedReference
 import bcrypt from 'bcrypt'
 import { PrismaClient } from '@prisma/client'
+import { PERMISSION_CATEGORIES } from '../shared/constants/permissions'
 
 const prisma = new PrismaClient()
 
@@ -153,65 +154,33 @@ async function seed() {
 
   console.log('Role criados')
 
+  // Criar permissões baseadas nas constantes
+  const permissionsToCreate = []
+  
+  // Extrair todas as permissões das constantes
+  for (const module of PERMISSION_CATEGORIES) {
+    for (const subcategory of module.subcategories) {
+      for (const permission of subcategory.permissions) {
+        permissionsToCreate.push({
+          slug: permission.slug,
+          description: permission.slug, // Usar slug como descrição temporariamente
+          category: permission.category,
+        })
+      }
+    }
+  }
+
   await prisma.permission.createMany({
-    data: [
-
-      //users
-      {
-        slug: 'users.management',
-        description: 'Gerir usuários',
-        category: 'users',
-      },
-      // Permissões de seções
-      {
-        slug: 'sections.management',
-        description: 'Gerir seções',
-        category: 'sections',
-      },
-      // Permissões de roles
-      {
-        slug: 'roles.management',
-        description: 'Gerir roles',
-        category: 'roles',
-      },
-      {
-        slug: 'reports.generate',
-        description: 'Gerar relatórios',
-        category: 'reports',
-      },
-      {
-        slug: 'reports.export',
-        description: 'Exportar relatórios',
-        category: 'reports',
-      },
-
-      {
-        slug: 'militaryOrganization.management',
-        description: 'Gerir OM',
-        category: 'militaryOrganization',
-      },
-      {
-        slug: 'linkUser.management',
-        description: 'Linkar Usuários',
-        category: 'linkUser',
-      },
-    ],
+    data: permissionsToCreate
   })
-
-  const adminPermissionGlobal = await prisma.permission.create({
-    data: {
-      slug: 'system.admin',
-      description: 'Administrador do sistema',
-      category: 'system',
-    },
+  
+  // Buscar permissões administrativas globais
+  const adminPermissionGlobal = await prisma.permission.findFirst({
+    where: { slug: 'admin.system.manage' }
   })
-
-  const adminPermissionOM = await prisma.permission.create({
-    data: {
-      slug: 'mo.admin',
-      description: 'Administrador OM',
-      category: 'system',
-    },
+  
+  const adminPermissionOM = await prisma.permission.findFirst({
+    where: { slug: 'admin.organization.manage' }
   })
 
   console.log('Permissões criadas')
@@ -267,37 +236,42 @@ async function seed() {
 
   const allPermissions = await prisma.permission.findMany()
 
-  // Atribuir apenas a permissão global ao Admin Geral
-  await prisma.rolePermission.create({
-    data: {
-      permissionId: adminPermissionGlobal.id,
-      roleId: adminGeralRole.id,
-    }
-  })
+  // Atribuir permissão de sistema global ao Admin Geral
+  if (adminPermissionGlobal) {
+    await prisma.rolePermission.create({
+      data: {
+        permissionId: adminPermissionGlobal.id,
+        roleId: adminGeralRole.id,
+      }
+    })
+  }
 
-  // Atribuir apenas a permissão OM ao Admin OM
-  await prisma.rolePermission.create({
-    data: {
-      permissionId: adminPermissionOM.id,
-      roleId: adminRole.id,
-    }
-  })
+  // Atribuir permissão de administração organizacional ao Admin OM
+  if (adminPermissionOM) {
+    await prisma.rolePermission.create({
+      data: {
+        permissionId: adminPermissionOM.id,
+        roleId: adminRole.id,
+      }
+    })
+  }
 
-  // Atribuir permissões técnicas ao Chefe STI
+  // Atribuir permissões técnicas ao Chefe STI (permissions organizacionais)
   if (chStiRole) {
     const stiPermissions = allPermissions.filter(p =>
-      p.category === 'users' ||
-      p.category === 'system' ||
-      p.category === 'sections' ||
-      p.slug.includes('.management')
+      p.slug.includes('admin.users.manage') ||
+      p.slug.includes('admin.sections.manage') ||
+      p.slug.includes('admin.roles.manage')
     )
 
-    await prisma.rolePermission.createMany({
-      data: stiPermissions.map(permission => ({
-        permissionId: permission.id,
-        roleId: chStiRole.id,
-      }))
-    })
+    if (stiPermissions.length > 0) {
+      await prisma.rolePermission.createMany({
+        data: stiPermissions.map(permission => ({
+          permissionId: permission.id,
+          roleId: chStiRole.id,
+        }))
+      })
+    }
   }
 
   console.log('Permissões atribuídas aos roles')

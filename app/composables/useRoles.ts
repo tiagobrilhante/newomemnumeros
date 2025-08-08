@@ -1,6 +1,6 @@
 import { toast } from 'vue3-toastify'
 import { useRoleStore } from '~/stores/role.store'
-import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
+import { useNetworkErrorHandler } from './useErrorHandler'
 import { roleService } from '~/services/role.service'
 import type { Role, RoleCreateInput, RoleUpdateInput } from '#shared/types/role'
 
@@ -25,14 +25,6 @@ export const useRoles = () => {
     }
   }
 
-  const createRoleError = (messageKey: string, fallbackMessage: string, statusCode = 500) => {
-    return createAppError(messageKey, {
-      statusCode,
-      statusMessageKey: 'errors.genericTitle',
-      fallbackStatusMessage: 'Role Error',
-      fallbackMessage,
-    } satisfies ErrorHandlerOptions)
-  }
 
   // Accessors
   const roles = computed(() => store.roles)
@@ -240,27 +232,21 @@ export const useRoles = () => {
   }
 
   const fetchRoleUsage = async (roleId: string) => {
-    loading.value = true
-    error.value = ''
-
-    try {
-      const response = await $fetch(`/api/roles/${roleId}/usage`)
-      
-      if (response.success && response.data) {
-        return response.data
-      } else {
-        const errorMessage = 'Failed to fetch role usage'
-        error.value = errorMessage
-        throw createRoleError('errors.fetchRoleUsage', errorMessage)
-      }
-    } catch (err) {
-      const errorMessage = getTranslatedMessage('errors.fetchRoleUsage', 'Failed to fetch role usage')
-      error.value = errorMessage
-      toast.error(errorMessage)
-      throw err
-    } finally {
-      loading.value = false
+    if (!roleId) {
+      throw new Error('Role ID is required')
     }
+
+    const { data, execute } = useNetworkErrorHandler(
+      async () => {
+        const response = await $fetch(`/api/roles/${roleId}/usage`)
+        return response.data
+      },
+      3, // maxRetries
+      1000 // retryDelay
+    )
+
+    const result = await execute()
+    return result
   }
 
   const clearError = () => {

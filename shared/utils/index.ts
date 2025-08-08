@@ -172,3 +172,6 @@ export const retrievePermissionInfo = (permission: string) => {
   }
   return null
 }
+
+// Re-export permission utilities
+export * from './permissions'

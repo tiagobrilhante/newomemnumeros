@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Role } from '#shared/types/role'
 import type { VDataTable } from 'vuetify/components'
+import { isGlobalRole, getOrganizationRoles } from '#shared/utils'
 
 const { selectedMilitaryOrganization } = useMilitaryOrganizations()
 const { fetchRolesByOrganization, fetchRoles, fetchRoleUsage, roles, loading } = useRoles()
@@ -22,16 +23,14 @@ const headers: VDataTable['$props']['headers'] = [
   { title: 'Ações', key: 'actions', sortable: false, align: 'center' }
 ]
 
-// Computeds para separar roles organizacionais dos globais
+// Computeds para separar roles organizacionais dos globais baseado nas permissões
 const organizationRoles = computed(() => {
   if (!selectedMilitaryOrganization.value?.id) return []
-  return roles.value.filter(role => 
-    role.militaryOrganizations?.some(mo => mo.id === selectedMilitaryOrganization.value!.id)
-  )
+  return getOrganizationRoles(roles.value, selectedMilitaryOrganization.value.id)
 })
 
 const globalRoles = computed(() => {
-  return roles.value.filter(role => !role.militaryOrganizations?.length)
+  return roles.value.filter(role => isGlobalRole(role))
 })
 
 // Funções para ações
@@ -47,20 +46,26 @@ const deleteRole = (role: Role) => {
 
 const viewRoleUsage = async (role: Role) => {
   try {
-    const usage = await fetchRoleUsage(role.id!)
+    if (!role.id) {
+      console.error('Role ID não encontrado')
+      return
+    }
+    
+    const usage = await fetchRoleUsage(role.id)
     console.log('Uso da role:', usage)
     
     // Mostrar dialog com informações de uso
-    const message = `
-Role: ${role.name}
-Organizações que usam: ${usage.organizationsUsingRole?.length || 0}
-Usuários com esta role: ${usage.usersWithRole || 0}
-Seções vinculadas: ${usage.sectionsUsingRole?.length || 0}
-Tipo: ${usage.isGlobal ? 'Global' : 'Organizacional'}
-    `
+    const orgCount = usage.organizationsUsingRole?.length || 0
+    const userCount = usage.usersWithRole || 0
+    const sectionCount = usage.sectionsUsingRole?.length || 0
+    const isGlobal = usage.isGlobal ? 'Global' : 'Organizacional'
+    
+    const message = `Role: ${role.name}\nOrganizações que usam: ${orgCount}\nUsuários com esta role: ${userCount}\nSeções vinculadas: ${sectionCount}\nTipo: ${isGlobal}`
+    
     alert(message) // TODO: Substituir por dialog melhor
   } catch (error) {
     console.error('Erro ao buscar uso da role:', error)
+    alert('Erro ao buscar informações de uso da role')
   }
 }
 

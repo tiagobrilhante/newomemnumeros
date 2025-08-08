@@ -20,28 +20,28 @@ export const routesConfig: RouteConfig[] = [
     titleKey: 'leftMenu.militaryOrganization',
     icon: 'mdi-domain',
     color: '#515757',
-    accessLevel: ['militaryOrganization.management'],
+    accessLevel: ['admin.organizations.manage'],
   },
   {
     path: '/admin/users',
     titleKey: 'leftMenu.userManagement',
     icon: 'mdi-account-group',
     color: '#515757',
-    accessLevel: ['users.management'],
+    accessLevel: ['admin.users.manage'],
   },
   {
     path: '/admin/vinculo-sections-users',
     titleKey: 'leftMenu.userLinks',
     icon: 'mdi-arrow-collapse',
     color: '#515757',
-    accessLevel: ['users.management'],
+    accessLevel: ['admin.users.manage'],
   },
   {
     path: '/admin/permissions',
     titleKey: 'leftMenu.rolesAndPermissions',
     icon: 'mdi-shield-account',
     color: 'red',
-    accessLevel: ['roles.management'],
+    accessLevel: ['admin.roles.manage'],
   },
 ]
 

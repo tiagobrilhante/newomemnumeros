@@ -506,11 +506,7 @@ export async function getRoleUsage(id: string, locale: string) {
         roleId: id,
       },
       include: {
-        militaryOrganization: {
-          where: {
-            deleted: false
-          }
-        }
+        militaryOrganization: true
       }
     })
 
@@ -536,9 +532,6 @@ export async function getRoleUsage(id: string, locale: string) {
       },
       include: {
         section: {
-          where: {
-            deleted: false
-          },
           include: {
             militaryOrganization: true
           }
@@ -548,9 +541,13 @@ export async function getRoleUsage(id: string, locale: string) {
 
     return {
       role,
-      organizationsUsingRole: organizationsUsingRole.map(rmo => rmo.militaryOrganization).filter(Boolean),
+      organizationsUsingRole: organizationsUsingRole
+        .map(rmo => rmo.militaryOrganization)
+        .filter(mo => mo && !mo.deleted),
       usersWithRole: usersWithRole.length,
-      sectionsUsingRole: sectionsUsingRole.map(rs => rs.section).filter(Boolean),
+      sectionsUsingRole: sectionsUsingRole
+        .map(rs => rs.section)
+        .filter(section => section && !section.deleted),
       isGlobal: organizationsUsingRole.length === 0 && sectionsUsingRole.length === 0
     }
   } catch (error) {
