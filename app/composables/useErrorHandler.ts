@@ -1,13 +1,8 @@
 import { toast } from 'vue3-toastify'
 import type { ApiResponse } from '#shared/types/api-response'
-import {
-  enhanceError,
-  processApiError,
-  logError,
-  getUserFriendlyMessage,
-  type EnhancedError,
-  type ErrorContext
-} from '~/utils/clientErrorHandler'
+import type { EnhancedError } from '~/utils/clientErrorHandler'
+import { enhanceError, ErrorContext, getUserFriendlyMessage, logError, processApiError } from '~/utils/clientErrorHandler'
+
 
 export interface RetryOptions {
   attempts: number
@@ -29,11 +24,11 @@ export interface ErrorHandlerConfig {
 }
 
 export interface UseErrorHandlerReturn<T> {
-  data: Ref<T | null>
-  error: Ref<EnhancedError | null>
-  loading: Ref<boolean>
-  retrying: Ref<boolean>
-  retryCount: Ref<number>
+  data: ComputedRef<T | null>
+  error: ComputedRef<EnhancedError | null>
+  loading: ComputedRef<boolean>
+  retrying: ComputedRef<boolean>
+  retryCount: ComputedRef<number>
   execute: () => Promise<T | null>
   retry: () => Promise<T | null>
   clear: () => void
@@ -45,7 +40,7 @@ export interface UseErrorHandlerReturn<T> {
  */
 export function useErrorHandler<T>(
   asyncFunction: () => Promise<T>,
-  config: ErrorHandlerConfig = {}
+  config: ErrorHandlerConfig = {},
 ): UseErrorHandlerReturn<T> {
   const {
     context,
@@ -56,7 +51,7 @@ export function useErrorHandler<T>(
     onRetry,
     onMaxRetriesReached,
     fallbackValue = null,
-    useErrorBoundary = false
+    useErrorBoundary = false,
   } = config
 
   // Reactive state
@@ -86,7 +81,7 @@ export function useErrorHandler<T>(
     if (shouldLogError) {
       logError(enhancedError, {
         functionContext: asyncFunction.name || 'anonymous',
-        retryCount: retryCount.value
+        retryCount: retryCount.value,
       })
     }
 
@@ -217,16 +212,22 @@ export function useErrorHandler<T>(
     retryCount.value = 0
   }
 
+  const dataRO = computed(() => data.value)
+  const errorRO = computed(() => error.value)
+  const loadingRO = computed(() => loading.value)
+  const retryingRO = computed(() => retrying.value)
+  const retryCountRO = computed(() => retryCount.value)
+
   return {
-    data: readonly(data),
-    error: readonly(error),
-    loading: readonly(loading),
-    retrying: readonly(retrying),
-    retryCount: readonly(retryCount),
+    data: dataRO,
+    error: errorRO,
+    loading: loadingRO,
+    retrying: retryingRO,
+    retryCount: retryCountRO,
     execute,
     retry,
     clear,
-    reset
+    reset,
   }
 }
 
@@ -235,11 +236,11 @@ export function useErrorHandler<T>(
  */
 export function useSimpleErrorHandler<T>(
   asyncFunction: () => Promise<T>,
-  showToast = true
+  showToast = true,
 ) {
   return useErrorHandler(asyncFunction, {
     showToast,
-    logError: true
+    logError: true,
   })
 }
 
@@ -249,18 +250,18 @@ export function useSimpleErrorHandler<T>(
 export function useNetworkErrorHandler<T>(
   asyncFunction: () => Promise<T>,
   maxRetries = 3,
-  retryDelay = 1000
+  retryDelay = 1000,
 ) {
   return useErrorHandler(asyncFunction, {
-    context: 'NETWORK' as ErrorContext,
+    context: ErrorContext.NETWORK,
     showToast: true,
     logError: true,
     retryOptions: {
       attempts: maxRetries,
       delay: retryDelay,
       backoffMultiplier: 1.5,
-      retryCondition: (error) => error.retryable
-    }
+      retryCondition: (error) => error.retryable,
+    },
   })
 }
 
@@ -269,36 +270,37 @@ export function useNetworkErrorHandler<T>(
  */
 export function useAuthErrorHandler<T>(
   asyncFunction: () => Promise<T>,
-  onAuthError?: (error: EnhancedError) => void
+  onAuthError?: (error: EnhancedError) => void,
 ) {
   return useErrorHandler(asyncFunction, {
-    context: 'AUTHENTICATION' as ErrorContext,
+    context: ErrorContext.AUTHENTICATION,
     showToast: true,
     logError: true,
     onError: (error) => {
-      // Redirect to login on auth errors
       if (error.statusCode === 401) {
-        navigateTo('/login')
+        navigateTo('/')
       }
 
       if (onAuthError) {
         onAuthError(error)
       }
-    }
+    },
   })
 }
 
 /**
  * Error handler for validation operations
+ * Validation errors usually shown in forms
+ * Validation errors are expected
  */
 export function useValidationErrorHandler<T>(
   asyncFunction: () => Promise<T>,
-  onValidationError?: (error: EnhancedError) => void
+  onValidationError?: (error: EnhancedError) => void,
 ) {
   return useErrorHandler(asyncFunction, {
-    context: 'VALIDATION' as ErrorContext,
-    showToast: false, // Validation errors usually shown in forms
-    logError: false,  // Validation errors are expected
-    onError: onValidationError
+    context: ErrorContext.VALIDATION,
+    showToast: false,
+    logError: false,
+    onError: onValidationError,
   })
 }

@@ -1,14 +1,14 @@
-import type { RegisterResponse } from '~/services/register.service'
 import { registerService } from '~/services/register.service'
 import type { registerData } from '#shared/types/register'
-//TODO tem um erro aqui em registerResponse
+import type { ApiResponse, ErrorResponse } from '#shared/types/api-response'
+import { ErrorCode } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
 export const useRegister = () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  const register = async (data: registerData): Promise<RegisterResponse> => {
+  const register = async (data: registerData): Promise<ApiResponse<any>> => {
     loading.value = true
     error.value = null
 
@@ -16,17 +16,21 @@ export const useRegister = () => {
       const response = await registerService.register(data)
 
       if (!response.success) {
-        error.value = response.message
+        error.value = response.error.message
       }
 
       return response
     } catch (_err) {
-      const fallbackResponse: RegisterResponse = {
+      const fallbackResponse: ErrorResponse = {
         success: false,
-        message: $t('serverCommunication'),
-        statusCode: 500,
+        error: {
+          message: $t('serverCommunication'),
+          code: ErrorCode.UNKNOWN_ERROR,
+          statusCode: 500,
+        },
+        data: null,
       }
-      error.value = fallbackResponse.message
+      error.value = fallbackResponse.error.message
       return fallbackResponse
     } finally {
       loading.value = false

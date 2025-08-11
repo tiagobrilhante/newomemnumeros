@@ -2,6 +2,8 @@ import { toast } from 'vue3-toastify'
 import { useSectionStore } from '~/stores/section.store'
 import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
 import { sectionService } from '~/services/section.service'
+import type { ApiResponse } from '#shared/types/api-response'
+import { isErrorResponse } from '#shared/types/api-response'
 
 interface SectionFilters {
   militaryOrganizationId?: string
@@ -49,11 +51,11 @@ export const useSections = () => {
     try {
       const response = await sectionService.findAll()
 
-      if (!response.success) {
+      if (isErrorResponse(response)) {
         throw createSectionError(
           'errors.serverCommunication',
-          response.message || 'Erro ao carregar seções',
-          response.statusCode || 500,
+          response.error.message || 'Erro ao carregar seções',
+          response.error.statusCode || 500,
         )
       }
       store.setSections(response.data)
@@ -75,11 +77,11 @@ export const useSections = () => {
     try {
       const response = await sectionService.findAllByMilitaryOrganizationId(militaryOrganizationId)
 
-      if (!response.success) {
+      if (isErrorResponse(response)) {
         throw createSectionError(
           'errors.serverCommunication',
-          response.message || 'Erro ao carregar seções',
-          response.statusCode || 500,
+          response.error.message || 'Erro ao carregar seções',
+          response.error.statusCode || 500,
         )
       }
       store.setSections(response.data)
@@ -324,11 +326,19 @@ export const useSections = () => {
         )
       }
 
-      if (!resp.success || !resp.data) {
+      if (isErrorResponse(resp)) {
         throw createSectionError(
           'errors.recordNotFound',
-          resp.message || 'Seção militar não encontrada',
-          resp.statusCode || 404,
+          resp.error.message || 'Seção militar não encontrada',
+          resp.error.statusCode || 404,
+        )
+      }
+
+      if (!resp.data) {
+        throw createSectionError(
+          'errors.recordNotFound',
+          'Seção militar não encontrada',
+          404,
         )
       }
 

@@ -102,13 +102,11 @@ export const useAuth = () => {
   // Computed properties para estado de autenticação
   const isAuthenticated = computed(() => authStore.isAuthenticated)
   const user = computed(() => authStore.user)
-  const permissions = computed(() => authStore.permissions)
 
   return {
     // State
     isAuthenticated,
     user,
-    permissions,
     isLoggingOut: readonly(isLoggingOut),
 
     // Actions

@@ -9,6 +9,7 @@ dist
 .netlify
 .idea
 CLAUDE.md
+AGENTS.md
 /.claude/
 
 # Ignore uploaded logos but keep default

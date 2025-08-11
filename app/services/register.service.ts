@@ -1,4 +1,5 @@
 import type { ApiResponse } from '#shared/types/api-response'
+import type { registerData } from '#shared/types/register'
 import { sanitizeData } from '#shared/utils'
 import { enhanceError, ErrorContext } from '~/utils/clientErrorHandler'
 
