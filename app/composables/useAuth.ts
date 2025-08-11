@@ -44,7 +44,7 @@ export const useAuth = () => {
     } finally {
       // Delay para UX suave
       setTimeout(() => {
-        authStore.$reset()
+        authStore.logout()
         isLoggingOut.value = false
         navigateTo('/')
       }, 500)
@@ -63,7 +63,7 @@ export const useAuth = () => {
       }
       return false
     } catch (error) {
-      authStore.$reset()
+      authStore.logout()
       return false
     }
   }
@@ -75,12 +75,12 @@ export const useAuth = () => {
     try {
       const result = await authService.checkAccess()
       if (!result?.hasAccess) {
-        authStore.$reset()
+        authStore.logout()
         return false
       }
       return result.hasAccess
     } catch (error) {
-      authStore.$reset()
+      authStore.logout()
       return false
     }
   }
@@ -96,7 +96,7 @@ export const useAuth = () => {
    * Limpa sessão local
    */
   const clearSession = () => {
-    authStore.$reset()
+    authStore.logout()
   }
 
   // Computed properties para estado de autenticação
