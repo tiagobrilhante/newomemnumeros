@@ -2,11 +2,12 @@
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
   import type { VDataTable } from 'vuetify/components'
 
+  const { t } = useI18n()
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
 
   useHead({
-    title: $t('militaryOrganizationsManagement') + ' - ' + appName,
+    title: t('militaryOrganizationsManagement') + ' - ' + appName,
   })
 
   definePageMeta({
@@ -43,7 +44,7 @@
 
     switch (type) {
       case 'add':
-        CARD_PROPS.modalTextButton = $t('save')
+        CARD_PROPS.modalTextButton = t('save')
         CARD_PROPS.modalIcon = 'mdi-plus-circle'
         CARD_PROPS.btnIcon = 'mdi-content-save-check'
         clearSelection()
@@ -52,28 +53,28 @@
         if (!militaryOrganization?.id) return
         CARD_PROPS.modalIcon = 'mdi-pencil-circle'
         CARD_PROPS.btnIcon = 'mdi-content-save-check'
-        CARD_PROPS.modalTextButton = $t('update')
+        CARD_PROPS.modalTextButton = t('update')
         break
       case 'logo':
         if (!militaryOrganization?.id) return
         CARD_PROPS.modalIcon = 'mdi-shield-star'
-        CARD_PROPS.modalTextButton = $t('$vuetify.close')
+        CARD_PROPS.modalTextButton = t('$vuetify.close')
         break
       case 'delete':
         if (!militaryOrganization?.id) return
         CARD_PROPS.modalIcon = 'mdi-alert'
         CARD_PROPS.btnIcon = 'mdi-delete'
-        CARD_PROPS.modalTextButton = $t('delete')
+        CARD_PROPS.modalTextButton = t('delete')
         break
       case 'sectionsDetails':
         if (!militaryOrganization?.id) return
         CARD_PROPS.modalIcon = 'mdi-sitemap-outline'
-        CARD_PROPS.modalTextButton = $t('$vuetify.close')
+        CARD_PROPS.modalTextButton = t('$vuetify.close')
         break
       case 'manageSections':
         if (!militaryOrganization?.id) return
         CARD_PROPS.modalIcon = 'mdi-sitemap-outline'
-        CARD_PROPS.modalTextButton = $t('$vuetify.close')
+        CARD_PROPS.modalTextButton = t('$vuetify.close')
         break
     }
 
@@ -86,13 +87,13 @@
   }
 
   const headers: VDataTable['$props']['headers'] = [
-    { title: $t('color'), key: 'color', sortable: false, align: 'center' },
-    { title: $t('name'), key: 'name' },
-    { title: $t('acronym'), key: 'acronym' },
-    { title: $t('logo'), key: 'logo', sortable: false, align: 'center' },
-    { title: $t('parentOrganization'), key: 'parentOrganization' },
-    { title: $t('sections'), key: 'sections', align: 'center' },
-    { title: $t('actionsMO'), key: 'actions', sortable: false, align: 'center' },
+    { title: t('color'), key: 'color', sortable: false, align: 'center' },
+    { title: t('name'), key: 'name' },
+    { title: t('acronym'), key: 'acronym' },
+    { title: t('logo'), key: 'logo', sortable: false, align: 'center' },
+    { title: t('parentOrganization'), key: 'parentOrganization' },
+    { title: t('sections'), key: 'sections', align: 'center' },
+    { title: t('actionsMO'), key: 'actions', sortable: false, align: 'center' },
   ]
 
   onMounted(() => {
@@ -104,7 +105,7 @@
   <v-container fluid>
     <v-row>
       <v-col>
-        <BaseTitle :title-variables="{title: $t('militaryOrganizationsManagement'),icon: 'mdi-domain'}" />
+        <BaseTitle :title-variables="{title: t('militaryOrganizationsManagement'),icon: 'mdi-domain'}" />
 
         <v-card :loading class="border border-solid border-opacity-100" rounded="xl">
 
@@ -114,11 +115,11 @@
               <v-col class="px-4 d-flex justify-space-between">
                 <div>
                   <v-icon class="mr-3" size="small">mdi-list-box</v-icon>
-                  <span>{{ $t('listedMilitaryOrganizations') }}</span>
+                  <span>{{ t('listedMilitaryOrganizations') }}</span>
                 </div>
                 <v-btn
                   :loading="loading"
-                  :text="$t('add') + ' ' + $t('leftMenu.militaryOrganization') "
+                  :text="t('add') + ' ' + t('leftMenu.militaryOrganization') "
                   color="primary"
                   prepend-icon="mdi-plus-circle"
                   rounded="xl"
@@ -162,7 +163,7 @@
               <!--if parent-->
               <template #[`item.parentOrganization`]="{ item }">
                 <span v-if="item.parentOrganization">{{ item.parentOrganization?.acronym }}</span>
-                <span v-else> {{ $t('isParentMilitaryOrganization') }} </span>
+                <span v-else> {{ t('isParentMilitaryOrganization') }} </span>
               </template>
 
               <!-- mo logo -->
@@ -203,13 +204,13 @@
                         </v-card-text>
                       </v-card>
                       </template>
-                      <v-card density="compact" class="mb-3 pa-2" v-else> {{ $t('noSectionsFound') }}</v-card>
+                      <v-card density="compact" class="mb-3 pa-2" v-else> {{ t('noSectionsFound') }}</v-card>
                     </v-col>
                   </v-row>
                 </v-tooltip>
 
 
-                <v-tooltip :text="$t('sectionsDetails')" location="top">
+                <v-tooltip :text="t('sectionsDetails')" location="top">
                   <template v-slot:activator="{ props }">
                     <v-icon class="mr-3" color="info" size="x-small" v-bind="props"
                             @click="openModal('sectionsDetails', item)">
@@ -217,7 +218,7 @@
                     </v-icon>
                   </template>
                 </v-tooltip>
-                <v-tooltip :text="$t('sectionsConfigurations')" location="top">
+                <v-tooltip :text="t('sectionsConfigurations')" location="top">
                   <template v-slot:activator="{ props }">
                     <v-icon color="warning" size="x-small" v-bind="props" @click="openModal('manageSections', item)">
                       mdi-cog
@@ -231,7 +232,7 @@
               <template #[`item.actions`]="{ item }">
 
                 <!-- edit -->
-                <v-tooltip :text="$t('edit')" location="top">
+                <v-tooltip :text="t('edit')" location="top">
                   <template v-slot:activator="{ props }">
                     <v-icon-btn
                       :loading="loading"
@@ -247,7 +248,7 @@
                 </v-tooltip>
 
                 <!-- delete-->
-                <v-tooltip :text="$t('delete')" location="top">
+                <v-tooltip :text="t('delete')" location="top">
                   <template v-slot:activator="{ props }">
                     <v-icon-btn
                       :loading="loading"

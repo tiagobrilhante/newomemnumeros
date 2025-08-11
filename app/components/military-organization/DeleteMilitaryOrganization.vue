@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 
+  const { t } = useI18n()
   const {
     selectedMilitaryOrganization, loading,
     deleteMilitaryOrganization,
@@ -36,7 +37,7 @@
 
     <v-card-title class="bg-surface-light pt-4 grey-thick-border-bottom">
       <v-row>
-        <v-col cols="10"><v-icon color="yellow" class="mr-3 mt-0" size="small">{{cardProps.modalIcon}}</v-icon> {{ $t(cardProps.modalType) }} {{ $t('leftMenu.militaryOrganization') }}</v-col>
+        <v-col cols="10"><v-icon color="yellow" class="mr-3 mt-0" size="small">{{cardProps.modalIcon}}</v-icon> {{ t(cardProps.modalType) }} {{ t('leftMenu.militaryOrganization') }}</v-col>
         <v-col class="text-right pr-2 pt-1" cols="2">
           <v-btn icon size="small" variant="text" @click="emit('close-dialog')">
             <v-icon>mdi-close</v-icon>
@@ -49,14 +50,14 @@
         <v-row>
           <v-col class="text-justify">
             <p class="mb-5">
-              {{ $t('confirmDeleteMilitaryOrganization') }}
+              {{ t('confirmDeleteMilitaryOrganization') }}
               <b> {{ selectedMilitaryOrganization?.name }}?</b>
             </p>
             <v-divider />
-            <p class="my-5">{{ $t('irreversibleAction') }}</p>
+            <p class="my-5">{{ t('irreversibleAction') }}</p>
             <v-divider />
             <p class="my-5">
-              {{ $t('consequenceDeleteMilitaryOrganization') }}
+              {{ t('consequenceDeleteMilitaryOrganization') }}
             </p>
           </v-col>
         </v-row>
@@ -67,7 +68,7 @@
       <v-btn
         v-if="selectedMilitaryOrganization"
         :loading="loading"
-        :text="$t('delete')"
+        :text="t('delete')"
         class="mr-5 px-4"
         color="error"
         :prepend-icon="cardProps.btnIcon"
@@ -76,7 +77,7 @@
         @click="handleDeleteMilitaryOrganization(selectedMilitaryOrganization?.id || '')"
       />
       <v-btn
-        :text="$t('cancel')"
+        :text="t('cancel')"
         class="px-4"
         color="primary"
         prepend-icon="mdi-cancel"

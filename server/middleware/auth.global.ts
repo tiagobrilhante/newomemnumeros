@@ -92,7 +92,6 @@ export default defineEventHandler(async (event: H3Event) => {
       event.context.user = userWithoutPassword
     } catch (error) {
       if (error instanceof jwt.JsonWebTokenError) {
-        console.log(`[AUTH] JWT verification error: ${error.message}`)
 
         deleteCookie(event, 'auth-token')
 
@@ -101,10 +100,8 @@ export default defineEventHandler(async (event: H3Event) => {
           statusMessage: 'Token expired or invalid'
         })
       } else {
-        console.error('[AUTH] Token verification error:', error)
       }
     }
   } catch (error) {
-    console.error('[AUTH] Middleware error:', error)
   }
 })

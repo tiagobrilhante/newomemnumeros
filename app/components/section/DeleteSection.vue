@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  const { t } = useI18n()
   const {selectedSection, deleteSection, loading} = useSections()
   const {selectedMilitaryOrganization} = useMilitaryOrganizations()
   const emit = defineEmits(['change-state'])
@@ -37,14 +38,14 @@
         <p class="mb-5">
           <v-icon color="yellow" class="mr-5" icon="mdi-alert"/>
 
-        {{$t('confirmDeleteSection')}} {{selectedSection?.acronym}} ({{selectedMilitaryOrganization?.acronym}})
+        {{t('confirmDeleteSection')}} {{selectedSection?.acronym}} ({{selectedMilitaryOrganization?.acronym}})
         </p>
 
         <v-divider />
-        <p class="my-5">{{ $t('irreversibleAction') }}</p>
+        <p class="my-5">{{ t('irreversibleAction') }}</p>
         <v-divider />
         <p class="my-5">
-          {{ $t('consequenceDeleteSection') }}
+          {{ t('consequenceDeleteSection') }}
         </p>
 
       </v-col>
@@ -64,7 +65,7 @@
         />
         <v-btn
           :loading
-          :text="$t('cancel')"
+          :text="t('cancel')"
           class="px-5"
           color="primary"
           prepend-icon="mdi-close"

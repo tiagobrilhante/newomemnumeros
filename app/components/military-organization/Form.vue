@@ -1,6 +1,8 @@
 <script lang="ts" setup>
   import type { VForm } from 'vuetify/components'
 
+  const { t } = useI18n()
+
   const {
     createMilitaryOrganization,
     updateMilitaryOrganization,
@@ -34,7 +36,7 @@
   const logoBase = ref('')
   const form = ref<VForm | null>(null)
   const inputProps = reactive({
-    label: $t('selectMOBadge'),
+    label: t('selectMOBadge'),
   })
 
   const error = ref<{
@@ -48,7 +50,7 @@
   })
 
   // form validations
-  const requiredRule = [(v: string) => !!v || `${$t('thisField')} ${$t('isRequired')}`]
+  const requiredRule = [(v: string) => !!v || `${t('thisField')} ${t('isRequired')}`]
 
   if (cardProps.modalType === 'edit' && selectedMilitaryOrganization.value) {
     changeLogo.value = false
@@ -113,7 +115,7 @@
       emit('close-dialog')
     } catch (error: any) {
       showError(
-        $t('errors.operationFailed') || 'Erro ao realizar operação',
+        t('errors.operationFailed') || 'Erro ao realizar operação',
         [error?.message || error?.toString() || 'Erro desconhecido'],
       )
     }
@@ -153,7 +155,7 @@
       logoBase.value = '/logos/default/default.png'
     } catch (error: any) {
       showError(
-        $t('errors.deleteLogoFailed') || 'Erro ao excluir logo',
+        t('errors.deleteLogoFailed') || 'Erro ao excluir logo',
         [error?.message || error?.toString() || 'Erro desconhecido'],
       )
     }
@@ -166,7 +168,7 @@
       <!-- card title-->
       <v-card-title class="bg-surface-light pt-4">
         <v-row>
-          <v-col cols="10"><v-icon class="mr-3 mt-0" size="small">{{cardProps.modalIcon}}</v-icon>{{ $t(cardProps.modalType) }} {{ $t('leftMenu.militaryOrganization') }}</v-col>
+          <v-col cols="10"><v-icon class="mr-3 mt-0" size="small">{{cardProps.modalIcon}}</v-icon>{{ t(cardProps.modalType) }} {{ t('leftMenu.militaryOrganization') }}</v-col>
           <v-col class="text-right pr-2 pt-1" cols="2">
             <v-btn icon variant="text" size="small" @click="emit('close-dialog')">
               <v-icon>mdi-close</v-icon>
@@ -219,7 +221,7 @@
                       <v-col class="text-center">
                         <!-- change-->
                         <v-btn
-                          :text="$t('changeBadge')"
+                          :text="t('changeBadge')"
                           color="primary"
                           rounded="xl"
                           size="small"
@@ -229,7 +231,7 @@
                         </v-btn>
 
                         <!-- delete-->
-                        <v-tooltip :text="$t('deleteBadge')" location="top">
+                        <v-tooltip :text="t('deleteBadge')" location="top">
                           <template v-slot:activator="{ props }">
                             <v-btn
                               v-if="logo !== '/logos/default/default.png'"
@@ -257,7 +259,7 @@
                     <!-- cancel changes-->
                     <v-btn
                       v-if="cardProps.modalType === 'edit' && changeLogo"
-                      :text="$t('cancelBadgeChange')"
+                      :text="t('cancelBadgeChange')"
                       block
                       class="mt-2"
                       color="warning"
@@ -271,7 +273,7 @@
                 </v-col>
 
                 <v-col cols="7">
-                  <v-checkbox v-model="isFather" :label="$t('isParentMilitaryOrganization')" hide-details />
+                  <v-checkbox v-model="isFather" :label="t('isParentMilitaryOrganization')" hide-details />
 
                   <!-- MO Selector-->
                   <v-select
@@ -279,8 +281,8 @@
                     id="selectedMilitaryOrganization"
                     v-model="father"
                     :items="filteredMilitaryOrganizations"
-                    :label="$t('parentMilitaryOrganization')"
-                    :placeholder="$t('selectParentMilitaryOrganization')"
+                    :label="t('parentMilitaryOrganization')"
+                    :placeholder="t('selectParentMilitaryOrganization')"
                     class="mb-3"
                     density="compact"
                     item-title="acronym"
@@ -293,8 +295,8 @@
                   <v-text-field
                     id="name"
                     v-model="name"
-                    :label="$t('fullNameMO')"
-                    :placeholder="$t('MOName')"
+                    :label="t('fullNameMO')"
+                    :placeholder="t('MOName')"
                     :rules="requiredRule"
                     class="mb-3"
                     density="compact"
@@ -308,8 +310,8 @@
                   <v-text-field
                     id="acronym"
                     v-model="acronym"
-                    :label="$t('acronym')"
-                    :placeholder="$t('acronym')"
+                    :label="t('acronym')"
+                    :placeholder="t('acronym')"
                     :rules="requiredRule"
                     class="mb-3"
                     density="compact"
@@ -320,7 +322,7 @@
                   />
 
                   <!--color-->
-                  <span class="ml-5 text-caption">{{ $t('moColorSelect') }}</span>
+                  <span class="ml-5 text-caption">{{ t('moColorSelect') }}</span>
                   <v-color-picker
                     v-model="color"
                     class="grey-thick-border pa-3 mt-2"
@@ -357,7 +359,7 @@
 
         <!-- cancel-->
         <v-btn
-          :text="$t('cancel')"
+          :text="t('cancel')"
           color="error"
           class="px-4"
           prepend-icon="mdi-cancel"
@@ -378,7 +380,7 @@
     persistent
   >
     <v-card
-      :title="$t('deleteMOLogo')"
+      :title="t('deleteMOLogo')"
       class="rounded-xl"
       prepend-icon="mdi-alert"
     >
@@ -387,14 +389,14 @@
           <v-row>
             <v-col class="text-justify">
               <p>
-                {{ $t('confirmDeleteMilitaryLogo') }}<br>
-                <b>{{ $t('leftMenu.militaryOrganization') }}: </b>
+                {{ t('confirmDeleteMilitaryLogo') }}<br>
+                <b>{{ t('leftMenu.militaryOrganization') }}: </b>
                 {{ adminMilitaryOrganizationStore.selectedMilitaryOrganization.name }}
               </p>
               <br>
               <hr>
               <br>
-              <p>{{ $t('irreversibleAction') }}</p>
+              <p>{{ t('irreversibleAction') }}</p>
             </v-col>
           </v-row>
         </v-container>
@@ -404,7 +406,7 @@
         <v-btn
           v-if="adminMilitaryOrganizationStore.selectedMilitaryOrganization"
           :loading="loading"
-          :text="$t('delete')"
+          :text="t('delete')"
           color="error"
           prepend-icon="mdi-alert"
           rounded="xl"
@@ -412,7 +414,7 @@
           @click="doDeleteMilitaryOrganizationLogo()"
         />
         <v-btn
-          :text="$t('cancel')"
+          :text="t('cancel')"
           class="mr-8"
           color="secondary"
           rounded="xl"

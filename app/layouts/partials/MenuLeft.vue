@@ -4,6 +4,8 @@
   import { useDisplay } from 'vuetify'
   import { routesConfig } from '~/config/routes'
 
+  const { t } = useI18n()
+
   const navigationStore = useNavigationStore()
   const { hasPermission } = usePermissions()
   const localePath = useLocalePath()
@@ -66,7 +68,7 @@
     <v-list-item
       class="mx-2 my-2 cursor-pointer"
       :prepend-icon="(navigationStore.isMenuCollapsed || mobile) ? 'mdi-menu' : 'mdi-menu-open'"
-      :title="(navigationStore.isMenuCollapsed || mobile) ? '' : $t('leftMenu.mainMenu')"
+      :title="(navigationStore.isMenuCollapsed || mobile) ? '' : t('leftMenu.mainMenu')"
       @click="toggleCollapse"
       rounded="xl"
     />
@@ -76,11 +78,11 @@
     <!-- menu items list -->
     <v-list density="compact" nav>
       <template v-for="item in filteredMenuItems" :key="item.titleKey">
-        <v-tooltip :text="$t(item.titleKey)" location="end" :disabled="!(navigationStore.isMenuCollapsed || mobile)">
+        <v-tooltip :text="t(item.titleKey)" location="end" :disabled="!(navigationStore.isMenuCollapsed || mobile)">
           <template #activator="{ props }">
             <v-list-item
               :prepend-icon="item.icon"
-              :title="(navigationStore.isMenuCollapsed || mobile) ? '' : $t(item.titleKey)"
+              :title="(navigationStore.isMenuCollapsed || mobile) ? '' : t(item.titleKey)"
               class="mx-2 mb-1"
               density="compact"
               rounded="xl"

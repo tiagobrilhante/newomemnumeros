@@ -4,6 +4,8 @@
   import MenuLeft from '~/layouts/partials/MenuLeft.vue'
   import Footer from '~/layouts/partials/Footer.vue'
 
+  const { t } = useI18n()
+
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
 
@@ -43,7 +45,7 @@
           color="primary"
           size="64"
         />
-        <p class="text-body-1 mt-4">{{ $t('loading') }}</p>
+        <p class="text-body-1 mt-4">{{ t('loading') }}</p>
       </div>
       <div v-show="isContentReady">
         <nuxt-page />

@@ -3,15 +3,16 @@
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
 
 
+  const { t } = useI18n()
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
   const {selectedMilitaryOrganization} = useMilitaryOrganizations()
 
   useHead({
-    title: $t('militaryOrganizationsManagement') + ' - ' + appName,
+    title: t('militaryOrganizationsManagement') + ' - ' + appName,
   })
   const titleVariables = {
-    title: $t('permission.managePermissions'),
+    title: t('permission.managePermissions'),
     icon: 'mdi-shield-account',
   }
 </script>

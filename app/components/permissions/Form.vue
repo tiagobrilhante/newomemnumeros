@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import { PERMISSION_CATEGORIES } from '#shared/constants/permissions'
 
+  const { t } = useI18n()
   const {selectedMilitaryOrganization} = useMilitaryOrganizationStore()
   const {loading} = useRoles()
 
@@ -23,7 +24,7 @@
 
 
   // form validations
-  const requiredRule = [(v: string) => !!v || `${$t('thisField')} ${$t('isRequired')}`]
+  const requiredRule = [(v: string) => !!v || `${t('thisField')} ${t('isRequired')}`]
 
 
   const isSuperAdmin = computed(() => selectedPermissions.value.includes(SUPER_ADMIN_PERMISSION))
@@ -106,7 +107,7 @@
   <v-card :loading class="white-thick-border" rounded="xl">
     <v-card-title class="bg-surface-light pt-4">
       <v-row>
-        <v-col cols="10"><v-icon class="mr-3 mt-0" size="small">{{cardProps.modalIcon}}</v-icon>{{ $t(cardProps.modalType) }} {{ $t('leftMenu.roles') }}</v-col>
+        <v-col cols="10"><v-icon class="mr-3 mt-0" size="small">{{cardProps.modalIcon}}</v-icon>{{ t(cardProps.modalType) }} {{ t('leftMenu.roles') }}</v-col>
         <v-col class="text-right pr-2 pt-1" cols="2">
           <v-btn icon variant="text" size="small" @click="emit('close-dialog')">
             <v-icon>mdi-close</v-icon>
@@ -121,8 +122,8 @@
           <v-text-field
             id="name"
             v-model="name"
-            :label="$t('permission.input.role.name')"
-            :placeholder="$t('permission.input.role.name')"
+            :label="t('permission.input.role.name')"
+            :placeholder="t('permission.input.role.name')"
             :rules="requiredRule"
             class="mb-3"
             density="compact"
@@ -138,12 +139,12 @@
             :loading
             v-model="sectionId"
             :items="selectedMilitaryOrganization?.sections"
-            :label="$t('section')"
-            :placeholder="$t('selectSession')"
+            :label="t('section')"
+            :placeholder="t('selectSession')"
             class="mb-3"
             clearable
             density="compact"
-            :hint="$t('selectSessionHint')"
+            :hint="t('selectSessionHint')"
             item-title="acronym"
             item-value="id"
             rounded="xl"
@@ -157,9 +158,9 @@
         <v-col cols="12">
           <v-alert
             :text="isSuperAdmin
-              ? $t('permission.messages.superUserMessage')
-              : $t('permission.messages.organizationAdminMessage')"
-            :title="isSuperAdmin ? $t('permission.messages.superUserSelected') : $t('permission.messages.organizationAdminSelected')"
+              ? t('permission.messages.superUserMessage')
+              : t('permission.messages.organizationAdminMessage')"
+            :title="isSuperAdmin ? t('permission.messages.superUserSelected') : t('permission.messages.organizationAdminSelected')"
             :type="isSuperAdmin ? 'success' : 'info'"
             prominent
             rounded="xl"
@@ -180,7 +181,7 @@
           <!-- module info card and permissions-->
           <v-card
             :color="module.module_color"
-            :title="$t('permission.module.' + module.module_alias)"
+            :title="t('permission.module.' + module.module_alias)"
             class="mb-6"
             rounded="xl"
             variant="tonal"
@@ -208,11 +209,11 @@
                   v-for="subcategory in module.subcategories"
                   v-show="isSubcategoryVisible(module.module_alias, subcategory.name)"
                   :key="subcategory.name"
-                  :title="$t('permission.subcategories.' + subcategory.name + '.title')"
+                  :title="t('permission.subcategories.' + subcategory.name + '.title')"
                 >
                   <v-expansion-panel-text>
                     <p class="text-body-2 text-medium-emphasis mb-3">
-                      {{ $t('permission.subcategories.' + subcategory.name + '.description') }}
+                      {{ t('permission.subcategories.' + subcategory.name + '.description') }}
                     </p>
 
                     <!-- Checkbox -->
@@ -232,7 +233,7 @@
                       </template>
 
                       <v-list-item-title class="text-body-2 font-weight-medium">
-                        {{ $t('selectAll') }} ({{ subcategory.permissions.filter(p => isPermissionVisible(p.slug)).length
+                        {{ t('selectAll') }} ({{ subcategory.permissions.filter(p => isPermissionVisible(p.slug)).length
                         }})
                       </v-list-item-title>
                     </v-list-item>
@@ -256,7 +257,7 @@
                         </template>
 
                         <v-list-item-title class="text-body-2">
-                          {{ $t('permission.' + permission.slug) }}
+                          {{ t('permission.' + permission.slug) }}
                         </v-list-item-title>
 
                         <v-list-item-subtitle class="text-caption">
@@ -273,7 +274,7 @@
                 <v-divider class="mb-3" />
                 <div class="d-flex justify-space-between align-center">
               <span class="text-caption text-medium-emphasis">
-                {{ $t('permission.totalPermissions') }}
+                {{ t('permission.totalPermissions') }}
               </span>
                   <v-chip size="x-small" variant="outlined">
                     {{ module.subcategories.reduce((total, sub) => total + sub.permissions.length, 0) }}
@@ -288,7 +289,7 @@
       <!-- selected permissions -->
       <v-row v-if="selectedPermissions.length > 0" class="mt-6">
         <v-col cols="12">
-          <v-card :title="`${$t('permission.selectedPermissions')} ${ selectedPermissions.length }`" color="error"
+          <v-card :title="`${t('permission.selectedPermissions')} ${ selectedPermissions.length }`" color="error"
                   rounded="xl" variant="outlined">
 
             <v-card-text>

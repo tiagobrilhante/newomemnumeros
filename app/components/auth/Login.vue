@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import type { VForm } from 'vuetify/components'
 
+  const { t } = useI18n()
   const { login } = useAuth()
   const localePath = useLocalePath()
 
@@ -11,13 +12,13 @@
   const apiError = ref<string | null>(null)
 
   const emailRules = [
-    (v: string) => !!v || $t('emailField') + ' ' + $t('isRequired'),
-    (v: string) => /.+@.+\..+/.test(v) || $t('emailField') + ' ' + $t('mustBeValid'),
+    (v: string) => !!v || t('emailField') + ' ' + t('isRequired'),
+    (v: string) => /.+@.+\..+/.test(v) || t('emailField') + ' ' + t('mustBeValid'),
   ]
 
   const passwordRules = [
-    (v: string) => !!v || $t('passwordField') + ' ' + $t('isRequired'),
-    (v: string) => (v && v.length >= 6) || $t('passwordField') + ' ' + $t('mustContain') + ' 6 ' + $t('characters'),
+    (v: string) => !!v || t('passwordField') + ' ' + t('isRequired'),
+    (v: string) => (v && v.length >= 6) || t('passwordField') + ' ' + t('mustContain') + ' 6 ' + t('characters'),
   ]
 
   const processAuth = async () => {
@@ -40,11 +41,11 @@
       if (loginResult.success) {
         await navigateTo(localePath('/home'), { replace: true })
       } else {
-        apiError.value = $t('errorInvalidEmailOrPassword')
+        apiError.value = t('errorInvalidEmailOrPassword')
       }
 
     } catch (err) {
-      apiError.value = $t('errorUnexpected')
+      apiError.value = t('errorUnexpected')
     } finally {
       loading.value = false
     }
@@ -58,7 +59,7 @@
     <v-row>
       <v-col cols="4" offset="4">
         <v-card class="text-center borda-branca" elevation="12" rounded="xl">
-          <h2>{{ $t('login') }}</h2>
+          <h2>{{ t('login') }}</h2>
         </v-card>
       </v-col>
     </v-row>
@@ -66,7 +67,7 @@
     <v-row>
       <v-col cols="4" offset="4">
         <v-card
-          :title="$t('signIn')"
+          :title="t('signIn')"
           class="card-container-login"
           elevation="12"
           prepend-icon="mdi-account"
@@ -84,8 +85,8 @@
                   <v-text-field
                     id="email"
                     v-model="email"
-                    :label="$t('emailLabel')"
-                    :placeholder="$t('emailPlaceholder')"
+                    :label="t('emailLabel')"
+                    :placeholder="t('emailPlaceholder')"
                     :rules="emailRules"
                     density="compact"
                     prepend-icon="mdi-at"
@@ -101,8 +102,8 @@
                   <v-text-field
                     id="password"
                     v-model="password"
-                    :label="$t('passwordLabel')"
-                    :placeholder="$t('passwordPlaceholder')"
+                    :label="t('passwordLabel')"
+                    :placeholder="t('passwordPlaceholder')"
                     :rules="passwordRules"
                     density="compact"
                     prepend-icon="mdi-form-textbox-password"
@@ -126,7 +127,7 @@
                   <v-btn
                     :disabled="loading"
                     :loading="loading"
-                    :text="loading ? $t('loading') : $t('login')"
+                    :text="loading ? t('loading') : t('login')"
                     block
                     color="primary"
                     elevation="12"
@@ -139,7 +140,7 @@
                 </v-col>
 
                 <v-col cols="12" class="text-center">
-                  <v-btn :text="$t('noAccountSignUp')" size="small" :to="localePath('/register')" variant="text" />
+                  <v-btn :text="t('noAccountSignUp')" size="small" :to="localePath('/register')" variant="text" />
                 </v-col>
 
 

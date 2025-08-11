@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import type { NuxtError } from '#app'
 
+  const { t } = useI18n()
   const props = defineProps<{
     error: NuxtError
   }>()
@@ -33,11 +34,11 @@
   })
 
   const errorTitle = computed(() => {
-    return props.error.statusMessage || $t(`errors.status${props.error.statusCode}Title`) || $t('errors.genericTitle')
+    return props.error.statusMessage || t(`errors.status${props.error.statusCode}Title`) || t('errors.genericTitle')
   })
 
   const errorMessage = computed(() => {
-    return props.error.message || $t(`errors.status${props.error.statusCode}Message`) || $t('errors.genericMessage')
+    return props.error.message || t(`errors.status${props.error.statusCode}Message`) || t('errors.genericMessage')
   })
 
   const isDev = import.meta.dev
@@ -104,7 +105,7 @@
                       block
                       prepend-icon="mdi-home"
                       @click="goHome"
-                      :text="$t('goToHome')"
+                      :text="t('goToHome')"
                     />
 
                   </v-col>
@@ -119,7 +120,7 @@
                       rounded="xl"
                       prepend-icon="mdi-arrow-left"
                       @click="goBack"
-                      :text="$t('goBack')"
+                      :text="t('goBack')"
                     />
                   </v-col>
 
@@ -132,7 +133,7 @@
                   variant="accordion"
                 >
                   <v-expansion-panel
-                    :title="$t('errors.technicalDetails')"
+                    :title="t('errors.technicalDetails')"
                     text-color="error"
                   >
                     <v-expansion-panel-text>

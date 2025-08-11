@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  const { t } = useI18n()
   const { selectedMilitaryOrganization, loading } = useMilitaryOrganizations()
 
   defineProps<{
@@ -22,7 +23,7 @@
       <v-row>
         <v-col cols="10">
           <v-icon class="mr-3 mt-0" color="yellow" size="small">{{ cardProps.modalIcon }}</v-icon>
-          {{ $t('sectionsDetails') }}
+          {{ t('sectionsDetails') }}
         </v-col>
         <v-col v-if="cardProps.showCancelBtn" class="text-right pr-2 pt-1" cols="2">
           <v-btn icon size="small" variant="text" @click="emit('close-dialog')">
@@ -46,7 +47,7 @@
             </v-card-text>
           </v-card>
           </template>
-          <span v-else>{{ $t('noSectionsFound') }}</span>
+          <span v-else>{{ t('noSectionsFound') }}</span>
         </v-col>
       </v-row>
     </v-card-text>

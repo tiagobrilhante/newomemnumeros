@@ -35,12 +35,10 @@ const globalRoles = computed(() => {
 
 // Funções para ações
 const editRole = (role: Role) => {
-  console.log('Editar role:', role)
   // TODO: Implementar edição
 }
 
 const deleteRole = (role: Role) => {
-  console.log('Deletar role:', role)
   // TODO: Implementar confirmação e deleção
 }
 
@@ -52,7 +50,6 @@ const viewRoleUsage = async (role: Role) => {
     }
     
     const usage = await fetchRoleUsage(role.id)
-    console.log('Uso da role:', usage)
     
     // Mostrar dialog com informações de uso
     const orgCount = usage.organizationsUsingRole?.length || 0

@@ -50,6 +50,9 @@ export default defineNuxtConfig({
     },
   },
 
+  // Forçar modo de desenvolvimento quando necessário
+  dev: process.env.NODE_ENV === 'development',
+
   compatibilityDate: '2025-07-15',
 
   i18n: {
@@ -84,6 +87,6 @@ export default defineNuxtConfig({
   },
 
   plugins: ['~/plugins/vue-mask.ts', '~/plugins/vue3-toastify.ts'],
-  
+
   css: ['~/assets/app.css'],
 })

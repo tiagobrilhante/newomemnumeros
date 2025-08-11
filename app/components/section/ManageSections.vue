@@ -1,6 +1,8 @@
 <script lang="ts" setup>
   import type { VDataTable } from 'vuetify/components'
 
+  const { t } = useI18n()
+
   const { selectedMilitaryOrganization, loading, findMilitaryOrganization } = useMilitaryOrganizations()
   const { selectSection } = useSections()
 
@@ -29,9 +31,9 @@
   const search = ref('')
 
   const headers: VDataTable['$props']['headers'] = [
-    { title: $t('name'), key: 'name' },
-    { title: $t('acronym'), key: 'acronym' },
-    { title: $t('actions'), key: 'actions', sortable: false, align: 'center' },
+    { title: t('name'), key: 'name' },
+    { title: t('acronym'), key: 'acronym' },
+    { title: t('actions'), key: 'actions', sortable: false, align: 'center' },
   ]
 
   const changeCurrentState = (state: State, section?: section) => {
@@ -39,19 +41,19 @@
 
     if (state === 'add') {
       FORM_PROPS.formType = 'add'
-      FORM_PROPS.formTextButton = $t('add')
+      FORM_PROPS.formTextButton = t('add')
       FORM_PROPS.formIcon = 'mdi-plus-circle'
       FORM_PROPS.btnIcon = 'mdi-check'
     } else if (state === 'edit') {
       selectSection(section!)
       FORM_PROPS.formType = 'edit'
-      FORM_PROPS.formTextButton = $t('edit')
+      FORM_PROPS.formTextButton = t('edit')
       FORM_PROPS.formIcon = 'mdi-pencil'
       FORM_PROPS.btnIcon = 'mdi-content-save-check-outline'
     } else if (state === 'delete') {
       selectSection(section!)
       FORM_PROPS.formType = 'delete'
-      FORM_PROPS.formTextButton = $t('delete')
+      FORM_PROPS.formTextButton = t('delete')
       FORM_PROPS.formIcon = 'mdi-warning'
       FORM_PROPS.btnIcon = 'mdi-delete'
     }
@@ -66,7 +68,7 @@
       try {
         await findMilitaryOrganization(selectedMilitaryOrganization.value.id)
       } catch (error) {
-        console.error($t('errors.updateDataMO'), error)
+        console.error(t('errors.updateDataMO'), error)
       }
     }
   })
@@ -82,7 +84,7 @@
       <v-row>
         <v-col cols="10">
           <v-icon class="mr-3 mt-0" color="yellow" size="small">{{ cardProps.modalIcon }}</v-icon>
-          {{ $t('manageSections') }}
+          {{ t('manageSections') }}
         </v-col>
         <v-col v-if="cardProps.showCancelBtn && currentState === 'list'" class="text-right pr-2 pt-1" cols="2">
           <v-btn icon size="small" variant="text" @click="emit('close-dialog')">
@@ -98,11 +100,11 @@
         <v-alert v-if="currentState === 'list'" key="list">
           <v-row dense>
             <v-col >
-              <h3>{{ $t('registeredSections') }} - {{ selectedMilitaryOrganization?.acronym }}</h3>
+              <h3>{{ t('registeredSections') }} - {{ selectedMilitaryOrganization?.acronym }}</h3>
             </v-col>
             <v-col class="text-right" cols="4">
               <v-btn color="primary" prepend-icon="mdi-plus-circle" rounded="xl" size="small" variant="outlined"
-                     @click="changeCurrentState('add')">{{ $t('addNewSection') }}
+                     @click="changeCurrentState('add')">{{ t('addNewSection') }}
               </v-btn>
             </v-col>
           </v-row>
@@ -119,7 +121,7 @@
             <template #[`item.actions`]="{ item }">
 
               <!-- edit -->
-              <v-tooltip :text="$t('edit')" location="top">
+              <v-tooltip :text="t('edit')" location="top">
                 <template v-slot:activator="{ props }">
                   <v-icon-btn
                     :loading="loading"
@@ -136,7 +138,7 @@
               </v-tooltip>
 
               <!-- delete-->
-              <v-tooltip :text="$t('delete')" location="top">
+              <v-tooltip :text="t('delete')" location="top">
                 <template v-slot:activator="{ props }">
                   <v-icon-btn
                     :loading="loading"

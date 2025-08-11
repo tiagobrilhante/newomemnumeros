@@ -2,6 +2,8 @@
   import { Cropper } from 'vue-advanced-cropper'
   import 'vue-advanced-cropper/dist/style.css'
 
+  const { t } = useI18n()
+
   interface Props {
     inputProps: {
       label: string
@@ -93,9 +95,9 @@
 
       <v-alert v-if="imageSrc" closable type="info">
         <ul class="show-bullets">
-          <li>{{ $t('imageEditor.zoomInstruction') }}</li>
-          <li>{{ $t('imageEditor.moveInstruction') }}</li>
-          <li>{{ $t('imageEditor.centerInstruction') }}</li>
+          <li>{{ t('imageEditor.zoomInstruction') }}</li>
+          <li>{{ t('imageEditor.moveInstruction') }}</li>
+          <li>{{ t('imageEditor.centerInstruction') }}</li>
         </ul>
       </v-alert>
     </v-col>

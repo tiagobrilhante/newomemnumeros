@@ -4,11 +4,12 @@
   //import { retrieveMilitaryOrganizationLogo } from '~/utils/retrieve-military-organization-logo'
   import { useAuthUserStore } from '~/stores/auth.store'
 
+  const { t } = useI18n()
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
 
   useHead({
-    title: $t('leftMenu.home') + ' - ' + appName,
+    title: t('leftMenu.home') + ' - ' + appName,
   })
 
   definePageMeta({
@@ -18,7 +19,7 @@
   const authUserStore = useAuthUserStore();
 
   const DASHBOARD_MENU_ITEM = {
-    title: $t('leftMenu.home'),
+    title: t('leftMenu.home'),
     icon: 'mdi-home',
     haveSpaceForComponent: true,
     components: [WelcomeMessage],

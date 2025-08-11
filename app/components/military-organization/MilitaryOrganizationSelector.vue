@@ -1,6 +1,8 @@
 <script lang="ts" setup>
   import { retrieveMiniImage } from '#shared/utils'
 
+  const { t } = useI18n()
+
   const {fetchMilitaryOrganizations, selectMilitaryOrganization, clearSelection ,selectedMilitaryOrganization, militaryOrganizations, loading} = useMilitaryOrganizations()
 
   const militaryOrganizationStore = useMilitaryOrganizationStore()
@@ -29,8 +31,8 @@
           hide-details
           item-title="acronym"
           item-value="id"
-          :label="$t('leftMenu.militaryOrganization')"
-          :placeholder="$t('selectMilitaryOrganization')"
+          :label="t('leftMenu.militaryOrganization')"
+          :placeholder="t('selectMilitaryOrganization')"
           required
           rounded="xl"
           variant="outlined"
@@ -39,7 +41,7 @@
         />
       </v-col>
       <v-col v-if="!selectedMilitaryOrganization" class="align-content-center">
-        <h3 class="pl-5">{{$t('selectMilitaryOrganization')}}</h3>
+        <h3 class="pl-5">{{t('selectMilitaryOrganization')}}</h3>
       </v-col>
       <v-col v-else class="align-content-center">
         <h2 class="d-inline-block">{{selectedMilitaryOrganization.name}} - {{selectedMilitaryOrganization.acronym}}</h2> <v-icon-btn size="small" class="ml-10 mb-1" variant="outlined" icon="mdi-refresh-circle" @click="clearSelection" color="white"/>

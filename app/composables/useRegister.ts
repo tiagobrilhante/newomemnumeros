@@ -5,6 +5,7 @@ import { ErrorCode } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
 export const useRegister = () => {
+  const { t } = useI18n()
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -24,7 +25,7 @@ export const useRegister = () => {
       const fallbackResponse: ErrorResponse = {
         success: false,
         error: {
-          message: $t('serverCommunication'),
+          message: t('serverCommunication'),
           code: ErrorCode.UNKNOWN_ERROR,
           statusCode: 500,
         },

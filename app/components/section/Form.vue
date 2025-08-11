@@ -1,6 +1,8 @@
 <script lang="ts" setup>
   import type { VForm } from 'vuetify/components'
 
+  const { t } = useI18n()
+
   const { selectedMilitaryOrganization, loading: moLoading } = useMilitaryOrganizations()
   const { createSection, selectedSection, updateSection, loading: sectionsLoading, error } = useSections()
   const loading = computed(() => moLoading.value || sectionsLoading.value)
@@ -15,7 +17,7 @@
     emit('change-state', 'list')
   }
 
-  const requiredRule = [(v: string) => !!v || `${$t('thisField')} ${$t('isRequired')}`]
+  const requiredRule = [(v: string) => !!v || `${t('thisField')} ${t('isRequired')}`]
 
   const { formProps } = defineProps<{
     formProps: {
@@ -37,21 +39,21 @@
 
     const { valid } = (await form.value?.validate()) || { valid: false }
     if (!valid) {
-      localErrors.value.push($t('validation.fillRequiredFields'))
+      localErrors.value.push(t('validation.fillRequiredFields'))
       return
     }
 
     if (!selectedMilitaryOrganization.value || !selectedMilitaryOrganization.value.id) {
-      localErrors.value.push($t('validation.noMilitaryOrganizationSelected'))
+      localErrors.value.push(t('validation.noMilitaryOrganizationSelected'))
       return
     }
 
     if (name.value.trim().length < 3) {
-      localErrors.value.push($t('name') + ' ' + $t('mustContain')+ ' ' + $t('atLeast') + ' 3 ' +$t('characters'))
+      localErrors.value.push(t('name') + ' ' + t('mustContain')+ ' ' + t('atLeast') + ' 3 ' +t('characters'))
     }
 
     if (acronym.value.trim().length < 2) {
-      localErrors.value.push($t('acronym') + ' ' + $t('mustContain')+ ' ' + $t('atLeast') + ' 2 ' +$t('characters'))
+      localErrors.value.push(t('acronym') + ' ' + t('mustContain')+ ' ' + t('atLeast') + ' 2 ' +t('characters'))
     }
 
     if (localErrors.value.length > 0) {
@@ -69,7 +71,7 @@
         await createSection(formData)
       } else {
         if (!id.value) {
-          localErrors.value.push($t('validSectionRequiredToEdit'))
+          localErrors.value.push(t('validSectionRequiredToEdit'))
           return
         }
         await updateSection({
@@ -81,7 +83,7 @@
       handleCancel()
     } catch (error: any) {
       console.error('Erro no formulário de seção:', error)
-      localErrors.value.push(error?.message || $t('errors.genericError'))
+      localErrors.value.push(error?.message || t('errors.genericError'))
     }
   }
 
@@ -94,8 +96,8 @@
     <!-- title info-->
     <v-row>
       <v-col cols="10"
-      > {{ formProps.formTextButton }} {{ $t('section') }} -
-        <b>{{ $t('mo') }}: {{ selectedMilitaryOrganization?.acronym }} </b>
+      > {{ formProps.formTextButton }} {{ t('section') }} -
+        <b>{{ t('mo') }}: {{ selectedMilitaryOrganization?.acronym }} </b>
       </v-col>
     </v-row>
 
@@ -110,7 +112,7 @@
           rounded="xl"
           type="error"
         >
-          <p class="pb-3 text-uppercase font-weight-bold">{{ $t('error') }}</p>
+          <p class="pb-3 text-uppercase font-weight-bold">{{ t('error') }}</p>
           <ul>
             <li v-if="error">{{ error }}</li>
             <li v-for="localError in localErrors" :key="localError">{{ localError }}</li>
@@ -133,8 +135,8 @@
             <v-text-field
               id="name"
               v-model="name"
-              :label="$t('sectionFullName')"
-              :placeholder="$t('sectionFullName')"
+              :label="t('sectionFullName')"
+              :placeholder="t('sectionFullName')"
               :rules="requiredRule"
               class="mb-5"
               density="compact"
@@ -147,8 +149,8 @@
             <v-text-field
               id="acronym"
               v-model="acronym"
-              :label="$t('acronym')"
-              :placeholder="$t('acronym')"
+              :label="t('acronym')"
+              :placeholder="t('acronym')"
               :rules="requiredRule"
               density="compact"
               required
@@ -180,7 +182,7 @@
         />
         <v-btn
           :loading
-          :text="$t('cancel')"
+          :text="t('cancel')"
           class="px-5"
           color="secondary"
           prepend-icon="mdi-close"

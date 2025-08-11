@@ -10,7 +10,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const isAuthenticated = authStore.isAuthenticated;
   const localePath = useLocalePath();
   
-  console.log('[AUTH MIDDLEWARE] Route:', to.path, 'AuthMeta:', routeAuthMeta, 'IsAuthenticated:', isAuthenticated);
 
   const isAuthObject = (meta: unknown): meta is AuthRouteMeta => {
     return typeof meta === 'object' && meta !== null;
@@ -22,7 +21,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
     
     // Se não tem cookie mas tem user no store, tentar verificar token primeiro
     if (!authCookie.value && isAuthenticated) {
-      console.log('[MIDDLEWARE] No auth cookie but user in store - attempting token verification');
       
       try {
         const response = await $fetch<ApiResponse<{ user: user }>>('/api/auth/verify-token', {
@@ -30,14 +28,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
           credentials: 'include',
         });
         if (response?.success && response?.data?.user) {
-          console.log('[MIDDLEWARE] Token verification successful, allowing access');
           return;
         }
       } catch (error) {
-        console.log('[MIDDLEWARE] Token verification failed:', error);
       }
       
-      console.log('[MIDDLEWARE] No valid token - performing logout');
       authStore.logout();
       return navigateTo(localePath('/'));
     }
@@ -54,12 +49,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
           return;
         } else {
           // Se a resposta não é successful, limpar e redirecionar
-          console.log('[MIDDLEWARE] Invalid token response - performing automatic logout');
           authStore.logout();
           return navigateTo(localePath('/'));
         }
       } catch (error: any) {
-        console.log('[MIDDLEWARE] Token verification failed - performing automatic logout', error?.statusCode || error?.status);
         authStore.logout();
         return navigateTo(localePath('/'));
       }

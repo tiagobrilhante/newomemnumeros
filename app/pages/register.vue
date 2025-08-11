@@ -4,12 +4,12 @@
   import type { VForm } from 'vuetify/components'
   import type { RegisterResponse } from '~/services/register.service'
 
-
+  const { t } = useI18n()
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
 
   useHead({
-    title: $t('signUp') + ' - ' + appName,
+    title: t('signUp') + ' - ' + appName,
   })
 
   definePageMeta({
@@ -47,29 +47,29 @@
   )
 
   const createRequiredRule = (fieldKey: string) => {
-    return (v: string) => !!v || `${$t(fieldKey)} ${$t('isRequired')}`
+    return (v: string) => !!v || `${t(fieldKey)} ${t('isRequired')}`
   }
 
-  const requiredRule = [(v: string) => !!v || `${$t('thisField')} ${$t('isRequired')}`]
+  const requiredRule = [(v: string) => !!v || `${t('thisField')} ${t('isRequired')}`]
 
   const emailRules = [
     createRequiredRule('emailField'),
-    (v: string) => /.+@.+\..+/.test(v) || `${$t('emailField')} ${$t('mustBeValid')}`,
+    (v: string) => /.+@.+\..+/.test(v) || `${t('emailField')} ${t('mustBeValid')}`,
   ]
 
   const cpfRules = [
     createRequiredRule('cpfField'),
-    (v: string) => cpf.Validate(v) || `${$t('cpfField')} ${$t('mustBeValid')}`,
+    (v: string) => cpf.Validate(v) || `${t('cpfField')} ${t('mustBeValid')}`,
   ]
 
   const passwordRules = [
     createRequiredRule('passwordField'),
-    (v: string) => (v && v.length >= 6) || `${$t('passwordField')} ${$t('mustContain')} 6 ${$t('characters')}`,
+    (v: string) => (v && v.length >= 6) || `${t('passwordField')} ${t('mustContain')} 6 ${t('characters')}`,
   ]
 
   const passwordConfirmRules = [
     createRequiredRule('passwordConfirmationRequired'),
-    (v: string) => v === newUserData.password || $t('passwordDoesNotMatch'),
+    (v: string) => v === newUserData.password || t('passwordDoesNotMatch'),
   ]
 
   const processRegister = async () => {
@@ -102,7 +102,7 @@
     <v-row>
       <v-col cols="8" offset="2">
         <v-card class="text-center borda-branca" elevation="12" rounded="xl">
-          <h2>{{ $t('register') }}</h2>
+          <h2>{{ t('register') }}</h2>
         </v-card>
       </v-col>
     </v-row>
@@ -112,7 +112,7 @@
       <v-col cols="8" offset="2">
 
         <v-card
-          :title="$t('signUp')"
+          :title="t('signUp')"
           class="card-container-register"
           elevation="12"
           prepend-icon="mdi-account"
@@ -143,8 +143,8 @@
                   <v-select
                     v-model="newUserData.rankId"
                     :items="ranks"
-                    :label="$t('rankLabel')"
-                    :placeholder="$t('rankPlaceholder')"
+                    :label="t('rankLabel')"
+                    :placeholder="t('rankPlaceholder')"
                     :rules="requiredRule"
                     density="compact"
                     item-title="name"
@@ -161,8 +161,8 @@
                   <v-text-field
                     id="serviceName"
                     v-model="newUserData.serviceName"
-                    :label="$t('serviceNameLabel')"
-                    :placeholder="$t('serviceNamePlaceholder')"
+                    :label="t('serviceNameLabel')"
+                    :placeholder="t('serviceNamePlaceholder')"
                     :rules="requiredRule"
                     density="compact"
                     prepend-icon="mdi-text-account"
@@ -179,8 +179,8 @@
                   <v-text-field
                     id="name"
                     v-model="newUserData.name"
-                    :label="$t('fullNameLabel')"
-                    :placeholder="$t('fullNamePlaceholder')"
+                    :label="t('fullNameLabel')"
+                    :placeholder="t('fullNamePlaceholder')"
                     :rules="requiredRule"
                     density="compact"
                     prepend-icon="mdi-text-account"
@@ -201,8 +201,8 @@
                     id="cpf"
                     v-model="newUserData.cpf"
                     v-mask-cpf
-                    :label="$t('cpfLabel')"
-                    :placeholder="$t('cpfPlaceholder')"
+                    :label="t('cpfLabel')"
+                    :placeholder="t('cpfPlaceholder')"
                     :rules="cpfRules"
                     density="compact"
                     prepend-icon="mdi-text-account"
@@ -217,8 +217,8 @@
                   <v-text-field
                     id="email"
                     v-model="newUserData.email"
-                    :label="$t('emailLabel')"
-                    :placeholder="$t('emailPlaceholder')"
+                    :label="t('emailLabel')"
+                    :placeholder="t('emailPlaceholder')"
                     :rules="emailRules"
                     density="compact"
                     prepend-icon="mdi-at"
@@ -238,8 +238,8 @@
                   <v-text-field
                     id="password"
                     v-model="newUserData.password"
-                    :label="$t('passwordLabel')"
-                    :placeholder="$t('passwordPlaceholder')"
+                    :label="t('passwordLabel')"
+                    :placeholder="t('passwordPlaceholder')"
                     :rules="passwordRules"
                     density="compact"
                     prepend-icon="mdi-form-textbox-password"
@@ -255,8 +255,8 @@
                   <v-text-field
                     id="passwordConfirm"
                     v-model="newUserData.passwordConfirm"
-                    :label="$t('passwordConfirmLabel')"
-                    :placeholder="$t('passwordConfirmPlaceholder')"
+                    :label="t('passwordConfirmLabel')"
+                    :placeholder="t('passwordConfirmPlaceholder')"
                     :rules="passwordConfirmRules"
                     density="compact"
                     prepend-icon="mdi-form-textbox-password"
@@ -274,7 +274,7 @@
 
                 <!--switch register/login-->
                 <v-col>
-                  <v-btn :text="$t('haveAccountSignIn')" :to="localePath('/')" size="small" variant="text" />
+                  <v-btn :text="t('haveAccountSignIn')" :to="localePath('/')" size="small" variant="text" />
                 </v-col>
 
                 <!--register button-->
@@ -282,7 +282,7 @@
                   <v-btn
                     :disabled="loading"
                     :loading="loading"
-                    :text="loading ? $t('loading') : $t('registerAction')"
+                    :text="loading ? t('loading') : t('registerAction')"
                     block
                     color="primary"
                     elevation="12"

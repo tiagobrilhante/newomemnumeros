@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  const { t } = useI18n()
   const { logout } = useAuth()
 
   const useAuthStore = useAuthUserStore()
@@ -42,16 +43,16 @@
                     <v-icon left>mdi-account</v-icon>
 
                     {{ useAuthStore.user.rank?.acronym }} {{ useAuthStore.user.serviceName }}<br >
-                    <b>{{ $t('name') }}:</b> {{ useAuthStore.user.name }}<br >
-                    <b>{{ $t('cpfLabel') }}: </b>{{ useAuthStore.user.cpf }}<br >
-                    <b>{{ $t('emailLabel') }}: </b>{{ useAuthStore.user.email }}<br >
+                    <b>{{ t('name') }}:</b> {{ useAuthStore.user.name }}<br >
+                    <b>{{ t('cpfLabel') }}: </b>{{ useAuthStore.user.cpf }}<br >
+                    <b>{{ t('emailLabel') }}: </b>{{ useAuthStore.user.email }}<br >
                   </v-alert>
                 </v-col>
               </v-row>
             </v-container>
             <!-- TODO: Corrigir o @click para a funcionalidade correta -->
-            <v-list-item prepend-icon="mdi-account" :title="$t('editData')" />
-            <v-list-item prepend-icon="mdi-logout" :title="$t('logout')" @click="handleLogout" />
+            <v-list-item prepend-icon="mdi-account" :title="t('editData')" />
+            <v-list-item prepend-icon="mdi-logout" :title="t('logout')" @click="handleLogout" />
           </v-list>
         </v-menu>
         <br >
@@ -60,7 +61,7 @@
           flat
           prepend-icon="mdi-logout"
           size="small"
-          :text="$t('logout')"
+          :text="t('logout')"
           variant="plain"
           @click="handleLogout"
         />
