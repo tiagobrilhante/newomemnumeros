@@ -1,203 +1,180 @@
-# BasicOM Private License
+BasicOM Private License
 
-**BasicOM - Basic Administrative Management System for Military Organizations**
-
----
-
-## Copyright Notice
-
-Copyright (c) 2025 TC Brilhante - Ch STI CMA  
+Copyright (c) 2025 TC Brilhante - Ch STI CMA
 All rights reserved.
 
----
+BasicOM - Basic Administrative Management System for Military Organizations
 
-## License Grant
+LICENSE GRANT
 
-This software and associated documentation files (the "Software") are proprietary and confidential. The Software is licensed, not sold, to you by TC Brilhante - Ch STI CMA ("Licensor") for use strictly in accordance with the terms of this license.
+This software and associated documentation files (the "Software") are proprietary 
+and confidential. The Software is licensed, not sold, to you by TC Brilhante - Ch STI CMA 
+("Licensor") for use strictly in accordance with the terms of this license.
 
----
+PERMITTED USES
 
-## Permitted Uses
+Subject to the terms and conditions of this license, the Licensor grants you a limited, 
+non-exclusive, non-transferable license to:
 
-Subject to the terms and conditions of this license, the Licensor grants you a limited, non-exclusive, non-transferable license to:
+1. Use the Software solely for administrative management of Military Organizations
+2. Deploy the Software within authorized military environments
+3. Modify the Software for internal administrative purposes only
+4. Maintain copies for backup and disaster recovery purposes
 
-1. **Use** the Software solely for administrative management of Military Organizations
-2. **Deploy** the Software within authorized military environments
-3. **Modify** the Software for internal administrative purposes only
-4. **Maintain** copies for backup and disaster recovery purposes
-
----
-
-## Restrictions
+RESTRICTIONS
 
 You are expressly prohibited from:
 
-1. **Distribution**: Distributing, sharing, or making the Software available to unauthorized parties
-2. **Commercial Use**: Using the Software for commercial purposes outside military administration
-3. **Reverse Engineering**: Decompiling, disassembling, or reverse engineering the Software
-4. **Sublicensing**: Sublicensing, renting, leasing, or lending the Software
-5. **Modification for Redistribution**: Creating derivative works for distribution
-6. **Removal of Notices**: Removing or altering copyright notices or license terms
-7. **Unauthorized Access**: Providing access to personnel without proper authorization
-8. **Non-Military Use**: Using the Software outside the scope of military administration
+1. Distribution: Distributing, sharing, or making the Software available to unauthorized parties
+2. Commercial Use: Using the Software for commercial purposes outside military administration
+3. Reverse Engineering: Decompiling, disassembling, or reverse engineering the Software
+4. Sublicensing: Sublicensing, renting, leasing, or lending the Software
+5. Modification for Redistribution: Creating derivative works for distribution
+6. Removal of Notices: Removing or altering copyright notices or license terms
+7. Unauthorized Access: Providing access to personnel without proper authorization
+8. Non-Military Use: Using the Software outside the scope of military administration
 
----
+MILITARY CONTEXT AND SECURITY
 
-## Military Context and Security
+Authorized Use:
+- This Software is designed exclusively for administrative management of Military Organizations
+- Use is restricted to authorized military personnel and approved contractors
+- The Software handles administrative data only - not operational or classified information
 
-### Authorized Use
-- This Software is designed exclusively for **administrative management** of Military Organizations
-- Use is restricted to **authorized military personnel** and **approved contractors**
-- The Software handles **administrative data only** - not operational or classified information
+Security Requirements:
+- Users must maintain appropriate security clearance as required by their organization
+- All deployments must follow military cybersecurity standards
+- Access must be controlled through proper authentication mechanisms
+- Data must be protected according to military data classification guidelines
 
-### Security Requirements
-- Users must maintain appropriate **security clearance** as required by their organization
-- All deployments must follow **military cybersecurity standards**
-- Access must be controlled through **proper authentication mechanisms**
-- Data must be protected according to **military data classification guidelines**
+Prohibited Military Uses:
+This Software shall NOT be used for:
+- Operational military planning or execution
+- Classified information management
+- Weapons systems integration
+- Tactical communications
+- Intelligence operations
+- Command and control systems
 
-### Prohibited Military Uses
-- This Software shall NOT be used for:
-  - Operational military planning or execution
-  - Classified information management
-  - Weapons systems integration
-  - Tactical communications
-  - Intelligence operations
-  - Command and control systems
+DATA AND PRIVACY
 
----
-
-## Data and Privacy
-
-### Data Ownership
+Data Ownership:
 - All data entered into the Software remains the property of the respective Military Organization
 - The Licensor claims no ownership rights over user data
 - Users are responsible for data classification and protection
 
-### Data Security
+Data Security:
 - Users must implement appropriate security measures for data protection
 - Regular backups and disaster recovery procedures are the user's responsibility
 - Data encryption and access controls must be maintained according to military standards
 
-### Privacy Compliance
+Privacy Compliance:
 - Users must ensure compliance with applicable privacy regulations
 - Personal data of military personnel must be handled according to military privacy policies
 - Data retention policies must align with military record-keeping requirements
 
----
+SUPPORT AND MAINTENANCE
 
-## Support and Maintenance
+Support Level:
+- Support is provided on a best-effort basis
+- Priority support for critical security issues
+- Feature requests subject to military relevance assessment
 
-### Support Level
-- Support is provided on a **best-effort basis**
-- Priority support for **critical security issues**
-- Feature requests subject to **military relevance assessment**
-
-### Updates and Patches
+Updates and Patches:
 - Security updates will be provided promptly
 - Feature updates at the discretion of the Licensor
 - Users are responsible for applying updates in a timely manner
 
-### Customization
+Customization:
 - Authorized modifications for internal use only
 - Custom development available through separate agreement
 - All customizations must maintain security standards
 
----
+LIABILITY AND WARRANTIES
 
-## Liability and Warranties
+DISCLAIMER OF WARRANTIES:
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+PARTICULAR PURPOSE, AND NONINFRINGEMENT.
 
-### Disclaimer of Warranties
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+LIMITATION OF LIABILITY:
+IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF, OR IN 
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-### Limitation of Liability
-IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-### Military Context Considerations
+Military Context Considerations:
 - Users acknowledge the Software is for administrative purposes only
 - Users are responsible for ensuring appropriate use within military context
 - The Licensor is not responsible for misuse outside intended administrative scope
 
----
+TERMINATION
 
-## Termination
-
-### Automatic Termination
+Automatic Termination:
 This license terminates automatically if you:
 - Violate any term of this license
 - Use the Software outside authorized military contexts
 - Distribute the Software without authorization
 - Fail to maintain required security standards
 
-### Effect of Termination
+Effect of Termination:
 Upon termination, you must:
 - Immediately cease all use of the Software
 - Destroy all copies of the Software in your possession
 - Return or destroy any confidential information received
 - Notify the Licensor of compliance with termination requirements
 
----
+GOVERNING LAW AND JURISDICTION
 
-## Governing Law and Jurisdiction
+Applicable Law:
+This license shall be governed by and construed in accordance with the laws of Brazil, 
+without regard to conflict of law principles.
 
-### Applicable Law
-This license shall be governed by and construed in accordance with the laws of Brazil, without regard to conflict of law principles.
-
-### Military Jurisdiction
+Military Jurisdiction:
 - Military personnel are subject to applicable military regulations
 - Disputes involving military use may be subject to military jurisdiction
 - Security violations may be subject to military disciplinary action
 
-### Dispute Resolution
+Dispute Resolution:
 - Good faith negotiation for dispute resolution
 - Mediation before litigation when possible
 - Jurisdiction in Brazilian federal courts for civilian matters
 
----
+COMPLIANCE AND AUDIT
 
-## Compliance and Audit
-
-### Compliance Monitoring
+Compliance Monitoring:
 - The Licensor reserves the right to audit compliance with this license
 - Users must provide reasonable cooperation for compliance verification
 - Audit findings must be addressed within reasonable timeframes
 
-### Security Audits
+Security Audits:
 - Regular security assessments are recommended
 - Vulnerability disclosures must follow the Security Policy (SECURITY.md)
 - Security incidents must be reported according to military protocols
 
-### Record Keeping
+Record Keeping:
 - Users must maintain records of Software deployment and use
 - Access logs should be maintained for security purposes
 - License compliance documentation should be preserved
 
----
+CONTACT INFORMATION
 
-## Contact Information
+Licensor: TC Brilhante - Ch STI CMA
+Project: BasicOM - Sistema de gerenciamento básico da vida vegetativa de Organizações Militares
+License Version: 1.0
+Effective Date: 2025
 
-**Licensor**: TC Brilhante - Ch STI CMA  
-**Project**: BasicOM - Sistema de gerenciamento básico da vida vegetativa de Organizações Militares  
-**License Version**: 1.0  
-**Effective Date**: 2025
+For license inquiries, security issues, or compliance questions, contact the Licensor 
+through official military communication channels.
 
-For license inquiries, security issues, or compliance questions, contact the Licensor through official military communication channels.
+LICENSE UPDATES
 
----
+This license may be updated from time to time. Continued use of the Software after 
+license updates constitutes acceptance of the new terms. Users will be notified of 
+significant changes through appropriate channels.
 
-## License Updates
+Last Updated: August 7, 2025
+License Version: 1.0
 
-This license may be updated from time to time. Continued use of the Software after license updates constitutes acceptance of the new terms. Users will be notified of significant changes through appropriate channels.
-
-**Last Updated**: August 7, 2025  
-**License Version**: 1.0
-
----
-
-<div align="center">
-
-**PROPRIETARY AND CONFIDENTIAL**  
-*This software is the exclusive property of TC Brilhante - Ch STI CMA*  
-*Unauthorized use, distribution, or modification is strictly prohibited*
-
-</div>
+PROPRIETARY AND CONFIDENTIAL
+This software is the exclusive property of TC Brilhante - Ch STI CMA
+Unauthorized use, distribution, or modification is strictly prohibited
