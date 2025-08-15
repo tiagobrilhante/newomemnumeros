@@ -21,7 +21,6 @@
     }
   }>()
 
-  const adminMilitaryOrganizationStore = useMilitaryOrganizationStore()
   const emit = defineEmits(['close-dialog'])
 
   const isFather = ref(false)
@@ -374,7 +373,7 @@
 
   <!-- dialog for logo exclusion-->
   <v-dialog
-    v-if="openDialogDeleteLogo && adminMilitaryOrganizationStore.selectedMilitaryOrganization"
+    v-if="openDialogDeleteLogo && selectedMilitaryOrganization"
     v-model="openDialogDeleteLogo"
     max-width="30%"
     persistent
@@ -391,7 +390,7 @@
               <p>
                 {{ t('confirmDeleteMilitaryLogo') }}<br>
                 <b>{{ t('leftMenu.militaryOrganization') }}: </b>
-                {{ adminMilitaryOrganizationStore.selectedMilitaryOrganization.name }}
+                {{ selectedMilitaryOrganization.name }}
               </p>
               <br>
               <hr>
@@ -404,7 +403,7 @@
       <v-card-actions class="pb-4">
         <v-spacer />
         <v-btn
-          v-if="adminMilitaryOrganizationStore.selectedMilitaryOrganization"
+          v-if="selectedMilitaryOrganization"
           :loading="loading"
           :text="t('delete')"
           color="error"

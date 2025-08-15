@@ -283,6 +283,21 @@ export const useRoles = () => {
     error.value = ''
   }
 
+  // === Role Type/Scope Management ===
+  const selectedRoleType = computed(() => store.selectedRoleType)
+
+  const setRoleType = (type: string) => {
+    store.setRoleType(type)
+  }
+
+  const clearRoleType = () => {
+    store.clearRoleType()
+  }
+
+  const getRoleType = () => {
+    return store.getRoleType()
+  }
+
   return {
     // Estado
     loading: readonly(loading),
@@ -291,6 +306,7 @@ export const useRoles = () => {
     // Dados computados
     roles,
     selectedRole,
+    selectedRoleType,
     totalRoles,
     globalRoles,
     organizationRoles,
@@ -307,5 +323,10 @@ export const useRoles = () => {
     deleteRole,
     clearSelectedRole,
     clearError,
+
+    // Role Type/Scope Management
+    setRoleType,
+    clearRoleType,
+    getRoleType,
   }
 }

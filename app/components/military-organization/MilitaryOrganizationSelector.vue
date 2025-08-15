@@ -5,16 +5,12 @@
 
   const {fetchMilitaryOrganizations, selectMilitaryOrganization, clearSelection ,selectedMilitaryOrganization, militaryOrganizations, loading} = useMilitaryOrganizations()
 
-  const militaryOrganizationStore = useMilitaryOrganizationStore()
-  const listOfMilitaryOrganizations = ref<militaryOrganization[]>([])
-
   const setSelectedMilitaryOrganization = (militaryOrganization: militaryOrganization) => {
    selectMilitaryOrganization(militaryOrganization)
   }
 
   onMounted(async () => {
     await fetchMilitaryOrganizations()
-    listOfMilitaryOrganizations.value = militaryOrganizationStore.militaryOrganizations ?? []
   })
 </script>
 <template>

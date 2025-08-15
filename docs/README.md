@@ -15,8 +15,9 @@
 - [📊 Modelos de Dados](../README.md#-modelo-de-dados) - Esquemas Prisma e relacionamentos
 
 #### Arquitetura
-- [🏗️ Padrões Arquiteturais](../README.md#-arquitetura) - Composables, Services, Transformers
+- [🏗️ Padrões Arquiteturais](../README.md#-arquitetura) - Composables Pattern v1.6.0, Services, Transformers
 - [🗃️ Estrutura do Projeto](../README.md#-estrutura-do-projeto) - Organização de pastas e arquivos
+- [🔄 Arquitetura de Composables](../CLAUDE.md#🏗️-arquitetura-de-composables-padrão-atualizado-v160) - Store ↔ Composable ↔ Component
 - [🔄 Fluxo de Dados](../README.md#-sistema-de-error-handling-unificado) - Como os dados fluem na aplicação
 
 #### Frontend
@@ -94,6 +95,7 @@ docs/
 
 A documentação é atualizada continuamente junto com o desenvolvimento. Principais marcos:
 
+- **2025-08-15**: Padronização da Arquitetura de Composables (v1.6.0)
 - **2025-08-07**: Sistema de Roles Globais com Arquitetura Pivot (v1.5.0)
 - **2025-08-04**: Sistema de Error Handling Unificado (v1.4.0)
 - **2025-07-31**: Schema RoleSection, UX logout, renderização condicional layout

@@ -305,7 +305,7 @@ GET    /api/roles/organization/[organizationId] # Roles por organização
 newomemnumeros/
 ├── app/
 │   ├── components/              # 17 componentes organizados
-│   ├── composables/             # 7 composables reutilizáveis
+│   ├── composables/             # 9 composables reutilizáveis
 │   ├── middleware/              # 4+ middlewares de segurança
 │   ├── pages/                   # 7 páginas funcionais
 │   ├── services/                # 7 services client-side
@@ -333,14 +333,21 @@ newomemnumeros/
 
 ### 🔄 Padrões Arquiteturais
 
-**Composables Pattern**: Lógica reutilizável encapsulada
+**Composables Pattern (v1.6.0)**: Arquitetura padronizada Store ↔ Composable ↔ Component
 ```typescript
-// useAuth.ts - Lógica de autenticação
+// useAuth.ts - Lógica de autenticação centralizada
 export const useAuth = () => {
+  const store = useAuthUserStore() // Acesso interno à store
   const login = async (credentials) => { /* ... */ }
   const logout = async () => { /* ... */ }
-  return { login, logout, user, isAuthenticated }
+  return { login, logout, user: computed(() => store.user), isAuthenticated }
 }
+
+// Componente Vue - NUNCA acessa store diretamente
+<script setup>
+const { login, logout, user } = useAuth() // ✅ Padrão correto
+// const store = useAuthStore() // ❌ EVITAR!
+</script>
 ```
 
 **Services Pattern**: Comunicação com APIs
@@ -475,7 +482,7 @@ pnpm run format           # Formatar código (Prettier)
 | 🌐 **APIs** | 37 | Endpoints funcionais implementados |
 | 🧩 **Componentes** | 17 | Componentes Vue organizados por funcionalidade |
 | 📄 **Páginas** | 7 | Páginas funcionais (públicas + admin) |
-| 🔧 **Composables** | 9 | Lógica de negócio reutilizável |
+| 🔧 **Composables** | 9 | Lógica de negócio reutilizável (padrão v1.6.0) |
 | 🗃️ **Stores** | 6 | Estados Pinia com persistência |
 | 🔄 **Services** | 13 | Client/Server comunicação API (7+6) |
 | 🔀 **Transformers** | 8 | Consistência de dados |

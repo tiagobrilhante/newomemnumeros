@@ -1,13 +1,10 @@
 <script lang="ts" setup>
   const { t } = useI18n()
-  const { logout } = useAuth()
-
-  const useAuthStore = useAuthUserStore()
-
+  const { logout, user } = useAuth()
 
   const serviceName = computed(() => {
-    if (!useAuthStore.user) return null
-    return `${useAuthStore.user.rank?.acronym} ${useAuthStore.user.serviceName}`
+    if (!user.value) return null
+    return `${user.value.rank?.acronym} ${user.value.serviceName}`
   })
 
   const handleLogout = async () => {
@@ -39,13 +36,13 @@
             <v-container>
               <v-row>
                 <v-col>
-                  <v-alert v-if="useAuthStore.user" color="blue-grey-darken-4">
+                  <v-alert v-if="user" color="blue-grey-darken-4">
                     <v-icon left>mdi-account</v-icon>
 
-                    {{ useAuthStore.user.rank?.acronym }} {{ useAuthStore.user.serviceName }}<br >
-                    <b>{{ t('name') }}:</b> {{ useAuthStore.user.name }}<br >
-                    <b>{{ t('cpfLabel') }}: </b>{{ useAuthStore.user.cpf }}<br >
-                    <b>{{ t('emailLabel') }}: </b>{{ useAuthStore.user.email }}<br >
+                    {{ user.rank?.acronym }} {{ user.serviceName }}<br >
+                    <b>{{ t('name') }}:</b> {{ user.name }}<br >
+                    <b>{{ t('cpfLabel') }}: </b>{{ user.cpf }}<br >
+                    <b>{{ t('emailLabel') }}: </b>{{ user.email }}<br >
                   </v-alert>
                 </v-col>
               </v-row>

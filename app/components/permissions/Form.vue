@@ -2,8 +2,8 @@
   import { PERMISSION_CATEGORIES } from '#shared/constants/permissions'
 
   const { t } = useI18n()
-  const {selectedMilitaryOrganization} = useMilitaryOrganizationStore()
-  const {loading} = useRoles()
+  const { selectedMilitaryOrganization } = useMilitaryOrganizations()
+  const { loading } = useRoles()
 
   const selectedPermissions = ref<string[]>([])
 
