@@ -48,17 +48,17 @@ const viewRoleUsage = async (role: Role) => {
       console.error('Role ID não encontrado')
       return
     }
-    
+
     const usage = await fetchRoleUsage(role.id)
-    
+
     // Mostrar dialog com informações de uso
     const orgCount = usage.organizationsUsingRole?.length || 0
     const userCount = usage.usersWithRole || 0
     const sectionCount = usage.sectionsUsingRole?.length || 0
     const isGlobal = usage.isGlobal ? 'Global' : 'Organizacional'
-    
+
     const message = `Role: ${role.name}\nOrganizações que usam: ${orgCount}\nUsuários com esta role: ${userCount}\nSeções vinculadas: ${sectionCount}\nTipo: ${isGlobal}`
-    
+
     alert(message) // TODO: Substituir por dialog melhor
   } catch (error) {
     console.error('Erro ao buscar uso da role:', error)
@@ -68,6 +68,10 @@ const viewRoleUsage = async (role: Role) => {
 
 const openDialog = (type: string) => {
   CARD_PROPS.modalType = type
+
+  console.log('CARD_PROPS', CARD_PROPS)
+  console.log('selectedMilitaryOrganization', selectedMilitaryOrganization.value)
+  console.log('type', type)
   dialog.value = true
 }
 
@@ -244,7 +248,7 @@ onMounted(async () => {
       :max-width="CARD_PROPS.modalType === 'add' || CARD_PROPS.modalType === 'edit' ? '80%' : CARD_PROPS.modalType === 'delete' ? '60%' : '30%'"
       persistent
     >
-      <permissions-form />
+      <permissions-form :cardProps="CARD_PROPS" @close-dialog="dialog = false" />
     </v-dialog>
 
 

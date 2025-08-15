@@ -137,7 +137,10 @@
     "operationFailed": "Operation failed",
     "deleteLogoFailed": "Failed to delete logo",
     "technicalDetails": "Technical Details",
-    "updateDataMO": "Error updating military organization data"
+    "updateDataMO": "Error updating military organization data",
+    "validationFailed": "Validation failed",
+    "unauthorized": "Unauthorized",
+    "tokenExpired": "Token expired"
   },
   "validation": {
     "nameRequired": "Name cannot be empty",

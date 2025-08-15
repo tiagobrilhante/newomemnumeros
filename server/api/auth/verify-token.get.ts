@@ -52,7 +52,7 @@ export default defineEventHandler(async (event): Promise<ApiResponse<VerifyToken
         rank: true,
         role: {
           include: {
-            RoleMilitaryOrganization: {
+            roleMilitaryOrganization: {
               include: {
                 militaryOrganization: true
               }

@@ -54,7 +54,7 @@ export default defineEventHandler(async (event: H3Event) => {
           rank: true,
           role: {
             include: {
-              RoleMilitaryOrganization: {
+              roleMilitaryOrganization: {
                 include: {
                   militaryOrganization: true
                 }

@@ -134,7 +134,10 @@
     "operationFailed": "Erro ao realizar operação",
     "deleteLogoFailed": "Erro ao excluir logo",
     "technicalDetails": "Detalhes técnicos",
-    "updateDataMO": "Erro ao atualizar dados da organização militar"
+    "updateDataMO": "Erro ao atualizar dados da organização militar",
+    "validationFailed": "Falha na validação",
+    "unauthorized": "Não autorizado",
+    "tokenExpired": "Token expirado"
   },
   "validation": {
     "nameRequired": "Nome não pode estar vazio",

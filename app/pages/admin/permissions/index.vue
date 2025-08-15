@@ -7,6 +7,8 @@
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
   const {selectedMilitaryOrganization} = useMilitaryOrganizations()
+  const roleStore = useRoleStore()
+
 
   useHead({
     title: t('militaryOrganizationsManagement') + ' - ' + appName,
@@ -23,8 +25,9 @@
     <v-row>
       <v-col>
         <BaseTitle :title-variables="titleVariables" />
-        <military-organization-selector/>
-        <permissions-role-management v-if="selectedMilitaryOrganization"/>
+        <permissions-roles-scope />
+        <military-organization-selector v-if="roleStore.getRoleType() === 'mo'"/>
+        <permissions-role-management v-if="selectedMilitaryOrganization && roleStore.getRoleType() === 'mo'"/>
       </v-col>
     </v-row>
   </v-container>

@@ -102,9 +102,28 @@ export async function handleError(
 }
 
 /**
- * Utility para criar erro de validação
+ * Utility para criar erro de validação com lista de erros
  */
 export async function createValidationError(
+  errors: string[],
+  locale: string,
+  field?: string
+): Promise<ErrorResponse> {
+  const message = await serverTByLocale(locale, 'errors.validationFailed')
+  
+  return createErrorResponse(
+    message,
+    ErrorCode.VALIDATION_ERROR,
+    422,
+    field,
+    { validationErrors: errors }
+  )
+}
+
+/**
+ * Utility para criar erro de validação com estrutura de erros
+ */
+export async function createValidationErrorFromRecord(
   locale: string,
   field?: string,
   validationErrors?: Record<string, string[]>

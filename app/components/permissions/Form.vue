@@ -7,6 +7,14 @@
 
   const selectedPermissions = ref<string[]>([])
 
+  const { cardProps } = defineProps<{
+    cardProps: {
+      modalType: string
+      modalTextButton: string
+      modalIcon: string
+      btnIcon: string
+    }
+  }>()
 
   const SUPER_ADMIN_PERMISSION = 'admin.system.manage'
   const ORG_ADMIN_PERMISSION = 'admin.organization.manage'

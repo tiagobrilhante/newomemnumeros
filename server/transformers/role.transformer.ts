@@ -4,10 +4,10 @@ import type { RoleWithIncludes } from './types'
 
 export class RoleTransformer extends BaseTransformer {
   static transform(role: RoleWithIncludes) {
-    const { createdAt, updatedAt, deleted, RoleMilitaryOrganization, permissions, ...cleanRole } = role
+    const { createdAt, updatedAt, deleted, roleMilitaryOrganization, permissions, ...cleanRole } = role
 
-    // Obter militaryOrganization via RoleMilitaryOrganization pivot
-    const militaryOrganizations = RoleMilitaryOrganization?.map(rmo => rmo.militaryOrganization).filter(Boolean) || []
+    // Obter militaryOrganization via roleMilitaryOrganization pivot
+    const militaryOrganizations = roleMilitaryOrganization?.map(rmo => rmo.militaryOrganization).filter(Boolean) || []
 
     return {
       ...cleanRole,
@@ -30,10 +30,10 @@ export class RoleTransformer extends BaseTransformer {
   }
 
   static transformForAuth(role: RoleWithIncludes) {
-    const { createdAt, updatedAt, deleted, RoleMilitaryOrganization, permissions, ...cleanRole } = role
+    const { createdAt, updatedAt, deleted, roleMilitaryOrganization, permissions, ...cleanRole } = role
 
-    // Obter militaryOrganization via RoleMilitaryOrganization pivot
-    const militaryOrganizations = RoleMilitaryOrganization?.map(rmo => rmo.militaryOrganization).filter(Boolean) || []
+    // Obter militaryOrganization via roleMilitaryOrganization pivot
+    const militaryOrganizations = roleMilitaryOrganization?.map(rmo => rmo.militaryOrganization).filter(Boolean) || []
 
     return {
       ...cleanRole,

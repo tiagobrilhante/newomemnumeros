@@ -37,12 +37,12 @@ export async function getAllRoles(locale: string): Promise<Role[]> {
         deleted: false,
       },
       include: {
-        RoleMilitaryOrganization: {
+        roleMilitaryOrganization: {
           include: {
             militaryOrganization: true
           }
         },
-        RoleSection: {
+        roleSection: {
           include: {
             section: true
           }
@@ -72,12 +72,12 @@ export async function getRoleById(id: string, locale: string): Promise<Role> {
         deleted: false,
       },
       include: {
-        RoleMilitaryOrganization: {
+        roleMilitaryOrganization: {
           include: {
             militaryOrganization: true
           }
         },
-        RoleSection: {
+        roleSection: {
           include: {
             section: true
           }
@@ -122,7 +122,7 @@ export async function getRolesByOrganization(organizationId: string, locale: str
 
     const roles = await prisma.role.findMany({
       where: {
-        RoleMilitaryOrganization: {
+        roleMilitaryOrganization: {
           some: {
             militaryOrganizationId: organizationId
           }
@@ -130,12 +130,12 @@ export async function getRolesByOrganization(organizationId: string, locale: str
         deleted: false,
       },
       include: {
-        RoleMilitaryOrganization: {
+        roleMilitaryOrganization: {
           include: {
             militaryOrganization: true
           }
         },
-        RoleSection: {
+        roleSection: {
           include: {
             section: true
           }
@@ -265,12 +265,12 @@ export async function createRole(
       return await tx.role.findUnique({
         where: { id: role.id },
         include: {
-          RoleMilitaryOrganization: {
+          roleMilitaryOrganization: {
             include: {
               militaryOrganization: true
             }
           },
-          RoleSection: {
+          roleSection: {
             include: {
               section: true
             }
@@ -451,12 +451,12 @@ export async function updateRole(id: string, data: RoleUpdateInput, locale: stri
       return await tx.role.findUnique({
         where: { id },
         include: {
-          RoleMilitaryOrganization: {
+          roleMilitaryOrganization: {
             include: {
               militaryOrganization: true
             }
           },
-          RoleSection: {
+          roleSection: {
             include: {
               section: true
             }

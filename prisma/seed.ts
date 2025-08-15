@@ -156,7 +156,7 @@ async function seed() {
 
   // Criar permissões baseadas nas constantes
   const permissionsToCreate = []
-  
+
   // Extrair todas as permissões das constantes
   for (const module of PERMISSION_CATEGORIES) {
     for (const subcategory of module.subcategories) {
@@ -173,12 +173,12 @@ async function seed() {
   await prisma.permission.createMany({
     data: permissionsToCreate
   })
-  
+
   // Buscar permissões administrativas globais
   const adminPermissionGlobal = await prisma.permission.findFirst({
     where: { slug: 'admin.system.manage' }
   })
-  
+
   const adminPermissionOM = await prisma.permission.findFirst({
     where: { slug: 'admin.organization.manage' }
   })
@@ -186,7 +186,7 @@ async function seed() {
   console.log('Permissões criadas')
 
   //continue a partir daqui
-  
+
   // Buscar roles criadas anteriormente
   const allRoles = await prisma.role.findMany()
   const chStiRole = allRoles.find(role => role.acronym === 'Ch STI')
@@ -351,9 +351,13 @@ async function seed() {
     return allRoles[randomIndex].id
   }
 
-  const getRandomSection = () => {
+  const getRandomSectionWithOrganization = () => {
     const randomIndex = Math.floor(Math.random() * allSections.length)
-    return allSections[randomIndex].id
+    const section = allSections[randomIndex]
+    return {
+      sectionId: section.id,
+      militaryOrganizationId: section.militaryOrganizationId
+    }
   }
 
   await prisma.rank.createMany({
@@ -465,6 +469,7 @@ async function seed() {
         rankId: ranks[4].id,
         roleId: chStiRole?.id || getRandomRole(),
         sectionId: stiCma.id, // Ch STI vinculado à seção STI
+        militaryOrganizationId: cma.id
       },
       {
         name: 'Administrador',
@@ -484,7 +489,7 @@ async function seed() {
         cpf: '18606623075',
         rankId: ranks[5].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
       {
         name: 'Carlos Alberto Santos',
@@ -494,7 +499,7 @@ async function seed() {
         cpf: '73105846005',
         rankId: ranks[2].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
       {
         name: 'Fernanda Lima Oliveira',
@@ -504,7 +509,7 @@ async function seed() {
         cpf: '63548472005',
         rankId: ranks[3].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
       {
         name: 'Roberto Pereira Silva',
@@ -514,7 +519,7 @@ async function seed() {
         cpf: '04215639070',
         rankId: ranks[1].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
       {
         name: 'Ana Maria Costa',
@@ -524,7 +529,7 @@ async function seed() {
         cpf: '35817496023',
         rankId: ranks[4].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
       {
         name: 'Paulo Ricardo Souza',
@@ -534,7 +539,7 @@ async function seed() {
         cpf: '94725863091',
         rankId: ranks[0].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
       {
         name: 'Mariana Torres Almeida',
@@ -544,7 +549,7 @@ async function seed() {
         cpf: '15634987044',
         rankId: ranks[2].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
       {
         name: 'Ricardo Mendes Ferreira',
@@ -554,7 +559,7 @@ async function seed() {
         cpf: '58496713088',
         rankId: ranks[3].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
       {
         name: 'Juliana Castro Ribeiro',
@@ -564,7 +569,7 @@ async function seed() {
         cpf: '26974581037',
         rankId: ranks[4].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
       {
         name: 'André Luiz Carvalho',
@@ -574,7 +579,7 @@ async function seed() {
         cpf: '82746351090',
         rankId: ranks[1].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
       {
         name: 'Luciana Martins Rodrigues',
@@ -584,7 +589,7 @@ async function seed() {
         cpf: '49318276056',
         rankId: ranks[0].id,
         roleId: getRandomRole(),
-        sectionId: getRandomSection(),
+        ...getRandomSectionWithOrganization(),
       },
     ],
   })

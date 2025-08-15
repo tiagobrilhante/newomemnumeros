@@ -22,6 +22,7 @@ const toMutable = (role: Role): RoleMutable => ({
 
 type RoleState = {
   roles: RoleMutable[]
+  selectedRoleType: string | null
   selectedRole: RoleMutable | null
   loading: boolean
   error: string | null
@@ -30,6 +31,7 @@ type RoleState = {
 export const useRoleStore = defineStore('roleStore', {
   state: (): RoleState => ({
     roles: [],
+    selectedRoleType: null,
     selectedRole: null,
     loading: false,
     error: null,
@@ -53,7 +55,7 @@ export const useRoleStore = defineStore('roleStore', {
       if (roleIndex !== -1) {
         const updatedMutableRole = toMutable(updatedRole)
         this.roles.splice(roleIndex, 1, updatedMutableRole)
-        
+
         // Atualiza tamb�m selectedRole se for o mesmo
         if (this.selectedRole?.id === updatedRole.id) {
           this.selectedRole = updatedMutableRole
@@ -63,13 +65,25 @@ export const useRoleStore = defineStore('roleStore', {
 
     removeRole(id: string) {
       this.roles = this.roles.filter(role => role.id !== id)
-      
+
       // Limpa selectedRole se for o mesmo que est� sendo removido
       if (this.selectedRole?.id === id) {
         this.selectedRole = null
       }
     },
 
+    setRoleType(type: string) {
+      this.selectedRoleType = type
+    },
+
+    clearRoleType() {
+      this.selectedRoleType = null
+    },
+
+    getRoleType() {
+      return this.selectedRoleType
+    },
+    
     setSelectedRole(role: Role | null) {
       this.selectedRole = role ? toMutable(role) : null
     },
@@ -80,17 +94,17 @@ export const useRoleStore = defineStore('roleStore', {
 
     setRolesByOrganization(organizationId: string, roles: Role[]) {
       // Remove roles existentes da organiza��o
-      this.roles = this.roles.filter(role => 
+      this.roles = this.roles.filter(role =>
         !role.militaryOrganizations?.some(mo => mo.id === organizationId)
       )
-      
+
       // Adiciona os novos roles
       const newRoles = roles.map(toMutable)
       this.roles.push(...newRoles)
     },
 
     clearRolesByOrganization(organizationId: string) {
-      this.roles = this.roles.filter(role => 
+      this.roles = this.roles.filter(role =>
         !role.militaryOrganizations?.some(mo => mo.id === organizationId)
       )
     },
