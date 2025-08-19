@@ -1,5 +1,5 @@
 import { registerService } from '~/services/register.service'
-import type { registerData } from '#shared/types/register'
+import type { registerData, RegisterResponse } from '#shared/types/register'
 import type { ApiResponse, ErrorResponse } from '#shared/types/api-response'
 import { ErrorCode } from '#shared/types/api-response'
 
@@ -9,7 +9,7 @@ export const useRegister = () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  const register = async (data: registerData): Promise<ApiResponse<any>> => {
+  const register = async (data: registerData): Promise<ApiResponse<RegisterResponse> | ErrorResponse> => {
     loading.value = true
     error.value = null
 

@@ -4,9 +4,10 @@ import { handleError } from '../../utils/errorHandler'
 import { createSuccessResponse } from '../../utils/responseWrapper'
 import { getLocale, serverTByLocale } from '../../utils/i18n'
 import type { ApiResponse } from '#shared/types/api-response'
+import type { rank } from '#shared/types/rank'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+export default defineEventHandler(async (event): Promise<ApiResponse<rank>> => {
   const locale = getLocale(event)
 
   try {

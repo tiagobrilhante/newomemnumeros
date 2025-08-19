@@ -1,16 +1,16 @@
 import type { ApiResponse } from '#shared/types/api-response'
-import type { registerData } from '#shared/types/register'
+import type { registerData, RegisterResponse } from '#shared/types/register'
 import { sanitizeData } from '#shared/utils'
 import { enhanceError, ErrorContext } from '~/utils/clientErrorHandler'
 
 class RegisterService {
   private baseURL = '/api/auth'
 
-  async register(data: registerData): Promise<ApiResponse<any>> {
+  async register(data: registerData): Promise<ApiResponse<RegisterResponse>> {
     const endpoint = `${this.baseURL}/register`
 
     try {
-      const response = await $fetch<ApiResponse<any>>(endpoint, {
+      const response = await $fetch<ApiResponse<RegisterResponse>>(endpoint, {
         method: 'POST',
         body: sanitizeData(data),
       })
@@ -25,7 +25,7 @@ class RegisterService {
       throw enhanceError(error, ErrorContext.BUSINESS_LOGIC, {
         operation: 'REGISTER_USER',
         endpoint,
-        email: data.email // Para debugging (sem dados sensíveis)
+        email: data.email
       })
     }
   }

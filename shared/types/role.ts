@@ -53,3 +53,15 @@ export type RoleUpdateInput = {
   sectionIds?: string[]
   permissionIds?: string[]
 }
+
+export type RoleUsage = {
+  role: Role
+  organizationsUsingRole: militaryOrganization[]
+  usersWithRole: number
+  sectionsUsingRole: Array<{
+    readonly id: string
+    readonly name: string
+    readonly acronym: string
+  }>
+  isGlobal: boolean
+}

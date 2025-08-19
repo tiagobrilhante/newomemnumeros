@@ -4,9 +4,10 @@ import { handleError } from '../../utils/errorHandler'
 import { createSuccessResponse } from '../../utils/responseWrapper'
 import { getLocale } from '../../utils/i18n'
 import type { ApiResponse } from '#shared/types/api-response'
+import type { section } from '#shared/types/sections'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+export default defineEventHandler(async (event): Promise<ApiResponse<section>> => {
   const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 

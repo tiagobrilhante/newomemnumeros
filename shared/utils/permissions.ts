@@ -21,7 +21,7 @@ export function isGlobalRole(role: Role): boolean {
   }
   
   return role.permissions.some(rolePermission => 
-    GLOBAL_PERMISSIONS.includes(rolePermission.permission.slug as any)
+    (GLOBAL_PERMISSIONS as readonly string[]).includes(rolePermission.permission.slug)
   )
 }
 

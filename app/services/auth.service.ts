@@ -89,7 +89,7 @@ class AuthService {
       throw enhanceError(error, ErrorContext.AUTHENTICATION, {
         operation: 'LOGIN',
         endpoint,
-        email: credentials.email // Para debugging (sem senha)
+        email: credentials.email
       })
     }
   }

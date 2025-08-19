@@ -22,6 +22,21 @@ export type user = {
 
 export type userWithoutPassword = user
 
+export type UserWithRank = {
+  id: string
+  name: string
+  serviceName: string
+  email: string
+  cpf: string
+  rankId: string
+  roleId?: string | null
+  sectionId?: string | null
+  deleted: boolean
+  createdAt: Date | string
+  updatedAt: Date | string
+  rank: rank
+}
+
 export type userState = {
   users: userWithoutPassword[]
   selectedUser: userWithoutPassword | null

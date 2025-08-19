@@ -88,3 +88,16 @@ export interface LegacyApiResponse<T> {
   message: string
   statusCode: number
 }
+
+// Tipos para operações básicas
+export type UpdateResponse = {
+  success: true,
+  statusCode: number,
+  message: string,
+}
+
+export type DeleteResponse = {
+  success: true,
+  statusCode: number,
+  message: string,
+}

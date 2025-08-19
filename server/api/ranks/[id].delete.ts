@@ -3,10 +3,10 @@ import { deleteRank } from '../../services/rank.service'
 import { handleError } from '../../utils/errorHandler'
 import { createSuccessResponse } from '../../utils/responseWrapper'
 import { getLocale } from '../../utils/i18n'
-import type { ApiResponse } from '#shared/types/api-response'
+import type { ApiResponse, DeleteResponse } from '#shared/types/api-response'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+export default defineEventHandler(async (event): Promise<ApiResponse<DeleteResponse>> => {
   const locale = getLocale(event)
   const id = getRouterParam(event, 'id')
 

@@ -3,9 +3,10 @@ import { registerUser } from '../../services/register.service'
 import { handleError } from '../../utils/errorHandler'
 import { getLocale } from '../../utils/i18n'
 import type { ApiResponse } from '#shared/types/api-response'
+import type { RegisterResponse } from '#shared/types/register'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+export default defineEventHandler(async (event): Promise<ApiResponse<RegisterResponse>> => {
   const locale = getLocale(event)
 
   try {

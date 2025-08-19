@@ -4,6 +4,7 @@ import { handleError } from '../../utils/errorHandler'
 import { createSuccessResponse } from '../../utils/responseWrapper'
 import { getLocale } from '../../utils/i18n'
 import type { ApiResponse } from '#shared/types/api-response'
+import type { militaryOrganization } from '#shared/types/military-organization'
 import {
   militaryOrganizationCreateSchema,
   validateMilitaryOrganizationData
@@ -11,7 +12,7 @@ import {
 import { createValidationError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+export default defineEventHandler(async (event): Promise<ApiResponse<militaryOrganization>> => {
   const locale = getLocale(event)
 
   try {

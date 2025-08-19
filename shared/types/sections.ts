@@ -1,4 +1,4 @@
-import type { MilitaryOrganizationMutable } from './military-organization'
+import type { MilitaryOrganizationMutable, militaryOrganization } from './military-organization'
 
 export type section = {
   id?: string

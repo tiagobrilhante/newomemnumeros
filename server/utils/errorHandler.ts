@@ -22,7 +22,7 @@ export async function handleError(
   }
 
   // Se já é uma ErrorResponse, retorna como está
-  if (error && typeof error === 'object' && 'success' in error && (error as any).success === false) {
+  if (error && typeof error === 'object' && 'success' in error && !(error as {success: boolean}).success) {
     return error as ErrorResponse
   }
 
@@ -34,7 +34,7 @@ export async function handleError(
 
   // Erro com statusCode e message
   if (error && typeof error === 'object' && 'statusCode' in error && 'message' in error) {
-    const errorObj = error as any
+    const errorObj = error as {statusCode: number, message: string}
     let message = errorObj.message
     
     if (typeof message === 'string' && message.startsWith('errors.')) {

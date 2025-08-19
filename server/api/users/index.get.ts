@@ -4,9 +4,10 @@ import { handleError } from '../../utils/errorHandler'
 import { createSuccessResponse } from '../../utils/responseWrapper'
 import { getLocale } from '../../utils/i18n'
 import type { ApiResponse } from '#shared/types/api-response'
+import type { UserWithRank } from '#shared/types/user'
 
 // noinspection JSUnusedGlobalSymbols
-export default defineEventHandler(async (event): Promise<ApiResponse<any>> => {
+export default defineEventHandler(async (event): Promise<ApiResponse<UserWithRank[]>> => {
   const locale = getLocale(event)
 
   try {

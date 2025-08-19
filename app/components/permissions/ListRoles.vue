@@ -68,10 +68,6 @@ const viewRoleUsage = async (role: Role) => {
 
 const openDialog = (type: string) => {
   CARD_PROPS.modalType = type
-
-  console.log('CARD_PROPS', CARD_PROPS)
-  console.log('selectedMilitaryOrganization', selectedMilitaryOrganization.value)
-  console.log('type', type)
   dialog.value = true
 }
 

@@ -6,3 +6,9 @@ export type registerData = {
   email: string,
   password: string,
 }
+
+export type RegisterResponse = {
+  success: true,
+  statusCode: number,
+  message: string,
+}

@@ -3,7 +3,7 @@ import { useRoleStore } from '~/stores/role.store'
 import { useNetworkErrorHandler } from './useErrorHandler'
 import { createAppError, type ErrorHandlerOptions } from '~/utils/clientErrorHandler'
 import { roleService } from '~/services/role.service'
-import type { Role, RoleCreateInput, RoleUpdateInput } from '#shared/types/role'
+import type { Role, RoleCreateInput, RoleUpdateInput, RoleUsage } from '#shared/types/role'
 
 interface RoleFilters {
   search?: string
@@ -260,7 +260,7 @@ export const useRoles = () => {
 
     const { data, execute } = useNetworkErrorHandler(
       async () => {
-        const response = await $fetch<ApiResponse<any>>(`/api/roles/${roleId}/usage`)
+        const response = await $fetch<ApiResponse<RoleUsage>>(`/api/roles/${roleId}/usage`)
         
         if (!response.success) {
           throw createRoleError(
