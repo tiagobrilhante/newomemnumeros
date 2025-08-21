@@ -2,7 +2,7 @@ import { defineEventHandler, getRouterParam, createError } from 'h3'
 import prisma from '../../../prisma'
 import path from 'path'
 import fs from 'fs/promises'
-import { handleError } from '../../../utils/errorHandler'
+import { handleError, createValidationError  } from '../../../utils/errorHandler'
 import { createSuccessResponse } from '../../../utils/responseWrapper'
 import { getLocale } from '../../../utils/i18n'
 import type { ApiResponse, DeleteResponse } from '#shared/types/api-response'
@@ -10,7 +10,6 @@ import {
   militaryOrganizationParamsSchema,
   validateMilitaryOrganizationData
 } from '../../../schemas/militaryOrganization.schema'
-import { createValidationError } from '../../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event): Promise<ApiResponse<DeleteResponse>> => {

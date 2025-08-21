@@ -16,7 +16,7 @@
 <template>
   <v-card class="border border-solid border-opacity-100 pa-4" rounded="xl">
     <v-row dense>
-      <v-col align-self="center" v-show="!selectedMilitaryOrganization">
+      <v-col v-show="!selectedMilitaryOrganization" align-self="center">
 
         <v-autocomplete
           v-if="militaryOrganizations"
@@ -40,7 +40,7 @@
         <h3 class="pl-5">{{t('selectMilitaryOrganization')}}</h3>
       </v-col>
       <v-col v-else class="align-content-center">
-        <h2 class="d-inline-block">{{selectedMilitaryOrganization.name}} - {{selectedMilitaryOrganization.acronym}}</h2> <v-icon-btn size="small" class="ml-10 mb-1" variant="outlined" icon="mdi-refresh-circle" @click="clearSelection" color="white"/>
+        <h2 class="d-inline-block">{{selectedMilitaryOrganization.name}} - {{selectedMilitaryOrganization.acronym}}</h2> <v-icon-btn size="small" class="ml-10 mb-1" variant="outlined" icon="mdi-refresh-circle" color="white" @click="clearSelection"/>
       </v-col>
       <v-col v-if="selectedMilitaryOrganization && selectedMilitaryOrganization.logo" class="text-right pt-0 pb-0 align-content-center mb-0" cols="2">
         <nuxt-img

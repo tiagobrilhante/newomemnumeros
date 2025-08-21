@@ -21,11 +21,11 @@ const selectRoleType = (type: string) => {
         </v-col>
         <v-col>
 
-          <v-btn @click="selectRoleType('global')" block color="primary" :variant="selectedRoleType === 'global' ? 'flat' : 'outlined'" rounded="xl">Globais</v-btn>
+          <v-btn block color="primary" :variant="selectedRoleType === 'global' ? 'flat' : 'outlined'" rounded="xl" @click="selectRoleType('global')">Globais</v-btn>
         </v-col>
-        <v-col cols="1"></v-col>
+        <v-col cols="1"/>
         <v-col>
-          <v-btn @click="selectRoleType('mo')" block color="primary" :variant="selectedRoleType === 'mo' ? 'flat' : 'outlined'" rounded="xl">OM</v-btn>
+          <v-btn block color="primary" :variant="selectedRoleType === 'mo' ? 'flat' : 'outlined'" rounded="xl" @click="selectRoleType('mo')">OM</v-btn>
         </v-col>
       </v-row>
     </v-card-text>

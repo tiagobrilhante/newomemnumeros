@@ -187,8 +187,9 @@
               <template #[`item.sections`]="{ item }">
                 <v-alert density="compact" class="grey-thick-border ma-0 pa-1 align-content-center align-center" rounded="xl" >
                 <v-tooltip interactive>
-                  <template v-slot:activator="{ props: activatorProps }">
-                    <v-chip size="small" :color="item.sections?.length === 0 ? 'error' : 'success'" class="mr-4"
+                  <template #activator="{ props: activatorProps }">
+                    <v-chip
+size="small" :color="item.sections?.length === 0 ? 'error' : 'success'" class="mr-4"
                             v-bind="activatorProps" variant="elevated">
                       {{ item.sections?.length }}
                     </v-chip>
@@ -204,22 +205,23 @@
                         </v-card-text>
                       </v-card>
                       </template>
-                      <v-card density="compact" class="mb-3 pa-2" v-else> {{ t('noSectionsFound') }}</v-card>
+                      <v-card v-else density="compact" class="mb-3 pa-2"> {{ t('noSectionsFound') }}</v-card>
                     </v-col>
                   </v-row>
                 </v-tooltip>
 
 
                 <v-tooltip :text="t('sectionsDetails')" location="top">
-                  <template v-slot:activator="{ props }">
-                    <v-icon class="mr-3" color="info" size="x-small" v-bind="props"
+                  <template #activator="{ props }">
+                    <v-icon
+class="mr-3" color="info" size="x-small" v-bind="props"
                             @click="openModal('sectionsDetails', item)">
                       mdi-magnify
                     </v-icon>
                   </template>
                 </v-tooltip>
                 <v-tooltip :text="t('sectionsConfigurations')" location="top">
-                  <template v-slot:activator="{ props }">
+                  <template #activator="{ props }">
                     <v-icon color="warning" size="x-small" v-bind="props" @click="openModal('manageSections', item)">
                       mdi-cog
                     </v-icon>
@@ -233,7 +235,7 @@
 
                 <!-- edit -->
                 <v-tooltip :text="t('edit')" location="top">
-                  <template v-slot:activator="{ props }">
+                  <template #activator="{ props }">
                     <v-icon-btn
                       :loading="loading"
                       class="mr-3"
@@ -249,7 +251,7 @@
 
                 <!-- delete-->
                 <v-tooltip :text="t('delete')" location="top">
-                  <template v-slot:activator="{ props }">
+                  <template #activator="{ props }">
                     <v-icon-btn
                       :loading="loading"
                       color="error"
@@ -289,16 +291,19 @@
         @close-dialog="closeDialog" />
 
       <!-- Show MO logo-->
-      <military-organization-show-logo v-else-if="CARD_PROPS.modalType === 'logo' && selectedMilitaryOrganization"
+      <military-organization-show-logo
+v-else-if="CARD_PROPS.modalType === 'logo' && selectedMilitaryOrganization"
                                        :card-props="CARD_PROPS"
                                        @close-dialog="closeDialog" />
 
       <!-- show sections details-->
-      <section-sections-details v-else-if="CARD_PROPS.modalType === 'sectionsDetails' && selectedMilitaryOrganization"
+      <section-sections-details
+v-else-if="CARD_PROPS.modalType === 'sectionsDetails' && selectedMilitaryOrganization"
                                 :card-props="CARD_PROPS" @close-dialog="closeDialog" />
 
       <!-- manage sections -->
-      <section-manage-sections v-else-if="CARD_PROPS.modalType === 'manageSections' && selectedMilitaryOrganization"
+      <section-manage-sections
+v-else-if="CARD_PROPS.modalType === 'manageSections' && selectedMilitaryOrganization"
                                :card-props="CARD_PROPS" @close-dialog="closeDialog" />
     </v-dialog>
   </v-container>

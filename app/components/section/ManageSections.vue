@@ -103,7 +103,8 @@
               <h3>{{ t('registeredSections') }} - {{ selectedMilitaryOrganization?.acronym }}</h3>
             </v-col>
             <v-col class="text-right" cols="4">
-              <v-btn color="primary" prepend-icon="mdi-plus-circle" rounded="xl" size="small" variant="outlined"
+              <v-btn
+color="primary" prepend-icon="mdi-plus-circle" rounded="xl" size="small" variant="outlined"
                      @click="changeCurrentState('add')">{{ t('addNewSection') }}
               </v-btn>
             </v-col>
@@ -122,7 +123,7 @@
 
               <!-- edit -->
               <v-tooltip :text="t('edit')" location="top">
-                <template v-slot:activator="{ props }">
+                <template #activator="{ props }">
                   <v-icon-btn
                     :loading="loading"
                     class="mr-3"
@@ -139,7 +140,7 @@
 
               <!-- delete-->
               <v-tooltip :text="t('delete')" location="top">
-                <template v-slot:activator="{ props }">
+                <template #activator="{ props }">
                   <v-icon-btn
                     :loading="loading"
                     color="error"
@@ -158,17 +159,20 @@
 
         </v-alert>
 
-        <section-form v-else-if="currentState === 'add' || currentState === 'edit'" key="form" :form-props="FORM_PROPS"
+        <section-form
+v-else-if="currentState === 'add' || currentState === 'edit'" key="form" :form-props="FORM_PROPS"
                       @change-state="handleChildEvent" />
 
-        <section-delete-section v-else-if="currentState === 'delete'" key="delete" :form-props="FORM_PROPS"
+        <section-delete-section
+v-else-if="currentState === 'delete'" key="delete" :form-props="FORM_PROPS"
                                 @change-state="handleChildEvent" />
       </v-fade-transition>
 
     </v-card-text>
 
     <v-fade-transition>
-      <v-card-actions v-if="cardProps.showCancelBtn && currentState === 'list'"
+      <v-card-actions
+v-if="cardProps.showCancelBtn && currentState === 'list'"
                       class="bg-surface-light py-4 px-5 grey-thick-border-top">
         <v-btn
           :text="cardProps.modalTextButton"

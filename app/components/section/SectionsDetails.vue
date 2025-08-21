@@ -39,7 +39,7 @@
 
           <template v-if="selectedMilitaryOrganization?.sections?.length">
 
-          <v-card color="grey-darken-3" v-for="section in selectedMilitaryOrganization?.sections" class="my-3" density="compact">
+          <v-card v-for="section in selectedMilitaryOrganization?.sections" color="grey-darken-3" class="my-3" density="compact">
             <v-card-text>
               <h3 class="mb-2">{{ section.name }} </h3>
               <v-divider/>

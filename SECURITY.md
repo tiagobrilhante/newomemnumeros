@@ -375,6 +375,6 @@ This system must comply with applicable military regulations regarding:
 *Protecting military administrative data through professional security practices*
 
 **Security Officer**: TC Brilhante - Ch STI CMA  
-**Last Updated**: [Current Date]
+**Last Updated**: 08-21-2025
 
 </div>

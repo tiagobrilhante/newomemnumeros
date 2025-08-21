@@ -210,7 +210,8 @@
                     <!-- show badge if edit -->
                     <v-row v-if="!changeLogo && cardProps.modalType === 'edit'" dense>
                       <v-col class="text-center" cols="12">
-                        <v-img :src="logo || '/logos/default/default.png'" alt="image" class="rounded-xl mx-auto"
+                        <v-img
+:src="logo || '/logos/default/default.png'" alt="image" class="rounded-xl mx-auto"
                                width="200" />
                       </v-col>
                     </v-row>
@@ -226,12 +227,11 @@
                           size="small"
                           variant="outlined"
                           @click="changeLogo = true"
-                        >
-                        </v-btn>
+                        />
 
                         <!-- delete-->
                         <v-tooltip :text="t('deleteBadge')" location="top">
-                          <template v-slot:activator="{ props }">
+                          <template #activator="{ props }">
                             <v-btn
                               v-if="logo !== '/logos/default/default.png'"
                               class="ml-2"

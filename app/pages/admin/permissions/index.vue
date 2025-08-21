@@ -6,8 +6,7 @@
   const { t } = useI18n()
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
-  const {selectedMilitaryOrganization} = useMilitaryOrganizations()
-  const roleStore = useRoleStore()
+  const { getRoleType } = useRoles()
 
 
   useHead({
@@ -26,7 +25,7 @@
       <v-col>
         <BaseTitle :title-variables="titleVariables" />
         <permissions-roles-scope />
-        <military-organization-selector v-if="roleStore.getRoleType() === 'mo'"/>
+        <military-organization-selector v-if="getRoleType() === 'mo'"/>
         <permissions-list-roles/>
 
 

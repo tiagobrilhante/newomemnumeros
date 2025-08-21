@@ -26,7 +26,7 @@
           <v-icon class="mr-3 mt-0" color="yellow" size="small">{{ cardProps.modalIcon }}</v-icon>
           {{ t('militaryOrganizationBadge') }}
         </v-col>
-        <v-col class="text-right pr-2 pt-1" cols="2" v-if="cardProps.showCancelBtn">
+        <v-col v-if="cardProps.showCancelBtn" class="text-right pr-2 pt-1" cols="2">
           <v-btn icon size="small" variant="text" @click="emit('close-dialog')">
             <v-icon>mdi-close</v-icon>
           </v-btn>
@@ -37,7 +37,8 @@
     <v-card-text>
       <v-row>
         <v-col align-self="center" class="text-center">
-          <v-img v-if="selectedMilitaryOrganization" :src="selectedMilitaryOrganization.logo" alt="Logo" class="mx-auto"
+          <v-img
+v-if="selectedMilitaryOrganization" :src="selectedMilitaryOrganization.logo" alt="Logo" class="mx-auto"
                  max-width="300px" />
         </v-col>
       </v-row>

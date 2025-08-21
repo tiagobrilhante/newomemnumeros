@@ -3,10 +3,8 @@ import type { Role } from '#shared/types/role'
 import type { VDataTable } from 'vuetify/components'
 import { isGlobalRole, getOrganizationRoles } from '#shared/utils'
 
-const roleStore = useRoleStore()
-
 const { selectedMilitaryOrganization } = useMilitaryOrganizations()
-const { fetchRolesByOrganization, fetchRoles, fetchRoleUsage, roles, loading } = useRoles()
+const { fetchRolesByOrganization, fetchRoles, fetchRoleUsage, roles, loading, selectedRoleType, getRoleType } = useRoles()
 const dialog = ref(false)
 const CARD_PROPS = reactive({
   modalType: '',
@@ -84,7 +82,7 @@ onMounted(async () => {
 
       <!-- Panel de Roles da Organização Selecionada -->
 
-      <v-card class="border rounded-xl border-solid border-opacity-100" v-if="selectedMilitaryOrganization && roleStore.getRoleType() === 'mo'">
+      <v-card v-if="selectedMilitaryOrganization && getRoleType() === 'mo'" class="border rounded-xl border-solid border-opacity-100">
         <v-card-title class="bg-surface-light py-3">
           <v-row>
             <v-col>
@@ -138,8 +136,8 @@ onMounted(async () => {
                 size="small"
                 color="info"
                 variant="tonal"
-                @click="viewRoleUsage(item)"
                 class="cursor-pointer"
+                @click="viewRoleUsage(item)"
               >
                 <v-icon start>mdi-information-outline</v-icon>
                 Ver uso
@@ -151,21 +149,21 @@ onMounted(async () => {
                 icon="mdi-pencil"
                 variant="text"
                 @click="editRole(item)"
-              ></v-btn>
+              />
               <v-btn
                 size="small"
                 icon="mdi-delete"
                 variant="text"
                 color="error"
                 @click="deleteRole(item)"
-              ></v-btn>
+              />
             </template>
           </v-data-table>
         </v-card-text>
       </v-card>
 
       <!-- Panel de Roles Globais -->
-      <v-card class="border rounded-xl border-solid border-opacity-100" v-if="roleStore.getRoleType() === 'global'">
+      <v-card v-if="getRoleType() === 'global'" class="border rounded-xl border-solid border-opacity-100">
         <v-card-title>
           <div class="d-flex align-center ga-2">
             <v-icon>mdi-earth</v-icon>
@@ -216,8 +214,8 @@ onMounted(async () => {
                 size="small"
                 color="success"
                 variant="tonal"
-                @click="viewRoleUsage(item)"
                 class="cursor-pointer"
+                @click="viewRoleUsage(item)"
               >
                 <v-icon start>mdi-earth</v-icon>
                 Ver organizações
@@ -229,14 +227,14 @@ onMounted(async () => {
                 icon="mdi-pencil"
                 variant="text"
                 @click="editRole(item)"
-              ></v-btn>
+              />
               <v-btn
                 size="small"
                 icon="mdi-delete"
                 variant="text"
                 color="error"
                 @click="deleteRole(item)"
-              ></v-btn>
+              />
             </template>
           </v-data-table>
         </v-card-text>
@@ -251,7 +249,7 @@ onMounted(async () => {
       :max-width="CARD_PROPS.modalType === 'add' || CARD_PROPS.modalType === 'edit' ? '80%' : CARD_PROPS.modalType === 'delete' ? '60%' : '30%'"
       persistent
     >
-      <permissions-form :cardProps="CARD_PROPS" @close-dialog="dialog = false" />
+      <permissions-form :card-props="CARD_PROPS" @close-dialog="dialog = false" />
     </v-dialog>
 
 

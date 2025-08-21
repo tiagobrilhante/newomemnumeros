@@ -1,12 +1,11 @@
 <script lang="ts" setup>
   import { computed, ref, watch, onMounted, nextTick } from 'vue'
-  import { useNavigationStore } from '~/stores/navigation.store'
   import { useDisplay } from 'vuetify'
   import { routesConfig } from '~/config/routes'
 
   const { t } = useI18n()
 
-  const navigationStore = useNavigationStore()
+  const { isMenuCollapsed, toggleCollapsedMenu } = useNavigation()
   const { hasPermission } = usePermissions()
   const localePath = useLocalePath()
   const route = useRoute()
@@ -39,7 +38,7 @@
   })
 
   const toggleCollapse = () => {
-    navigationStore.toggleCollapsedMenu()
+    toggleCollapsedMenu()
   }
 
   const filteredMenuItems = computed(() => {
@@ -58,7 +57,7 @@
   <v-navigation-drawer
     v-if="isMenuReady"
     :permanent="true"
-    :rail="navigationStore.isMenuCollapsed || mobile"
+    :rail="isMenuCollapsed || mobile"
     :rail-width="72"
     class="menu-left grey-thick-border-right"
     width="280"
@@ -67,10 +66,10 @@
     <!-- Menu Header -->
     <v-list-item
       class="mx-2 my-2 cursor-pointer"
-      :prepend-icon="(navigationStore.isMenuCollapsed || mobile) ? 'mdi-menu' : 'mdi-menu-open'"
-      :title="(navigationStore.isMenuCollapsed || mobile) ? '' : t('leftMenu.mainMenu')"
-      @click="toggleCollapse"
+      :prepend-icon="(isMenuCollapsed || mobile) ? 'mdi-menu' : 'mdi-menu-open'"
+      :title="(isMenuCollapsed || mobile) ? '' : t('leftMenu.mainMenu')"
       rounded="xl"
+      @click="toggleCollapse"
     />
 
     <v-divider />
@@ -78,11 +77,11 @@
     <!-- menu items list -->
     <v-list density="compact" nav>
       <template v-for="item in filteredMenuItems" :key="item.titleKey">
-        <v-tooltip :text="t(item.titleKey)" location="end" :disabled="!(navigationStore.isMenuCollapsed || mobile)">
+        <v-tooltip :text="t(item.titleKey)" location="end" :disabled="!(isMenuCollapsed || mobile)">
           <template #activator="{ props }">
             <v-list-item
               :prepend-icon="item.icon"
-              :title="(navigationStore.isMenuCollapsed || mobile) ? '' : t(item.titleKey)"
+              :title="(isMenuCollapsed || mobile) ? '' : t(item.titleKey)"
               class="mx-2 mb-1"
               density="compact"
               rounded="xl"

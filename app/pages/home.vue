@@ -2,11 +2,11 @@
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
   import WelcomeMessage from '~/components/user/WelcomeMessage.vue'
   //import { retrieveMilitaryOrganizationLogo } from '~/utils/retrieve-military-organization-logo'
-  import { useAuthUserStore } from '~/stores/auth.store'
 
   const { t } = useI18n()
   const config = useRuntimeConfig()
   const appName = config.public.APP_NAME
+  const { user } = useAuth()
 
   useHead({
     title: t('leftMenu.home') + ' - ' + appName,
@@ -15,8 +15,6 @@
   definePageMeta({
     auth: true
   })
-
-  const authUserStore = useAuthUserStore();
 
   const DASHBOARD_MENU_ITEM = {
     title: t('leftMenu.home'),
@@ -39,7 +37,7 @@
           <v-row>
             <v-col class="container">
 
-              {{authUserStore.user}}
+              {{user}}
 <!--              <nuxt-img
               :src="`${retrieveMilitaryOrganizationLogo(
                   currentUser.militaryOrganization.id,

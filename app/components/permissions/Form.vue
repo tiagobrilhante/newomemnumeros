@@ -144,8 +144,8 @@
         <v-col>
           <v-autocomplete
             v-if="selectedMilitaryOrganization"
-            :loading
             v-model="sectionId"
+            :loading
             :items="selectedMilitaryOrganization?.sections"
             :label="t('section')"
             :placeholder="t('selectSession')"
@@ -229,7 +229,7 @@
                       v-if="subcategory.permissions.filter(p => isPermissionVisible(p.slug)).length > 1 && subcategory.name !== 'system_access'"
                       class="px-0 mb-2 bg-grey-lighten-4 rounded"
                     >
-                      <template v-slot:prepend>
+                      <template #prepend>
                         <v-checkbox
                           :indeterminate="isSubcategoryPartiallySelected(subcategory.permissions)"
                           :model-value="isSubcategoryFullySelected(subcategory.permissions)"
@@ -254,7 +254,7 @@
                         :key="permission.slug"
                         class="px-0"
                       >
-                        <template v-slot:prepend>
+                        <template #prepend>
                           <v-checkbox
                             :model-value="selectedPermissions.includes(permission.slug)"
                             color="primary"
@@ -297,7 +297,8 @@
       <!-- selected permissions -->
       <v-row v-if="selectedPermissions.length > 0" class="mt-6">
         <v-col cols="12">
-          <v-card :title="`${t('permission.selectedPermissions')} ${ selectedPermissions.length }`" color="error"
+          <v-card
+:title="`${t('permission.selectedPermissions')} ${ selectedPermissions.length }`" color="error"
                   rounded="xl" variant="outlined">
 
             <v-card-text>

@@ -4,6 +4,9 @@
  * @param datetime instância de Date
  * @returns string no formato 'DD/MM/YYYY' ou '' caso algo falhe
  */
+import { PERMISSION_CATEGORIES } from '#shared/constants/permissions'
+
+
 export const retrieveDate = (datetime: Date): string => {
   // Converte para ISO: "YYYY-MM-DDTHH:MM:SS.sssZ"
   const [datePart] = datetime.toString().split('T')
@@ -151,9 +154,6 @@ export function getRandomColor(): string {
 export function getColorOrRandom(color: string | null): string {
   return color?.trim() || getRandomColor()
 }
-
-
-import { PERMISSION_CATEGORIES } from '#shared/constants/permissions'
 
 export const retrievePermissionInfo = (permission: string) => {
   for (const category of PERMISSION_CATEGORIES) {

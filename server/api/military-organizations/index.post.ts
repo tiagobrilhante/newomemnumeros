@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import { createMilitaryOrganization } from '../../services/militaryOrganization.service'
-import { handleError } from '../../utils/errorHandler'
+import { handleError, createValidationError  } from '../../utils/errorHandler'
 import { createSuccessResponse } from '../../utils/responseWrapper'
 import { getLocale } from '../../utils/i18n'
 import type { ApiResponse } from '#shared/types/api-response'
@@ -9,7 +9,6 @@ import {
   militaryOrganizationCreateSchema,
   validateMilitaryOrganizationData
 } from '../../schemas/militaryOrganization.schema'
-import { createValidationError } from '../../utils/errorHandler'
 
 // noinspection JSUnusedGlobalSymbols
 export default defineEventHandler(async (event): Promise<ApiResponse<militaryOrganization>> => {

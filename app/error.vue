@@ -104,8 +104,8 @@
                       rounded="xl"
                       block
                       prepend-icon="mdi-home"
-                      @click="goHome"
                       :text="t('goToHome')"
+                      @click="goHome"
                     />
 
                   </v-col>
@@ -119,8 +119,8 @@
                       size="large"
                       rounded="xl"
                       prepend-icon="mdi-arrow-left"
-                      @click="goBack"
                       :text="t('goBack')"
+                      @click="goBack"
                     />
                   </v-col>
 
