@@ -27,7 +27,9 @@
         <BaseTitle :title-variables="titleVariables" />
         <permissions-roles-scope />
         <military-organization-selector v-if="roleStore.getRoleType() === 'mo'"/>
-        <permissions-role-management v-if="selectedMilitaryOrganization && roleStore.getRoleType() === 'mo'"/>
+        <permissions-list-roles/>
+
+
       </v-col>
     </v-row>
   </v-container>

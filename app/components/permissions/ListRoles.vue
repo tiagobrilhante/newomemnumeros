@@ -3,6 +3,8 @@ import type { Role } from '#shared/types/role'
 import type { VDataTable } from 'vuetify/components'
 import { isGlobalRole, getOrganizationRoles } from '#shared/utils'
 
+const roleStore = useRoleStore()
+
 const { selectedMilitaryOrganization } = useMilitaryOrganizations()
 const { fetchRolesByOrganization, fetchRoles, fetchRoleUsage, roles, loading } = useRoles()
 const dialog = ref(false)
@@ -78,29 +80,34 @@ onMounted(async () => {
 </script>
 <template>
   <div class="mt-4">
-    <v-expansion-panels variant="accordion" rounded="xl" class="border rounded-xl border-solid border-opacity-100">
+
+
       <!-- Panel de Roles da Organização Selecionada -->
-      <v-expansion-panel v-if="selectedMilitaryOrganization">
-        <v-expansion-panel-title>
-          <div class="d-flex align-center ga-2">
-            <v-icon>mdi-account-group</v-icon>
-            <span>Roles da {{ selectedMilitaryOrganization.acronym }}</span>
-            <v-chip size="small" color="primary" variant="text">
-              {{ organizationRoles.length }}
-            </v-chip>
-          </div>
-          <template #actions>
-            <v-btn
-              prepend-icon="mdi-plus-circle"
-              color="primary"
-              size="small"
-              @click.stop="openDialog('add')"
-            >
-              Criar Role da OM
-            </v-btn>
-          </template>
-        </v-expansion-panel-title>
-        <v-expansion-panel-text>
+
+      <v-card class="border rounded-xl border-solid border-opacity-100" v-if="selectedMilitaryOrganization && roleStore.getRoleType() === 'mo'">
+        <v-card-title class="bg-surface-light py-3">
+          <v-row>
+            <v-col>
+              <v-icon class="mr-4">mdi-account-group</v-icon>
+              <span>Roles da {{ selectedMilitaryOrganization.acronym }}</span>
+              <v-chip size="small" color="primary" variant="text">
+                {{ organizationRoles.length }}
+              </v-chip>
+            </v-col>
+            <v-col class="text-right">
+              <v-btn
+                rounded="xl"
+                prepend-icon="mdi-plus-circle"
+                color="success"
+                size="small"
+                @click.stop="openDialog('add')"
+              >
+                Criar Role da OM
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-card-title>
+        <v-card-text>
           <v-data-table
             :headers="headers"
             :items="organizationRoles"
@@ -154,12 +161,12 @@ onMounted(async () => {
               ></v-btn>
             </template>
           </v-data-table>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
+        </v-card-text>
+      </v-card>
 
       <!-- Panel de Roles Globais -->
-      <v-expansion-panel>
-        <v-expansion-panel-title>
+      <v-card class="border rounded-xl border-solid border-opacity-100" v-if="roleStore.getRoleType() === 'global'">
+        <v-card-title>
           <div class="d-flex align-center ga-2">
             <v-icon>mdi-earth</v-icon>
             <span>Roles Globais</span>
@@ -167,7 +174,7 @@ onMounted(async () => {
               {{ globalRoles.length }}
             </v-chip>
           </div>
-          <template #actions>
+
             <v-btn
               prepend-icon="mdi-plus-circle"
               color="secondary"
@@ -176,9 +183,9 @@ onMounted(async () => {
             >
               Criar Role Global
             </v-btn>
-          </template>
-        </v-expansion-panel-title>
-        <v-expansion-panel-text>
+
+        </v-card-title>
+        <v-card-text>
           <v-data-table
             :headers="headers"
             :items="globalRoles"
@@ -232,9 +239,9 @@ onMounted(async () => {
               ></v-btn>
             </template>
           </v-data-table>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-    </v-expansion-panels>
+        </v-card-text>
+      </v-card>
+
 
 
 
