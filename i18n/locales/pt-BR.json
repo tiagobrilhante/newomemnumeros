@@ -185,6 +185,8 @@
     "managePermissions": "Gerenciamento de Funções e Permissões",
     "totalPermissions": "Total de Permissões",
     "selectedPermissions": "Permissões Selecionadas",
+    "tableTitleGlobal": "Papéis Globais",
+    "tableTitleMo": "Papéis da ",
     "module": {
       "admin": "Administração",
       "numbers": "OM em Números"

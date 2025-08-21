@@ -188,6 +188,8 @@
     "managePermissions": "Roles and Permissions Management",
     "totalPermissions": "Total Permissions",
     "selectedPermissions": "Selected Permissions",
+    "tableTitleGlobal": "Globals Roles",
+    "tableTitleMo": "Roles for ",
     "module": {
       "admin": "Administration",
       "numbers": "Military Organization Numbers"

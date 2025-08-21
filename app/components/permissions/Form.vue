@@ -16,6 +16,10 @@
     }
   }>()
 
+  const emit = defineEmits<{
+    'close-dialog': []
+  }>()
+
   const SUPER_ADMIN_PERMISSION = 'admin.system.manage'
   const ORG_ADMIN_PERMISSION = 'admin.organization.manage'
   const name = ref('')
