@@ -322,6 +322,32 @@
         </v-col>
       </v-row>
     </v-card-text>
+    <!-- actions-->
+    <v-card-actions class="bg-surface-light py-4 px-5">
+      <v-spacer />
+
+      <!-- submit-->
+      <v-btn
+        :text="cardProps.modalTextButton"
+        color="primary"
+        rounded="xl"
+        type="submit"
+        :prepend-icon="cardProps.btnIcon"
+        class="mr-5 px-4"
+        variant="elevated"
+      />
+
+      <!-- cancel-->
+      <v-btn
+        :text="t('cancel')"
+        color="error"
+        class="px-4"
+        prepend-icon="mdi-cancel"
+        rounded="xl"
+        variant="elevated"
+        @click="emit('close-dialog')"
+      />
+    </v-card-actions>
   </v-card>
 
 

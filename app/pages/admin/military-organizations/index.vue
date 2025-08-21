@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import BaseTitle from '~/layouts/partials/BaseTitle.vue'
   import type { VDataTable } from 'vuetify/components'
+  import { retrieveMiniImage } from '#shared/utils'
 
   const { t } = useI18n()
   const config = useRuntimeConfig()
@@ -308,15 +309,4 @@ v-else-if="CARD_PROPS.modalType === 'manageSections' && selectedMilitaryOrganiza
     </v-dialog>
   </v-container>
 </template>
-<style scoped>
-  .color-circle {
-    margin-top: 5px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;
-    display: inline-block;
-  }
-</style>
+

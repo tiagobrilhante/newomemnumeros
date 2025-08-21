@@ -40,3 +40,14 @@
 .grey-thick-border-right {
   border-right: 1px solid grey !important;
 }
+
+.color-circle {
+    margin-top: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+    display: inline-block;
+}
