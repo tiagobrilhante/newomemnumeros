@@ -23,11 +23,11 @@
 
   // Headers da tabela
   const headers: VDataTable['$props']['headers'] = [
-    { title: 'Nome', key: 'name', sortable: true },
-    { title: 'Sigla', key: 'acronym', sortable: true },
-    { title: 'Permissões', key: 'permissions', sortable: false },
-    { title: 'Uso', key: 'usage', sortable: false },
-    { title: 'Ações', key: 'actions', sortable: false, align: 'center' },
+    { title: t('name'), key: 'name', sortable: true },
+    { title: t('acronym'), key: 'acronym', sortable: true },
+    { title: t('permission.permissions'), key: 'permissions', sortable: false },
+    { title: t('permission.usage'), key: 'usage', sortable: false },
+    { title: t('actions'), key: 'actions', sortable: false, align: 'center' },
   ]
 
   // Computeds para separar roles organizacionais dos globais baseado nas permissões
@@ -113,7 +113,7 @@
               size="small"
               @click.stop="openDialog('add')"
             >
-              Criar Role da OM
+              {{ t('permission.createRoleMo') }}
             </v-btn>
           </v-col>
         </v-row>
@@ -192,9 +192,9 @@
               prepend-icon="mdi-plus-circle"
               rounded="xl"
               size="small"
-              @click.stop=""
+              @click.stop="openDialog('add')"
             >
-              Criar Role Global
+              {{ t('permission.createRoleGlobal') }}
             </v-btn>
           </v-col>
         </v-row>

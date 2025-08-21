@@ -171,6 +171,8 @@
     "militaryOrganizationLogoDeleted": "Logo da organização militar removido com sucesso!"
   },
   "permission": {
+    "permissions": "Permissões",
+    "usage": "Uso",
     "input": {
       "role": {
         "name": "Nome da Função (papel)"
@@ -186,7 +188,12 @@
     "totalPermissions": "Total de Permissões",
     "selectedPermissions": "Permissões Selecionadas",
     "tableTitleGlobal": "Papéis Globais",
-    "tableTitleMo": "Papéis da ",
+    "tableTitleMo": "Papéis - ",
+    "createRoleGlobal": "Criar papel global",
+    "createRoleMo": "Criar papel da Om",
+    "roleTypes": "Tipos de Papéis",
+    "global": "Global",
+    "mo": "OM",
     "module": {
       "admin": "Administração",
       "numbers": "OM em Números"
