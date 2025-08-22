@@ -22,7 +22,7 @@ const selectRoleType = (type: string) => {
         </v-col>
         <v-col>
 
-          <v-btn block color="primary" :variant="selectedRoleType === 'global' ? 'flat' : 'outlined'" rounded="xl" @click="selectRoleType('global')" :text="t('permission.global')"/>
+          <v-btn block color="primary" :variant="selectedRoleType === 'global' ? 'flat' : 'outlined'" rounded="xl" @click="selectRoleType('global')" :text="t('permission.globalLabel')"/>
         </v-col>
         <v-col cols="1"/>
         <v-col>

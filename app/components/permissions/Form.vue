@@ -43,6 +43,16 @@
   const isOrgAdmin = computed(() => selectedPermissions.value.includes(ORG_ADMIN_PERMISSION))
   const hasHighLevelPermission = computed(() => isSuperAdmin.value || isOrgAdmin.value)
 
+  const isModuleVisible = (moduleAlias: string) => {
+    if (selectedRoleType.value === 'global') {
+      // Se está criando role global, mostra APENAS o módulo global
+      return moduleAlias === 'global'
+    } else {
+      // Se está criando role de MO, mostra todos EXCETO o global
+      return moduleAlias !== 'global'
+    }
+  }
+
   const isSubcategoryVisible = (moduleAlias: string, subcategoryName: string) => {
     if (isSuperAdmin.value || isOrgAdmin.value) {
       return moduleAlias === 'global' && subcategoryName === 'system_access'
@@ -124,7 +134,7 @@
           {{ t(cardProps.modalType) }} {{ t('permission.role') }}
           <span
             v-if="selectedRoleType === 'mo' && selectedMilitaryOrganization">-  {{ selectedMilitaryOrganization.acronym }}</span>
-          <span v-else>- {{ t('permission.' + selectedRoleType) }}</span></v-col>
+          <span v-else>- {{ t('permission.' + selectedRoleType + 'Label') }}</span></v-col>
         <v-col class="text-right pr-2 pt-1" cols="2">
           <v-btn icon size="small" variant="text" @click="emit('close-dialog')">
             <v-icon>mdi-close</v-icon>
@@ -192,7 +202,7 @@
       <v-row class="mt-4">
         <v-col
           v-for="module in PERMISSION_CATEGORIES"
-          v-show="module.subcategories.some(sub => isSubcategoryVisible(module.module_alias, sub.name))"
+          v-show="isModuleVisible(module.module_alias) && module.subcategories.some(sub => isSubcategoryVisible(module.module_alias, sub.name))"
           :key="module.module_alias"
           cols="12"
           md="6"
