@@ -80,6 +80,27 @@
 
   const openDialog = (type: string) => {
     CARD_PROPS.modalType = type
+
+    switch (type) {
+      case 'add':
+        CARD_PROPS.modalTextButton = t('save')
+        CARD_PROPS.modalIcon = 'mdi-plus-circle'
+        CARD_PROPS.btnIcon = 'mdi-content-save-check'
+        break
+      case 'edit':
+        if (!selectedMilitaryOrganization) return
+        CARD_PROPS.modalIcon = 'mdi-pencil-circle'
+        CARD_PROPS.btnIcon = 'mdi-content-save-check'
+        CARD_PROPS.modalTextButton = t('update')
+        break
+      case 'delete':
+        if (!selectedMilitaryOrganization) return
+        CARD_PROPS.modalIcon = 'mdi-alert'
+        CARD_PROPS.btnIcon = 'mdi-delete'
+        CARD_PROPS.modalTextButton = t('delete')
+        break
+    }
+
     dialog.value = true
   }
 

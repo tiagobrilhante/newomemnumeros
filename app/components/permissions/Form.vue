@@ -3,7 +3,7 @@
 
   const { t } = useI18n()
   const { selectedMilitaryOrganization } = useMilitaryOrganizations()
-  const { loading } = useRoles()
+  const { loading, selectedRoleType } = useRoles()
 
   const selectedPermissions = ref<string[]>([])
 
@@ -20,8 +20,8 @@
     'close-dialog': []
   }>()
 
-  const SUPER_ADMIN_PERMISSION = 'admin.system.manage'
-  const ORG_ADMIN_PERMISSION = 'admin.organization.manage'
+  const SUPER_ADMIN_PERMISSION = 'global.system.manage'
+  const ORG_ADMIN_PERMISSION = 'global.organization.manage'
   const name = ref('')
   const sectionId = ref<string | undefined>(undefined)
   const error = ref<{
@@ -45,7 +45,7 @@
 
   const isSubcategoryVisible = (moduleAlias: string, subcategoryName: string) => {
     if (isSuperAdmin.value || isOrgAdmin.value) {
-      return moduleAlias === 'admin' && subcategoryName === 'system_access'
+      return moduleAlias === 'global' && subcategoryName === 'system_access'
     }
 
     return true
@@ -119,18 +119,24 @@
   <v-card :loading class="white-thick-border" rounded="xl">
     <v-card-title class="bg-surface-light pt-4">
       <v-row>
-        <v-col cols="10"><v-icon class="mr-3 mt-0" size="small">{{cardProps.modalIcon}}</v-icon>{{ t(cardProps.modalType) }} {{ t('leftMenu.roles') }}</v-col>
+        <v-col cols="10">
+          <v-icon class="mr-3 mt-0" size="small">{{ cardProps.modalIcon }}</v-icon>
+          {{ t(cardProps.modalType) }} {{ t('permission.role') }}
+          <span
+            v-if="selectedRoleType === 'mo' && selectedMilitaryOrganization">-  {{ selectedMilitaryOrganization.acronym }}</span>
+          <span v-else>- {{ t('permission.' + selectedRoleType) }}</span></v-col>
         <v-col class="text-right pr-2 pt-1" cols="2">
-          <v-btn icon variant="text" size="small" @click="emit('close-dialog')">
+          <v-btn icon size="small" variant="text" @click="emit('close-dialog')">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-col>
       </v-row>
     </v-card-title>
     <v-card-text>
+      <!--name and section-->
       <v-row>
+        <!-- Name - full -->
         <v-col>
-          <!-- Name - full -->
           <v-text-field
             id="name"
             v-model="name"
@@ -145,18 +151,19 @@
             @input="resetError"
           />
         </v-col>
+        <!--section-->
         <v-col>
           <v-autocomplete
             v-if="selectedMilitaryOrganization"
             v-model="sectionId"
-            :loading
+            :hint="t('selectSessionHint')"
             :items="selectedMilitaryOrganization?.sections"
             :label="t('section')"
+            :loading
             :placeholder="t('selectSession')"
             class="mb-3"
             clearable
             density="compact"
-            :hint="t('selectSessionHint')"
             item-title="acronym"
             item-value="id"
             rounded="xl"
@@ -282,7 +289,7 @@
               </v-expansion-panels>
 
               <!-- total available permissions -->
-              <template v-if="!(module.module_alias === 'admin' && hasHighLevelPermission)">
+              <template v-if="!(module.module_alias === 'global' && hasHighLevelPermission)">
                 <v-divider class="mb-3" />
                 <div class="d-flex justify-space-between align-center">
               <span class="text-caption text-medium-emphasis">
@@ -302,8 +309,8 @@
       <v-row v-if="selectedPermissions.length > 0" class="mt-6">
         <v-col cols="12">
           <v-card
-:title="`${t('permission.selectedPermissions')} ${ selectedPermissions.length }`" color="error"
-                  rounded="xl" variant="outlined">
+            :title="`${t('permission.selectedPermissions')} ${ selectedPermissions.length }`" color="error"
+            rounded="xl" variant="outlined">
 
             <v-card-text>
               <v-chip-group column>
@@ -328,20 +335,20 @@
 
       <!-- submit-->
       <v-btn
+        :prepend-icon="cardProps.btnIcon"
         :text="cardProps.modalTextButton"
+        class="mr-5 px-4"
         color="primary"
         rounded="xl"
         type="submit"
-        :prepend-icon="cardProps.btnIcon"
-        class="mr-5 px-4"
         variant="elevated"
       />
 
       <!-- cancel-->
       <v-btn
         :text="t('cancel')"
-        color="error"
         class="px-4"
+        color="error"
         prepend-icon="mdi-cancel"
         rounded="xl"
         variant="elevated"

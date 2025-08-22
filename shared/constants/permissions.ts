@@ -17,23 +17,31 @@ interface PermissionModule {
 
 export const PERMISSION_CATEGORIES: PermissionModule[] = [
   {
-    module: 'Admin',
-    module_alias: 'admin',
-    module_color: 'yellow',
+    module: 'Global Admin',
+    module_alias: 'global',
+    module_color: 'red',
     subcategories: [
       {
         name: 'system_access',
         permissions: [
           {
-            slug: 'admin.system.manage',
+            slug: 'global.system.manage',
             category: 'system',
           },
           {
-            slug: 'admin.organization.manage',
+            slug: 'global.organization.manage',
             category: 'system',
           },
         ],
       },
+    ],
+  },
+
+  {
+    module: 'Admin',
+    module_alias: 'admin',
+    module_color: 'yellow',
+    subcategories: [
       {
         name: 'resource_management',
         permissions: [

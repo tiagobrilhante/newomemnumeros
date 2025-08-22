@@ -176,11 +176,11 @@ async function seed() {
 
   // Buscar permissões administrativas globais
   const adminPermissionGlobal = await prisma.permission.findFirst({
-    where: { slug: 'admin.system.manage' }
+    where: { slug: 'global.system.manage' }
   })
 
   const adminPermissionOM = await prisma.permission.findFirst({
-    where: { slug: 'admin.organization.manage' }
+    where: { slug: 'global.organization.manage' }
   })
 
   console.log('Permissões criadas')

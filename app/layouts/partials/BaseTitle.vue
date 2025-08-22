@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-  import type { TITLEVARIABLES } from '~/types/components'
+  import type { TITLEVARIABLES } from '#shared//types/components'
 
   const props = defineProps<{
     titleVariables: TITLEVARIABLES

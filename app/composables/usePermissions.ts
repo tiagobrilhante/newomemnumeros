@@ -20,7 +20,7 @@ export const usePermissions = () => {
 
     const userPermissions = user.role?.permissions || []
 
-    if (userPermissions.includes('admin.system.manage')) {
+    if (userPermissions.includes('global.system.manage')) {
       return true
     }
 
@@ -39,7 +39,7 @@ export const usePermissions = () => {
 
     const userPermissions = user.role?.permissions || []
 
-    if (userPermissions.includes('admin.system.manage')) {
+    if (userPermissions.includes('global.system.manage')) {
       return true
     }
 

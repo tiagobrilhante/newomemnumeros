@@ -175,6 +175,7 @@
   },
   "permission": {
     "permissions": "Permissions",
+    "role": "Role",
     "usage": "Usage",
     "input": {
       "role": {
@@ -195,10 +196,11 @@
     "createRoleGlobal": "Create Global Role",
     "createRoleMo": "Create MO Role",
     "roleTypes": "Role types",
-    "global": "Global",
+    "globalLabel": "Global",
     "mo": "MO",
     "module": {
       "admin": "Administration",
+      "global": "Global",
       "numbers": "Military Organization Numbers"
     },
     "subcategories": {
@@ -228,14 +230,8 @@
       }
     },
     "admin": {
-      "system": {
-        "manage": "Super User - Global System Administrator"
-      },
       "organizations": {
         "manage": "Allows management of Military Organizations"
-      },
-      "organization": {
-        "manage": "Allows administrative options for Military Organization level administrator"
       },
       "sections": {
         "manage": "Allows management of Sections"
@@ -252,6 +248,14 @@
       "reports": {
         "generate": "Allows generating administrative reports",
         "export": "Allows exporting administrative reports"
+      }
+    },
+    "global": {
+      "system": {
+        "manage": "Super User - Global System Administrator"
+      },
+      "organization": {
+        "manage": "Allows administrative options for Military Organization level administrator"
       }
     },
     "numbers": {
